@@ -9,6 +9,11 @@
     <description>Bridge to control a Rika firenet stove through MQTT</description>
     <packaging>pom</packaging>
 
+    <properties>
+        <sonar.organization>sebastienvermeille</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+    </properties>
+
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
