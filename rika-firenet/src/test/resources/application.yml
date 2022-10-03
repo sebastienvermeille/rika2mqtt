@@ -1,0 +1,4 @@
+rika:
+  email: test@rika2mqtt.cookiecode.dev
+  password: M4trix!#
+  keepAliveTimeout: PT30S

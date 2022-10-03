@@ -1,0 +1,10 @@
+rika:
+  email:
+  password:
+  keepAliveTimeout: PT60S
+mqtt:
+  host:
+  user:
+  password:
+bridge:
+  reportInterval: PT60S
