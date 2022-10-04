@@ -50,12 +50,10 @@ public class MqttConfiguration {
 
   @Bean
   public MessageChannel mqttOutboundChannel() {
-//    return new DirectChannel();
-    //workaround https://stackoverflow.com/a/41241824 // TODO: review it
+    //TODO: review this workaround instead of returning `return new DirectChannel();` => https://stackoverflow.com/a/41241824
     var dc = new DirectChannel();
     dc.subscribe(mqttOutbound());
     return dc;
-
   }
 
 
@@ -64,39 +62,4 @@ public class MqttConfiguration {
     void sendToMqtt(String data);
 
   }
-
-  // TODO: consume mqtt commands
-
-//  @Bean
-//  public MessageChannel mqttInputChannel() {
-//    return new DirectChannel();
-//  }
-//
-//  @Bean
-//  public MessageProducer inbound() {
-//    final var adapter = new MqttPahoMessageDrivenChannelAdapter(
-//        mqttConfigProperties.getClientName(),
-//        mqttClientFactory(),
-//        mqttConfigProperties.getCommandTopicName()
-//    );
-//    adapter.setCompletionTimeout(5000);
-//    adapter.setConverter(new DefaultPahoMessageConverter());
-//    adapter.setQos(1);
-//    adapter.setOutputChannel(mqttInputChannel());
-//    return adapter;
-//  }
-
-//  @Bean
-//  @ServiceActivator(inputChannel = "mqttInputChannel")
-//  public MessageHandler handler() {
-//    return new MessageHandler() {
-//
-//      @Override
-//      public void handleMessage(Message<?> message) throws MessagingException {
-//        System.out.println(message.getPayload());
-//      }
-//
-//    };
-//  }
-
 }

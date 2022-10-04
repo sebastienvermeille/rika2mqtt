@@ -4,6 +4,7 @@ import ch.svermeille.rika.bridge.misc.EmailObfuscator;
 import ch.svermeille.rika.firenet.RikaFirenetService;
 import ch.svermeille.rika.firenet.exception.CouldNotAuthenticateToRikaFirenetException;
 import ch.svermeille.rika.firenet.exception.InvalidStoveIdException;
+import ch.svermeille.rika.firenet.exception.UnableToRetrieveRikaFirenetDataException;
 import ch.svermeille.rika.firenet.model.StoveId;
 import ch.svermeille.rika.firenet.model.StoveStatus;
 import ch.svermeille.rika.mqtt.MqttService;
@@ -75,7 +76,8 @@ public class Bridge {
       } catch(CouldNotAuthenticateToRikaFirenetException e) {
         log.atSevere().log(e.getMessage(), e);
         // TODO: should maybe have a retry mechanism? or perform a shutdown ?
-        throw new RuntimeException(e);
+      } catch(UnableToRetrieveRikaFirenetDataException e) {
+        log.atSevere().log(e.getMessage(), e);
       }
     });
 

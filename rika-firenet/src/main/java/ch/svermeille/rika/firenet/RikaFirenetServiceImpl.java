@@ -3,6 +3,7 @@ package ch.svermeille.rika.firenet;
 import ch.svermeille.rika.firenet.api.RikaFirenetApi;
 import ch.svermeille.rika.firenet.exception.CouldNotAuthenticateToRikaFirenetException;
 import ch.svermeille.rika.firenet.exception.InvalidStoveIdException;
+import ch.svermeille.rika.firenet.exception.UnableToRetrieveRikaFirenetDataException;
 import ch.svermeille.rika.firenet.model.Auth;
 import ch.svermeille.rika.firenet.model.StoveId;
 import ch.svermeille.rika.firenet.model.StoveStatus;
@@ -64,8 +65,7 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
     }
   }
 
-  @SneakyThrows
-    // TODO: read what is that for what it is
+  @SneakyThrows // TODO: not sure this is a clean way of handling exceptions... should be reviewed
   void authenticate() {
     final var query = firenetApi.authenticate(
         Auth.builder()
@@ -80,9 +80,10 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
       // it does a redirect when successfully authenticated
       connected = true;
       lastConnectivity = Instant.now(Clock.systemUTC());
-      System.out.println("Authenticated successfully");
+      log.atInfo().log("Authenticated successfully to RIKA Firenet");
     } else {
       connected = false;
+      log.atSevere().log("Could not authenticate to RIKA Firenet, please check your credentials.");
     }
   }
 
@@ -129,7 +130,7 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
   }
 
   @Override
-  public StoveStatus getStatus(final @NonNull StoveId stoveId) throws InvalidStoveIdException, CouldNotAuthenticateToRikaFirenetException {
+  public StoveStatus getStatus(final @NonNull StoveId stoveId) throws InvalidStoveIdException, CouldNotAuthenticateToRikaFirenetException, UnableToRetrieveRikaFirenetDataException {
     try {
       final var stoveString = stoveId.id().toString();
       final var asyncCall = firenetApi.getStoveStatus(stoveString);
@@ -141,7 +142,7 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
       } else {
         if(response.code() == 500) {
           throw new InvalidStoveIdException(
-              String.format("Could not retrieve status of stove %s.\ncause reported by RIKA: %s",
+              String.format("Could not retrieve status of stove %s.%n cause reported by RIKA: %s",
                   stoveId,
                   response.errorBody().string()
               )
@@ -149,18 +150,24 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
         } else if(response.code() == 401) {
           log.atWarning().log("Tried to get status of stove %s, but the bridge was no longer authorized. Please check rika.keepAlive " +
               "property.", stoveId);
-          throw new CouldNotAuthenticateToRikaFirenetException(String.format("Could not retrieve stove %s status. \ncause: %s", stoveId,
+          throw new CouldNotAuthenticateToRikaFirenetException(String.format("Could not retrieve stove %s status. %n cause: %s", stoveId,
               response.errorBody().string()));
         }
         throw new InvalidStoveIdException(
-            String.format("Could not retrieve status of stove %s.\ncause reported by RIKA: %s",
+            String.format("Could not retrieve status of stove %s. %n cause reported by RIKA: %s",
                 stoveId,
                 response.errorBody().string()
             )
         );
       }
     } catch(IOException e) {
-      throw new RuntimeException(e);
+      throw new UnableToRetrieveRikaFirenetDataException(
+          String.format(
+              "Could not retrieve stove %s status from rika firenet",
+              stoveId
+              ),
+          e
+      );
     }
   }
 }
