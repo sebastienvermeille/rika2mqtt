@@ -1,3 +1,13 @@
+server:
+  port: 9009
+  error:
+    whitelabel:
+      enabled: false
+
+spring:
+  application:
+    name: "Rika2Mqtt"
+
 rika:
   email:
   password:

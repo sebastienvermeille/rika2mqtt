@@ -45,6 +45,11 @@
             <artifactId>hibernate-validator</artifactId>
             <version>8.0.0.Final</version>
         </dependency>
+        <dependency>
+            <groupId>top.code2life</groupId>
+            <artifactId>spring-boot-dynamic-config</artifactId>
+            <version>1.0.9</version>
+        </dependency>
     </dependencies>
 
     <build>
