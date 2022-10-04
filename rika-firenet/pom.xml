@@ -22,6 +22,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>top.code2life</groupId>
+            <artifactId>spring-boot-dynamic-config</artifactId>
+            <version>1.0.9</version>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
