@@ -15,6 +15,7 @@ public class Rika2MqttApplication {
 	private static ConfigurableApplicationContext context;
 
 	public static void main(String[] args) {
+		System.setProperty("flogger.backend_factory", "com.google.common.flogger.backend.slf4j.Slf4jBackendFactory#getInstance");
 		context = SpringApplication.run(Rika2MqttApplication.class, args);
 	}
 

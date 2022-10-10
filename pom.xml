@@ -26,6 +26,7 @@
         <module>bridge</module>
         <module>mqtt</module>
         <module>config</module>
+        <module>audit</module>
     </modules>
 
     <dependencies>
@@ -37,6 +38,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>3.0.1-b06</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

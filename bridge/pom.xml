@@ -40,6 +40,18 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
+            <groupId>com.google.flogger</groupId>
+            <artifactId>flogger-slf4j-backend</artifactId>
+            <version>0.7.4</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.11</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
@@ -48,6 +60,12 @@
             <groupId>top.code2life</groupId>
             <artifactId>spring-boot-dynamic-config</artifactId>
             <version>1.0.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>3.0.1-b06</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>ch.svermeille.rika.mqtt</groupId>

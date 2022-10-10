@@ -9,8 +9,8 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ch.svermeille.rika.config</groupId>
-    <artifactId>config</artifactId>
+    <groupId>ch.svermeille.rika.audit</groupId>
+    <artifactId>audit</artifactId>
 
     <properties>
         <maven.compiler.source>18</maven.compiler.source>
@@ -20,14 +20,30 @@
 
     <dependencies>
         <dependency>
-            <groupId>top.code2life</groupId>
-            <artifactId>spring-boot-dynamic-config</artifactId>
-            <version>1.0.9</version>
-        </dependency>
-        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-mqtt</artifactId>
+            <version>5.5.15</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>3.0.1-b06</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>2.3.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>2.3.4</version>
         </dependency>
         <dependency>
             <groupId>com.google.flogger</groupId>
@@ -41,32 +57,17 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <groupId>com.google.flogger</groupId>
+            <artifactId>flogger-slf4j-backend</artifactId>
+            <version>0.7.4</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>ch.svermeille.rika.audit</groupId>
-            <artifactId>audit</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>ch.svermeille.rika.audit</groupId>
-            <artifactId>audit</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.11</version>
             <scope>compile</scope>
         </dependency>
     </dependencies>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>
