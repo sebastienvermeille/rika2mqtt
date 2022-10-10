@@ -1,0 +1,65 @@
+<configuration>
+    <property name="LOG_ROOT" value="logs" />
+    <property name="XML_LOG_FILE" value="audit" />
+
+    <contextName>rika2mqtt</contextName>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%date{ISO8601} %-5level [%thread, %X{traceId}, %X{spanId}] %logger{36} %X{akkaSource} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/rika2mqtt.log</file>
+        <append>true</append>
+
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/rika2mqtt-%d{yyyy-MM-dd,GMT}.log.gz</fileNamePattern>
+        </rollingPolicy>
+
+        <encoder>
+            <pattern>%date{yyyy-MM-dd HH:mm:ss,GMT} %level [%thread] %logger.%method\(%line\) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="ASYNC-STDOUT" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="STDOUT"/>
+    </appender>
+
+    <appender name="ASYNC-FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE"/>
+    </appender>
+
+    <appender name="AUDIT-XML-LOG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_ROOT}/${XML_LOG_FILE}.xml</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${LOG_ROOT}/${XML_LOG_FILE}-%d{yyyy-MM-dd}.%i.xml.gz</fileNamePattern>
+            <!-- each archived file's size will be max 10MB -->
+            <maxFileSize>10MB</maxFileSize>
+            <!-- 30 days to keep -->
+            <maxHistory>30</maxHistory>
+            <!-- total size of all archive files, if total size > 100GB, it will delete old archived file -->
+            <totalSizeCap>300MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+            <charset>UTF-8</charset>
+            <layout class="ch.svermeille.rika.audit.xml.AuditXmlLayout">
+                <locationInfo>false</locationInfo>
+                <properties>false</properties>
+            </layout>
+        </encoder>
+    </appender>
+
+    <logger name="ch.svermeille.rika.audit.AuditLogger" level="DEBUG" additivity="false">
+        <appender-ref ref="AUDIT-XML-LOG"/>
+    </logger>
+
+    <logger name="org.quartz.core.QuartzSchedulerThread" level="WARN"/>
+
+    <root level="DEBUG">
+        <appender-ref ref="ASYNC-FILE"/>
+        <appender-ref ref="ASYNC-STDOUT"/>
+    </root>
+</configuration>

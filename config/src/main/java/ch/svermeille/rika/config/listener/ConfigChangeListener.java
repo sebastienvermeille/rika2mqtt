@@ -1,8 +1,12 @@
 package ch.svermeille.rika.config.listener;
 
+import ch.svermeille.rika.audit.Actions;
+import ch.svermeille.rika.audit.AuditLogger;
+import ch.svermeille.rika.audit.AuditedAction;
 import ch.svermeille.rika.config.event.ConfigurationChangeRequireRestartEvent;
 import java.util.Set;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.flogger.Flogger;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -12,9 +16,11 @@ import top.code2life.config.ConfigurationChangedEvent;
  * @author Sebastien Vermeille
  */
 @Component
+@RequiredArgsConstructor
 @Flogger
 public class ConfigChangeListener {
 
+  private final AuditLogger auditLogger;
   static final Set<String> PROPS_REQUIRE_RESTART = Set.of(
       "bridge.reportInterval",
       "rika.email",
@@ -33,6 +39,13 @@ public class ConfigChangeListener {
   public ConfigurationChangeRequireRestartEvent onConfigurationChanged(@NonNull ConfigurationChangedEvent event) {
     final var diffs = event.getDiff();
     final var requireRestart = PROPS_REQUIRE_RESTART.stream().anyMatch(diffs.keySet()::contains);
+
+    auditLogger.audit(AuditedAction.builder()
+        .withAction(Actions.CHANGED_CONFIGURATION)
+        .withProps(diffs)
+        .build()
+    );
+
     if(requireRestart){
       log.atInfo().log();
       return new ConfigurationChangeRequireRestartEvent(
