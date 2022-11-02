@@ -19,6 +19,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.spring.annotation.UIScope;
+import de.codecamp.vaadin.serviceref.ServiceRef;
 import lombok.extern.flogger.Flogger;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -36,9 +37,10 @@ public class DashboardView extends VerticalLayout {
 
   private final Grid<HealthCheckResult> grid;
 
-  private final HealthCheckService healthCheckService;
+  private final ServiceRef<HealthCheckService> healthCheckService;
 
-  private DashboardView(@Autowired final TimeAgoHelper timeAgoHelper, @Autowired final HealthCheckService healthCheckService) {
+  @SuppressWarnings("java:S1144") // Sonar see this constructor as unused but it is used by Vaadin
+  private DashboardView(@Autowired final TimeAgoHelper timeAgoHelper, @Autowired final ServiceRef<HealthCheckService> healthCheckService) {
     this.healthCheckService = healthCheckService;
     setId("dashboard-view");
 
@@ -49,16 +51,17 @@ public class DashboardView extends VerticalLayout {
     this.grid.addColumn(createCheckStatusRenderer()).setHeader("Name").setAutoWidth(true);
     this.grid.addColumn(HealthCheckResult::getName).setHeader("Operation").setAutoWidth(true);
     this.grid.addColumn(healthCheckResult -> timeAgoHelper.evalAsHumanFriendlyTimeAgo(healthCheckResult.getLastExecuted())).setHeader("Last execution").setAutoWidth(true);
-    this.grid.setItems(healthCheckService.getHealthCheckResults());
+    this.grid.setItems(healthCheckService.get().getHealthCheckResults());
     add(this.grid);
     loadData();
 
   }
 
   private void loadData() {
-    this.grid.setItems(this.healthCheckService.getHealthCheckResults());
+    this.grid.setItems(this.healthCheckService.get().getHealthCheckResults());
   }
 
+  private static final String THEME = "theme";
   private static final SerializableBiConsumer<Span, HealthCheckResult> statusComponentUpdater = (
       span, result) -> {
     boolean isScheduled = Status.SCHEDULED.equals(result.getStatus());
@@ -66,18 +69,18 @@ public class DashboardView extends VerticalLayout {
 
     if(isScheduled) {
       span.setText("");
-      span.getElement().setAttribute("theme", "badge");
+      span.getElement().setAttribute(THEME, "badge");
       span.add(createIcon(VaadinIcon.CLOCK, "Scheduled operation"));
     } else if(isInProgress) {
       span.setText("");
-      span.getElement().setAttribute("theme", "badge");
+      span.getElement().setAttribute(THEME, "badge");
       span.add(createIcon(VaadinIcon.HOURGLASS, "Operation in progress"));
     } else {
       boolean isSuccess = Status.PASS.equals(result.getStatus());
 
       span.setText("");
       String theme = String.format("badge %s", isSuccess ? "success" : "error");
-      span.getElement().setAttribute("theme", theme);
+      span.getElement().setAttribute(THEME, theme);
 
       if(isSuccess) {
         span.add(createIcon(VaadinIcon.CHECK_CIRCLE, "PASS"));

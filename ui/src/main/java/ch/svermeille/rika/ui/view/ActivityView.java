@@ -12,6 +12,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
+import de.codecamp.vaadin.serviceref.ServiceRef;
 import de.nils_bauer.PureTimeline;
 import de.nils_bauer.PureTimelineItem;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,14 +24,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 @PageTitle("Activity")
 @UIScope
 public class ActivityView extends HorizontalLayout {
-  
-  private final AuditService auditService;
+
+  private final ServiceRef<AuditService> auditService;
   private final PureTimeline timeline;
 
   private final VerticalLayout verticalLayout;
   private int currentPage;
 
-  private ActivityView(@Autowired final AuditService auditService) {
+  @SuppressWarnings("java:S1144") // Sonar see this constructor as unused but it is used by Vaadin
+  private ActivityView(@Autowired final ServiceRef<AuditService> auditService) {
     this.auditService = auditService;
     setId("activity-view");
 
@@ -54,7 +56,7 @@ public class ActivityView extends HorizontalLayout {
 
   private void loadNextPage() {
     this.currentPage++;
-    final var activityStream = this.auditService.getReversedAuditedActions(this.currentPage);
+    final var activityStream = this.auditService.get().getReversedAuditedActions(this.currentPage);
     activityStream.forEach(audit -> this.timeline.add(
         new PureTimelineItem(
             audit.getLevel(),
@@ -73,7 +75,7 @@ public class ActivityView extends HorizontalLayout {
     if(loadedActivities < 10) {
       // try to load more
       this.currentPage++;
-      final var activityStreama = this.auditService.getReversedAuditedActions(this.currentPage);
+      final var activityStreama = this.auditService.get().getReversedAuditedActions(this.currentPage);
       activityStreama.forEach(audit -> this.timeline.add(
           new PureTimelineItem(
               audit.getLevel(),
@@ -88,7 +90,7 @@ public class ActivityView extends HorizontalLayout {
       ));
     }
 
-    if(this.currentPage < this.auditService.getPageCount()) {
+    if(this.currentPage < this.auditService.get().getPageCount()) {
       final var btn = new Button("Load more");
       btn.addClickListener(event -> {
         loadNextPage();

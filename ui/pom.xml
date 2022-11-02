@@ -42,6 +42,11 @@
             <version>1.0.0</version>
         </dependency>
         <dependency>
+            <groupId>de.codecamp.vaadin</groupId>
+            <artifactId>vaadin-service-ref</artifactId>
+            <version>0.7.1</version>
+        </dependency>
+        <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
             <version>31.1-jre</version>

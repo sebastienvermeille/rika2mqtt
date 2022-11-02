@@ -11,6 +11,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.spring.annotation.UIScope;
+import de.codecamp.vaadin.serviceref.ServiceRef;
 import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,12 +27,12 @@ import lombok.extern.flogger.Flogger;
 @Flogger
 public class SystemView extends HorizontalLayout {
 
-  private final LogViewerService logViewerService;
+  private final ServiceRef<LogViewerService> logViewerService;
   private final MessageList list = new MessageList();
 
   private FeederThread thread;
 
-  public SystemView(final LogViewerService logViewerService) {
+  public SystemView(final ServiceRef<LogViewerService> logViewerService) {
     this.logViewerService = logViewerService;
     setId("system-view");
 
@@ -43,7 +44,7 @@ public class SystemView extends HorizontalLayout {
   private void loadData() {
     this.list.setItems(Collections.emptyList());
 
-    final var logs = this.logViewerService.getLastLines(20, Set.of(Level.DEBUG));
+    final var logs = this.logViewerService.get().getLastLines(20, Set.of(Level.DEBUG));
     final var logEntries = new ArrayList<MessageListItem>();
     for(final var logEntry : logs) {
       logEntries.add(
