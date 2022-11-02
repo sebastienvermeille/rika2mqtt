@@ -1,11 +1,11 @@
 package ch.svermeille.rika.firenet.health.check;
 
-import static ch.svermeille.rika.health.service.PingUtils.pingUrl;
 import static java.time.LocalDateTime.now;
 import static java.time.ZoneOffset.UTC;
 
 import ch.svermeille.rika.firenet.RikaFirenetService;
 import ch.svermeille.rika.health.check.HealthCheck;
+import ch.svermeille.rika.health.service.PingUtils;
 import ch.svermeille.rika.health.storage.model.HealthCheckResult;
 import ch.svermeille.rika.health.storage.model.Status;
 import java.time.Duration;
@@ -27,6 +27,7 @@ public class RikaFirenetConnectivityCheckImpl implements HealthCheck {
   static final String RIKA_FIRENET_CONNECTIVITY_CHECK = "Check RIKA firenet connectivity";
 
   private final RikaFirenetService rikaFirenetService;
+  private final PingUtils pingUtils;
 
   @Override
   public String getName() {
@@ -59,7 +60,7 @@ public class RikaFirenetConnectivityCheckImpl implements HealthCheck {
   }
 
   private boolean isRikaFirenetServiceReachable() {
-    return pingUrl("https://www.rika-firenet.com/", Duration.ofSeconds(5));
+    return this.pingUtils.pingUrl("https://www.rika-firenet.com/", Duration.ofSeconds(5));
   }
 
   private boolean isAuthenticated() {

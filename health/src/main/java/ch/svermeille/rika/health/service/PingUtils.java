@@ -1,18 +1,24 @@
 package ch.svermeille.rika.health.service;
 
+import static lombok.AccessLevel.PRIVATE;
+
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URL;
 import java.time.Duration;
+import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 /**
  * @author Sebastien Vermeille
  * @implNote https://stackoverflow.com/a/3584332
  */
+@Component
+@NoArgsConstructor(access = PRIVATE)
 public class PingUtils {
-  public static boolean pingHost(final String host, final int port, final Duration timeout) {
+  public boolean pingHost(final String host, final int port, final Duration timeout) {
     try(final Socket socket = new Socket()) {
       socket.connect(new InetSocketAddress(host, port), (int) timeout.toMillis());
       return true;
@@ -31,7 +37,7 @@ public class PingUtils {
    * @return <code>true</code> if the given HTTP URL has returned response code 200-399 on a HEAD request within the
    * given timeout, otherwise <code>false</code>.
    */
-  public static boolean pingUrl(String url, final Duration timeout) {
+  public boolean pingUrl(String url, final Duration timeout) {
     url = url.replaceFirst("^https", "http"); // Otherwise an exception may be thrown on invalid SSL certificates.
 
     try {

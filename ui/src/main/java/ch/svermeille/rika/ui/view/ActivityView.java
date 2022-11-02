@@ -23,7 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @PageTitle("Activity")
 @UIScope
 public class ActivityView extends HorizontalLayout {
-
+  
   private final AuditService auditService;
   private final PureTimeline timeline;
 

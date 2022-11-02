@@ -44,7 +44,7 @@ public enum TimeGranularity {
   }, DECADES {
     @Override
     public long toSeconds() {
-      return TimeUnit.DAYS.toSeconds(365 * 10);
+      return TimeUnit.DAYS.toSeconds((long) 365 * 10);
     }
   };
 

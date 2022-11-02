@@ -14,11 +14,6 @@ public class AuditXmlLayout extends LayoutBase<ILoggingEvent> {
 
   private StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
 
-  @Override
-  public void start() {
-    super.start();
-  }
-
   /**
    * Formats a {@link ILoggingEvent} in conformity with the log4j.dtd.
    */

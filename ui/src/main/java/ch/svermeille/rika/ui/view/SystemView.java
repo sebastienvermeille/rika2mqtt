@@ -15,6 +15,7 @@ import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
+import lombok.extern.flogger.Flogger;
 
 /**
  * @author Sebastien Vermeille
@@ -22,6 +23,7 @@ import java.util.Set;
 @Route(value = "system", layout = MainView.class)
 @PageTitle("System")
 @UIScope
+@Flogger
 public class SystemView extends HorizontalLayout {
 
   private final LogViewerService logViewerService;
@@ -88,7 +90,8 @@ public class SystemView extends HorizontalLayout {
           this.ui.access(() -> this.view.loadData());
         }
       } catch(final InterruptedException e) {
-        e.printStackTrace();
+        log.atInfo()
+            .log("User left the system page.");
       }
     }
   }

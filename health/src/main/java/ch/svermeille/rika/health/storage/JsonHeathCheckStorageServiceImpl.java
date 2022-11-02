@@ -15,6 +15,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.Synchronized;
+import lombok.extern.flogger.Flogger;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
  */
 @Service
 @RequiredArgsConstructor
+@Flogger
 public class JsonHeathCheckStorageServiceImpl implements HeathCheckStorageService, InitializingBean {
 
   public static final String HEALTH_CHECK_FILE = "logs/health-checks.json";
@@ -76,7 +78,11 @@ public class JsonHeathCheckStorageServiceImpl implements HeathCheckStorageServic
   private void ensureHealthCheckStorageFileIsPresent() throws IOException {
     final var f = new File(HEALTH_CHECK_FILE);
     if(!f.exists()) {
-      f.createNewFile();
+      final var created = f.createNewFile();
+      if(!created) {
+        log.atSevere()
+            .log("Could not create empty file: %s", HEALTH_CHECK_FILE);
+      }
     }
   }
 

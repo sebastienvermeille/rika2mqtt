@@ -1,10 +1,11 @@
 package ch.svermeille.rika.log.viewer.service;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import ch.qos.logback.classic.Level;
 import ch.svermeille.rika.log.viewer.model.LogEntry;
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,9 +24,8 @@ public class LogViewerServiceImpl implements LogViewerService {
 
   @Override
   public List<LogEntry> getLastLines(final int amount, final Set<Level> excludeLevels) {
-    try {
-      final ReversedLinesFileReader fileReader = new ReversedLinesFileReader(new File(LOG_FILE_NAME), Charset.forName("UTF-8"));
-      final AtomicInteger wholeLogCounter = new AtomicInteger();
+    try(final ReversedLinesFileReader fileReader = new ReversedLinesFileReader(new File(LOG_FILE_NAME), UTF_8)) {
+      final var wholeLogCounter = new AtomicInteger();
       final List<LogEntry> results = new ArrayList<>();
       var tooLong = false;
       final var startedAt = Instant.now();

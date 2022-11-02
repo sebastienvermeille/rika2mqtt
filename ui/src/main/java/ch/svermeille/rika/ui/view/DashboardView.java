@@ -19,6 +19,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.spring.annotation.UIScope;
+import lombok.extern.flogger.Flogger;
 import org.springframework.beans.factory.annotation.Autowired;
 
 /**
@@ -28,6 +29,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @RouteAlias(value = "", layout = MainView.class)
 @PageTitle("Dashboard")
 @UIScope
+@Flogger
 public class DashboardView extends VerticalLayout {
 
   private FeederThread thread;
@@ -129,7 +131,8 @@ public class DashboardView extends VerticalLayout {
           this.ui.access(this.view::loadData);
         }
       } catch(final InterruptedException e) {
-        e.printStackTrace();
+        log.atInfo()
+            .log("User left the dashboard page.");
       }
     }
   }
