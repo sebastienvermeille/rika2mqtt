@@ -1,10 +1,10 @@
 package ch.svermeille.rika.config.listener;
 
-import ch.svermeille.rika.audit.Actions;
-import ch.svermeille.rika.audit.AuditLogger;
-import ch.svermeille.rika.audit.AuditedAction;
+import ch.svermeille.rika.audit.logging.AuditLogger;
+import ch.svermeille.rika.audit.xml.Actions;
+import ch.svermeille.rika.audit.xml.AuditedAction;
+import ch.svermeille.rika.config.ConfigurationService;
 import ch.svermeille.rika.config.event.ConfigurationChangeRequireRestartEvent;
-import java.util.Set;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.flogger.Flogger;
@@ -21,45 +21,32 @@ import top.code2life.config.ConfigurationChangedEvent;
 public class ConfigChangeListener {
 
   private final AuditLogger auditLogger;
-  static final Set<String> PROPS_REQUIRE_RESTART = Set.of(
-      "bridge.reportInterval",
-      "rika.email",
-      "rika.password",
-      "rika.keepAliveTimeout",
-      "mqtt.host",
-      "mqtt.port",
-      "mqtt.user",
-      "mqtt.password",
-      "mqtt.clientName",
-      "mqtt.telemetryReportTopicName",
-      "mqtt.commandTopicName" // TODO: see if we cannot have a way to either annotate properties as @RequireRestart or @FieldNameConstants
-  );
+
+  private final ConfigurationService configurationService;
 
   @EventListener
-  public ConfigurationChangeRequireRestartEvent onConfigurationChanged(@NonNull ConfigurationChangedEvent event) {
+  public ConfigurationChangeRequireRestartEvent onConfigurationChanged(@NonNull final ConfigurationChangedEvent event) {
     final var diffs = event.getDiff();
-    final var requireRestart = PROPS_REQUIRE_RESTART.stream().anyMatch(diffs.keySet()::contains);
+    final var requireRestart = this.configurationService.getPropertiesRequiringRestartWhenChanged().stream().anyMatch(diffs.keySet()::contains);
 
-    auditLogger.audit(AuditedAction.builder()
+    this.auditLogger.audit(AuditedAction.builder()
         .withAction(Actions.CHANGED_CONFIGURATION)
         .withProps(diffs)
         .build()
     );
 
-    if(requireRestart){
-      log.atInfo().log();
+    if(requireRestart) {
       return new ConfigurationChangeRequireRestartEvent(
           String.format(
               "Changes applied in current configuration require a restart. (changed properties: %s)",
               diffs.keySet()
                   .stream()
-                  .filter(PROPS_REQUIRE_RESTART::contains)
+                  .filter(this.configurationService.getPropertiesRequiringRestartWhenChanged()::contains)
                   .toArray()
           ),
           event
       );
-    }
-    else {
+    } else {
       return null;
     }
   }

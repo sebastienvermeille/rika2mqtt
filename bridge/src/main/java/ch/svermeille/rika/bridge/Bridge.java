@@ -6,7 +6,6 @@ import ch.svermeille.rika.firenet.exception.CouldNotAuthenticateToRikaFirenetExc
 import ch.svermeille.rika.firenet.exception.InvalidStoveIdException;
 import ch.svermeille.rika.firenet.exception.UnableToRetrieveRikaFirenetDataException;
 import ch.svermeille.rika.firenet.model.StoveId;
-import ch.svermeille.rika.firenet.model.StoveStatus;
 import ch.svermeille.rika.mqtt.MqttService;
 import com.google.gson.Gson;
 import java.time.Duration;
@@ -30,6 +29,8 @@ public class Bridge {
   private final RikaFirenetService rikaFirenetService;
   private final MqttService mqttService;
 
+  private final Gson gson;
+
   @Value("${rika.email}")
   private String rikaEmailAccount;
 
@@ -48,8 +49,10 @@ public class Bridge {
 
     final var maskedEmailAccount = this.emailObfuscator.maskEmailAddress(this.rikaEmailAccount);
     if(this.stoveIds.isEmpty()) {
-      log.atSevere().log("Could not retrieve any stove linked with account %s. Nothing to do here the application will shutdown. Please " +
-          "double-check your configuration.", maskedEmailAccount); // TODO:
+      log.atSevere()
+          .log("""
+                Could not retrieve any stove linked with account %s. Please double-check your configuration.
+              """, maskedEmailAccount);
     } else {
       log.atInfo().log("Found %s stoves linked with account %s.", this.stoveIds.size(), maskedEmailAccount);
     }
@@ -64,16 +67,17 @@ public class Bridge {
   void publishToMqtt() {
     this.stoveIds.forEach(stoveId -> {
       try {
-        final StoveStatus status = this.rikaFirenetService.getStatus(stoveId);
-        final Gson gson = new Gson();
-        this.mqttService.publish(gson.toJson(status));
+        final var status = this.rikaFirenetService.getStatus(stoveId);
+        this.mqttService.publish(this.gson.toJson(status));
       } catch(final InvalidStoveIdException e) {
-        log.atSevere().log(e.getMessage(), e);
-        // TODO: maybe remove this id from the list ? and ask a getStoves() to have it up to date and avoid infinite loop ?
-        // this way it could support the use case you somehow sell your stove and have it no longer under your account
+        this.stoveIds.remove(stoveId);
+        log.atSevere()
+            .withCause(e)
+            .log(e.getMessage());
       } catch(final CouldNotAuthenticateToRikaFirenetException e) {
-        log.atSevere().log(e.getMessage(), e);
-        // TODO: should maybe have a retry mechanism? or perform a shutdown ?
+        log.atSevere()
+            .withCause(e)
+            .log(e.getMessage());
       } catch(final UnableToRetrieveRikaFirenetDataException e) {
         log.atSevere().log(e.getMessage(), e);
       }

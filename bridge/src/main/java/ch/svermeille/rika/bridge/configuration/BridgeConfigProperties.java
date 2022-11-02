@@ -1,5 +1,6 @@
 package ch.svermeille.rika.bridge.configuration;
 
+import ch.svermeille.rika.shared.RequireRestartWhenChanged;
 import java.time.Duration;
 import lombok.Data;
 import lombok.NonNull;
@@ -18,6 +19,7 @@ import top.code2life.config.DynamicConfig;
 @Validated
 public class BridgeConfigProperties {
 
+  @RequireRestartWhenChanged
   @NonNull
   private Duration reportInterval = Duration.ofSeconds(30);
 }

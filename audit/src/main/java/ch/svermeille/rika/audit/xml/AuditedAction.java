@@ -1,7 +1,8 @@
-package ch.svermeille.rika.audit;
+package ch.svermeille.rika.audit.xml;
 
 import static lombok.AccessLevel.PACKAGE;
 
+import java.util.HashMap;
 import java.util.Map;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -9,6 +10,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.ToString;
 
 /**
@@ -28,8 +30,8 @@ public class AuditedAction {
   private Map<String, Object> props;
 
   private AuditedAction(final Builder builder) {
-    action = builder.action;
-    props = builder.props;
+    this.action = builder.action;
+    this.props = builder.props;
   }
 
   public static IAction builder() {
@@ -38,6 +40,8 @@ public class AuditedAction {
 
 
   public interface IBuild {
+    IBuild withProps(Map<String, Object> val);
+
     AuditedAction build();
   }
 
@@ -46,28 +50,29 @@ public class AuditedAction {
   }
 
   public interface IAction {
-    IProps withAction(Actions val);
+    IBuild withAction(Actions val);
   }
 
   public static final class Builder implements IProps, IAction, IBuild {
-    private Map<String, Object> props;
+    private Map<String, Object> props = new HashMap<>();
     private Actions action;
 
     private Builder() {
     }
 
     @Override
-    public IBuild withProps(final Map<String, Object> val) {
-      props = val;
+    public IBuild withProps(@NonNull final Map<String, Object> val) {
+      this.props = val;
       return this;
     }
 
     @Override
-    public IProps withAction(final Actions val) {
-      action = val;
+    public IBuild withAction(final Actions val) {
+      this.action = val;
       return this;
     }
 
+    @Override
     public AuditedAction build() {
       return new AuditedAction(this);
     }

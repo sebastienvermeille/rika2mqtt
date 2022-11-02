@@ -1,15 +1,20 @@
 package ch.svermeille.rika.config.listener;
 
 
-import static ch.svermeille.rika.config.listener.ConfigChangeListener.PROPS_REQUIRE_RESTART;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.openMocks;
 
+import ch.svermeille.rika.audit.logging.AuditLogger;
+import ch.svermeille.rika.config.ConfigurationService;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import top.code2life.config.ConfigurationChangedEvent;
 
 /**
@@ -19,15 +24,22 @@ import top.code2life.config.ConfigurationChangedEvent;
  */
 class ConfigChangeListenerTest {
 
-  private ConfigChangeListener listener;
+  @Mock
+  private AuditLogger auditLogger;
+
+  @Mock
+  private ConfigurationService configurationService;
+
+  @InjectMocks
+  private ConfigChangeListener configChangeListener;
 
   @BeforeEach
-  void setUp(){
-    this.listener = new ConfigChangeListener();
+  void setUp() {
+    openMocks(this);
   }
 
   @Test
-  void listenerShouldReturnNullGivenConfigurationChangedEventDeclareDiffsForKeysWhichAreNotDeclaredAsRequiringRestart(){
+  void listenerShouldReturnNullGivenConfigurationChangedEventDeclareDiffsForKeysWhichAreNotDeclaredAsRequiringRestart() {
     // GIVEN
     final var event = mock(ConfigurationChangedEvent.class);
     final Map<String, Object> notRequiringRestartDiffs = new HashMap<>();
@@ -35,7 +47,7 @@ class ConfigChangeListenerTest {
     when(event.getDiff()).thenReturn(notRequiringRestartDiffs);
 
     // WHEN
-    var result = listener.onConfigurationChanged(event);
+    final var result = this.configChangeListener.onConfigurationChanged(event);
 
     // THEN
     assertThat(result)
@@ -44,15 +56,19 @@ class ConfigChangeListenerTest {
   }
 
   @Test
-  void listenerShouldReturnAConfigurationChangeRequireRestartEventGivenConfigurationChangedEventDeclareDiffsRequiringRestart(){
+  void listenerShouldReturnAConfigurationChangeRequireRestartEventGivenConfigurationChangedEventDeclareDiffsRequiringRestart() {
     // GIVEN
+    final var propRequireRestart = "some.prop.requiring.restart";
+    when(this.configurationService.getPropertiesRequiringRestartWhenChanged()).thenReturn(Set.of(propRequireRestart));
+
+
     final var event = mock(ConfigurationChangedEvent.class);
     final Map<String, Object> requiringRestartDiffs = new HashMap<>();
-    requiringRestartDiffs.put(PROPS_REQUIRE_RESTART.stream().toList().get(0), "new value");
+    requiringRestartDiffs.put(propRequireRestart, "new value");
     when(event.getDiff()).thenReturn(requiringRestartDiffs);
 
     // WHEN
-    var result = listener.onConfigurationChanged(event);
+    final var result = this.configChangeListener.onConfigurationChanged(event);
 
     // THEN
     assertThat(result)

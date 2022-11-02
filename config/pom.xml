@@ -25,8 +25,25 @@
             <version>1.0.9</version>
         </dependency>
         <dependency>
+            <groupId>ch.svermeille.rika.shared</groupId>
+            <artifactId>shared</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.svermeille.rika.audit</groupId>
+            <artifactId>audit</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.yaml</groupId>
+            <artifactId>snakeyaml</artifactId>
+            <version>1.33</version>
+        </dependency>
+        <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -41,28 +58,66 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <groupId>com.google.flogger</groupId>
+            <artifactId>flogger-slf4j-backend</artifactId>
+            <version>0.7.4</version>
+            <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>ch.svermeille.rika.audit</groupId>
-            <artifactId>audit</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.11</version>
+            <scope>compile</scope>
         </dependency>
+        <!--        <dependency>-->
+        <!--            <groupId>ch.svermeille.rika.annotations</groupId>-->
+        <!--            <artifactId>annotation-processor</artifactId>-->
+        <!--            <version>0.0.1-SNAPSHOT</version>-->
+        <!--            <scope>provided</scope>-->
+        <!--        </dependency>-->
         <dependency>
-            <groupId>ch.svermeille.rika.audit</groupId>
-            <artifactId>audit</artifactId>
+            <groupId>ch.svermeille.rika.firenet</groupId>
+            <artifactId>rika-firenet</artifactId>
             <version>0.0.1-SNAPSHOT</version>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.svermeille.rika.mqtt</groupId>
+            <artifactId>mqtt</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.reflections</groupId>
+            <artifactId>reflections</artifactId>
+            <version>0.10.2</version>
         </dependency>
     </dependencies>
 
     <build>
         <plugins>
+            <!--            <plugin>-->
+            <!--                <groupId>org.apache.maven.plugins</groupId>-->
+            <!--                <artifactId>maven-compiler-plugin</artifactId>-->
+            <!--                <version>3.10.1</version>-->
+            <!--                <configuration>-->
+            <!--                    <annotationProcessorPaths>-->
+            <!--                        <path>-->
+            <!--                            <groupId>ch.svermeille.rika.annotations</groupId>-->
+            <!--                            <artifactId>annotation-processor</artifactId>-->
+            <!--                            <version>0.0.1-SNAPSHOT</version>-->
+            <!--                        </path>-->
+            <!--                        <path>-->
+            <!--                            <groupId>org.projectlombok</groupId>-->
+            <!--                            <artifactId>lombok</artifactId>-->
+            <!--                            <version>${lombok.version}</version>-->
+            <!--                        </path>-->
+            <!--                    </annotationProcessorPaths>-->
+            <!--                </configuration>-->
+            <!--            </plugin>-->
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>2.7.4</version>
                 <configuration>
                     <skip>true</skip>
                 </configuration>

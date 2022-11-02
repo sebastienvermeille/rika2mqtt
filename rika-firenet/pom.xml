@@ -18,17 +18,56 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <retrofit.version>2.9.0</retrofit.version>
         <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+        <spring.boot.dynamic.config.version>1.0.9</spring.boot.dynamic.config.version>
+        <ok.http.url.connection.version>4.10.0</ok.http.url.connection.version>
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>top.code2life</groupId>
             <artifactId>spring-boot-dynamic-config</artifactId>
-            <version>1.0.9</version>
+            <version>${spring.boot.dynamic.config.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>retrofit</artifactId>
+            <version>${retrofit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>converter-gson</artifactId>
+            <version>${retrofit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp-urlconnection</artifactId>
+            <version>${ok.http.url.connection.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>logging-interceptor</artifactId>
+            <version>${ok.http.url.connection.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.15.3</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.svermeille.rika.shared</groupId>
+            <artifactId>shared</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
             <optional>true</optional>
         </dependency>
         <dependency>
@@ -54,40 +93,13 @@
             <version>1.2.11</version>
             <scope>compile</scope>
         </dependency>
-
         <dependency>
-            <groupId>com.squareup.retrofit2</groupId>
-            <artifactId>retrofit</artifactId>
-            <version>${retrofit.version}</version>
+            <groupId>ch.svermeille.rika.health</groupId>
+            <artifactId>health</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>com.squareup.retrofit2</groupId>
-            <artifactId>converter-gson</artifactId>
-            <version>${retrofit.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>okhttp-urlconnection</artifactId>
-            <version>4.10.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>logging-interceptor</artifactId>
-            <version>4.10.0</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>8.0.0.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>org.jsoup</groupId>
-            <artifactId>jsoup</artifactId>
-            <version>1.15.3</version>
-        </dependency>
+        <!-- test dependencies-->
         <dependency>
             <groupId>org.testcontainers</groupId>
             <artifactId>junit-jupiter</artifactId>

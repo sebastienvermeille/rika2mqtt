@@ -1,4 +1,4 @@
-package ch.svermeille.rika.audit.xml;
+package ch.svermeille.rika.audit.logging.template;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
 import ch.qos.logback.core.LayoutBase;
@@ -10,6 +10,7 @@ public class AuditXmlLayout extends LayoutBase<ILoggingEvent> {
 
   private static final int DEFAULT_SIZE = 256;
   private static final int UPPER_LIMIT = 2048;
+  private static final String CONTENT_TYPE_TEXT_XML = "text/xml";
 
   private StringBuilder buf = new StringBuilder(DEFAULT_SIZE);
 
@@ -51,7 +52,7 @@ public class AuditXmlLayout extends LayoutBase<ILoggingEvent> {
 
   @Override
   public String getContentType() {
-    return "text/xml";
+    return CONTENT_TYPE_TEXT_XML;
   }
 
 }

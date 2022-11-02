@@ -15,5 +15,8 @@ public interface RikaFirenetService {
 
   List<StoveId> getStoves();
 
-  StoveStatus getStatus(@NonNull final StoveId stoveId) throws InvalidStoveIdException, CouldNotAuthenticateToRikaFirenetException, UnableToRetrieveRikaFirenetDataException;
+  StoveStatus getStatus(
+      @NonNull final StoveId stoveId) throws InvalidStoveIdException, CouldNotAuthenticateToRikaFirenetException, UnableToRetrieveRikaFirenetDataException;
+
+  boolean isAuthenticated();
 }

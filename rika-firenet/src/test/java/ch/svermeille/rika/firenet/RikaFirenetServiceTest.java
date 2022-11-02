@@ -8,6 +8,7 @@ import static org.mockserver.model.MediaType.APPLICATION_JSON;
 import static org.mockserver.model.MediaType.HTML_UTF_8;
 
 import ch.svermeille.rika.firenet.api.RetrofitConfiguration;
+import ch.svermeille.rika.firenet.exception.CouldNotAuthenticateToRikaFirenetException;
 import ch.svermeille.rika.firenet.exception.InvalidStoveIdException;
 import ch.svermeille.rika.firenet.model.StoveId;
 import java.util.List;
@@ -39,7 +40,7 @@ class RikaFirenetServiceTest {
   static MockServerContainer mockServer = new MockServerContainer(DockerImageName.parse("mockserver/mockserver:5.14.0"));
 
   @DynamicPropertySource
-  static void registerMockServerProperties(DynamicPropertyRegistry registry) {
+  static void registerMockServerProperties(final DynamicPropertyRegistry registry) {
     registry.add("rika.url", () -> "http://" + mockServer.getHost() + ":" + mockServer.getServerPort());
   }
 
@@ -47,15 +48,15 @@ class RikaFirenetServiceTest {
   private RikaFirenetServiceImpl rikaFirenetService;
 
   @Test
-  void isAuthenticatedShouldReturnTrueGivenValidMockResponseIsProvided() {
+  void isAuthenticatedShouldReturnTrueGivenValidMockResponseIsProvided() throws Exception {
     // GIVEN
     initSuccessLoginMock();
 
     // WHEN
-    rikaFirenetService.authenticate();
+    this.rikaFirenetService.authenticate();
 
     // THEN
-    assertThat(rikaFirenetService.isAuthenticated()).isTrue();
+    assertThat(this.rikaFirenetService.isAuthenticated()).isTrue();
   }
 
   private void initSuccessLoginMock() {
@@ -160,11 +161,12 @@ class RikaFirenetServiceTest {
     // GIVEN
     initFailureLoginMock();
 
-    // WHEN
-    rikaFirenetService.authenticate();
-
     // THEN
-    assertThat(rikaFirenetService.isAuthenticated()).isFalse();
+    assertThrows(CouldNotAuthenticateToRikaFirenetException.class, () -> {
+      // WHEN
+      this.rikaFirenetService.authenticate();
+    });
+    assertThat(this.rikaFirenetService.isAuthenticated()).isFalse();
   }
 
   private void initFailureLoginMock() {
@@ -255,17 +257,17 @@ class RikaFirenetServiceTest {
     initSummaryPageMock(stoveIds);
 
     // WHEN
-    final var actualStoves = rikaFirenetService.getStoves();
+    final var actualStoves = this.rikaFirenetService.getStoves();
 
     // THEN
     assertThat(actualStoves).hasSize(stoveIds.size())
         .containsExactly(mainStoveId, studioStoveId);
   }
 
-  private void initSummaryPageMock(@NonNull List<StoveId> stoveIds) {
+  private void initSummaryPageMock(@NonNull final List<StoveId> stoveIds) {
 
     final var stoveHtmlLinksBuilder = new StringBuilder();
-    for(var stoveId : stoveIds) {
+    for(final var stoveId : stoveIds) {
       stoveHtmlLinksBuilder.append("<li>\n")
           .append("<a href=\"/web/stove/").append(stoveId.id()).append("\" data-ajax=\"false\">").append("Stove#").append(stoveId).append("</a>\n")
           .append("<a href=\"/web/edit/").append(stoveId.id()).append("\" data-ajax=\"false\">").append("Stove#").append(stoveId).append(
@@ -375,7 +377,7 @@ class RikaFirenetServiceTest {
     initStoveStatusMock(mainStoveId);
 
     // WHEN
-    final var actualStoveStatus = rikaFirenetService.getStatus(mainStoveId);
+    final var actualStoveStatus = this.rikaFirenetService.getStatus(mainStoveId);
 
     // THEN
     assertThat(actualStoveStatus).isNotNull();
@@ -391,7 +393,7 @@ class RikaFirenetServiceTest {
     // THEN
     assertThrows(InvalidStoveIdException.class, () -> {
       // WHEN
-      rikaFirenetService.getStatus(invalidStoveId);
+      this.rikaFirenetService.getStatus(invalidStoveId);
     });
   }
 

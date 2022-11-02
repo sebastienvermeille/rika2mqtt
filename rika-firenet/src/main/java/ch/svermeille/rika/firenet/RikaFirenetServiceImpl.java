@@ -21,7 +21,6 @@ import lombok.extern.flogger.Flogger;
 import okhttp3.ResponseBody;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import retrofit2.Response;
@@ -31,7 +30,6 @@ import retrofit2.Response;
  */
 @Service
 @RequiredArgsConstructor
-@EnableScheduling // TODO: check if it should be there or on application only or  what is good practice
 @Flogger
 public class RikaFirenetServiceImpl implements RikaFirenetService {
 
@@ -52,43 +50,55 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
 
   @PostConstruct
   void init() {
-    authenticate();
-  }
-
-  @Scheduled(fixedRateString = "${rika.keepAliveTimeout}", initialDelay = 5000)
-    // TODO: do we need initialDelay or not ?
-  void keepAlive() {
-    if(lastConnectivity == null || Instant.now().isAfter(lastConnectivity.plus(rikaFirenetKeepAliveTimeout))) {
+    try {
       authenticate();
-      log.atFinest()
-          .log("[KeepAlive] Authenticated to rika-firenet as the bridge had no activity since more than %s", rikaFirenetKeepAliveTimeout);
+    } catch(final CouldNotAuthenticateToRikaFirenetException e) {
+      log.atSevere().log(e.getMessage());
     }
   }
 
-  @SneakyThrows // TODO: not sure this is a clean way of handling exceptions... should be reviewed
-  void authenticate() {
-    final var query = firenetApi.authenticate(
-        Auth.builder()
-            .email(rikaFirenetUserEmail)
-            .password(rikaFirenetUserPassword)
-            .build()
-    );
+  @Scheduled(fixedRateString = "${rika.keepAliveTimeout}", initialDelay = 2000)
+  void keepAlive() {
+    if(this.lastConnectivity == null || Instant.now().isAfter(this.lastConnectivity.plus(this.rikaFirenetKeepAliveTimeout))) {
+      try {
+        authenticate();
+        log.atFinest()
+            .log("[KeepAlive] Authenticated to rika-firenet as the bridge had no activity since more than %s", this.rikaFirenetKeepAliveTimeout);
+      } catch(final CouldNotAuthenticateToRikaFirenetException e) {
+        log.atSevere().log(e.getMessage());
+      }
+    }
+  }
 
-    final var response = query.execute();
+  void authenticate() throws CouldNotAuthenticateToRikaFirenetException {
+    try {
+      final var query = this.firenetApi.authenticate(
+          Auth.builder()
+              .email(this.rikaFirenetUserEmail)
+              .password(this.rikaFirenetUserPassword)
+              .build()
+      );
 
-    if(response.code() == 200 && isLogoutLinkRendered(response)) {
-      // it does a redirect when successfully authenticated
-      connected = true;
-      lastConnectivity = Instant.now(Clock.systemUTC());
-      log.atInfo().log("Authenticated successfully to RIKA Firenet");
-    } else {
-      connected = false;
-      log.atSevere().log("Could not authenticate to RIKA Firenet, please check your credentials.");
+      final var response = query.execute();
+
+      if(response.code() == 200 && isLogoutLinkRendered(response)) {
+        // it does a redirect when successfully authenticated
+        this.connected = true;
+        this.lastConnectivity = Instant.now(Clock.systemUTC());
+        log.atInfo().log("Authenticated successfully to RIKA Firenet");
+      } else {
+        this.connected = false;
+        throw new CouldNotAuthenticateToRikaFirenetException("Could not authenticate to RIKA Firenet, please check your credentials.");
+      }
+    } catch(final IOException e) {
+      this.connected = false;
+      throw new CouldNotAuthenticateToRikaFirenetException("Could not authenticate to RIKA Firenet, unable to establish a valid " +
+          "communication with the rika firenet server.");
     }
   }
 
   void logout() {
-    firenetApi.logout();
+    this.firenetApi.logout();
   }
 
   @SneakyThrows
@@ -97,15 +107,16 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
     return content.contains("/web/logout");
   }
 
-  boolean isAuthenticated() {
-    return connected;
+  @Override
+  public boolean isAuthenticated() {
+    return this.connected;
   }
 
   @Override
   @SneakyThrows
   public List<StoveId> getStoves() {
-    lastConnectivity = Instant.now(Clock.systemUTC());
-    final var query = firenetApi.getStoves();
+    this.lastConnectivity = Instant.now(Clock.systemUTC());
+    final var query = this.firenetApi.getStoves();
     final var response = query.execute();
     return extractStovesFromResponse(response);
   }
@@ -118,7 +129,7 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
     final var pageLinks = document.select("a");
 
     final var results = new ArrayList<StoveId>();
-    for(var link : pageLinks) {
+    for(final var link : pageLinks) {
       final var href = link.attr("href");
       if(href.startsWith("/web/stove/")) {
         final var id = Long.parseLong(href.split("/")[3]);
@@ -130,14 +141,15 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
   }
 
   @Override
-  public StoveStatus getStatus(final @NonNull StoveId stoveId) throws InvalidStoveIdException, CouldNotAuthenticateToRikaFirenetException, UnableToRetrieveRikaFirenetDataException {
+  public StoveStatus getStatus(
+      final @NonNull StoveId stoveId) throws InvalidStoveIdException, CouldNotAuthenticateToRikaFirenetException, UnableToRetrieveRikaFirenetDataException {
     try {
       final var stoveString = stoveId.id().toString();
-      final var asyncCall = firenetApi.getStoveStatus(stoveString);
+      final var asyncCall = this.firenetApi.getStoveStatus(stoveString);
       final var response = asyncCall.execute();
 
       if(response.isSuccessful()) {
-        lastConnectivity = Instant.now(Clock.systemUTC());
+        this.lastConnectivity = Instant.now(Clock.systemUTC());
         return response.body();
       } else {
         if(response.code() == 500) {
@@ -160,12 +172,12 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
             )
         );
       }
-    } catch(IOException e) {
+    } catch(final IOException e) {
       throw new UnableToRetrieveRikaFirenetDataException(
           String.format(
               "Could not retrieve stove %s status from rika firenet",
               stoveId
-              ),
+          ),
           e
       );
     }
