@@ -64,6 +64,9 @@ public class HealthCheckServiceImpl implements HealthCheckService, InitializingB
                   .lastExecuted(LocalDateTime.now(UTC))
                   .build();
               this.storageService.saveHealthCheckResult(error);
+              if(e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+              }
             }
           }, periodicTrigger);
         });

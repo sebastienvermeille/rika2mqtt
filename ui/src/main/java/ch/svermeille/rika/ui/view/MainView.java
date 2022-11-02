@@ -40,6 +40,7 @@ import org.springframework.context.ApplicationEventPublisher;
 @UIScope
 public class MainView extends AppLayout {
 
+  public static final String VAADIN_ICON_COLLECTION = "vaadin";
   private final Tabs menu;
   private H1 viewTitle;
 
@@ -53,16 +54,13 @@ public class MainView extends AppLayout {
 
     this.publisher = publisher;
 
-    addAttachListener(event -> {
-      this.ui = event.getUI();
-    });
+    addAttachListener(event -> this.ui = event.getUI());
 
     // register eventbus
     eventBus.register(this);
 
     // store this eventbus in session, so that its accessible everywhere
     UI.getCurrent().getSession().setAttribute(EventBus.class, eventBus);
-//    UI.getCurrent().getSession().setAttribute(ApplicationEventPublisher.class, publisher);
 
 
     addToNavbar(true, createHeaderContent());
@@ -86,7 +84,6 @@ public class MainView extends AppLayout {
     logoLayout.setId("logo");
     logoLayout.setAlignItems(FlexComponent.Alignment.CENTER);
     logoLayout.add(new Image("images/logo.png", "rika2mqtt logo"));
-//    logoLayout.add(new H1("Rika2Mqtt"));
 
     // Display the logo and the menu in the drawer
     layout.add(logoLayout, menu);
@@ -105,11 +102,11 @@ public class MainView extends AppLayout {
 
   private Component[] createMenuItems() {
     return new Tab[] {
-        createTab("Dashboard", new Icon("vaadin", "fire"), DashboardView.class),
-        createTab("Activity", new Icon("vaadin", "clock"), ActivityView.class),
-        createTab("Settings", new Icon("vaadin", "cogs"), ConfigurationView.class),
-        createTab("System", new Icon("vaadin", "desktop"), SystemView.class),
-        createTab("About", new Icon("vaadin", "info-circle-o"), AboutView.class),
+        createTab("Dashboard", new Icon(VAADIN_ICON_COLLECTION, "fire"), DashboardView.class),
+        createTab("Activity", new Icon(VAADIN_ICON_COLLECTION, "clock"), ActivityView.class),
+        createTab("Settings", new Icon(VAADIN_ICON_COLLECTION, "cogs"), ConfigurationView.class),
+        createTab("System", new Icon(VAADIN_ICON_COLLECTION, "desktop"), SystemView.class),
+        createTab("About", new Icon(VAADIN_ICON_COLLECTION, "info-circle-o"), AboutView.class),
     };
   }
 
@@ -138,9 +135,6 @@ public class MainView extends AppLayout {
     // The title will be set after navigation.
     this.viewTitle = new H1();
     layout.add(this.viewTitle);
-
-    // A user icon
-//    layout.add(new Image("images/user.svg", "Avatar"));
 
     final var githubForkCorner = new GithubCorner("https://github.com/sebastienvermeille/rika2mqtt");
     layout.add(githubForkCorner);
@@ -189,17 +183,13 @@ public class MainView extends AppLayout {
       final Button closeButton = new Button(new Icon("lumo", "cross"));
       closeButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
       closeButton.getElement().setAttribute("aria-label", "Close");
-      closeButton.addClickListener(event -> {
-        notification.close();
-      });
+      closeButton.addClickListener(event -> notification.close());
 
       final HorizontalLayout layout = new HorizontalLayout(statusText, undoButton, closeButton);
       layout.setAlignItems(FlexComponent.Alignment.CENTER);
 
       notification.add(layout);
       notification.open();
-
-//      Notification.show("Recent changes performed in configuration require a restart. Would you like to restart ?");
     });
 
   }

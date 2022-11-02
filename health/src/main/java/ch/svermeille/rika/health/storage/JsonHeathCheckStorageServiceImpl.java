@@ -71,7 +71,11 @@ public class JsonHeathCheckStorageServiceImpl implements HeathCheckStorageServic
     try(final Writer writer = new FileWriter(HEALTH_CHECK_FILE)) {
       this.gson.toJson(newChecks.stream().sorted().toList(), writer);
     } catch(final IOException e) {
-      throw new RuntimeException(e);
+      log.atSevere()
+          .log("""
+                  Could not persist health check results. Please ensure that file %s exists and that rika2mqtt has permissions to write in it.
+                  """,
+              HEALTH_CHECK_FILE);
     }
   }
 

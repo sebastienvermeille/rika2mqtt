@@ -87,11 +87,12 @@ public class SystemView extends HorizontalLayout {
         while(true) {
           // Sleep to emulate background work
           Thread.sleep(1000);
-          this.ui.access(() -> this.view.loadData());
+          this.ui.access(this.view::loadData);
         }
       } catch(final InterruptedException e) {
         log.atInfo()
             .log("User left the system page.");
+        Thread.currentThread().interrupt();
       }
     }
   }

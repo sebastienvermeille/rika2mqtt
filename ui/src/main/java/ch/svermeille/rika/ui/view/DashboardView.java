@@ -133,6 +133,7 @@ public class DashboardView extends VerticalLayout {
       } catch(final InterruptedException e) {
         log.atInfo()
             .log("User left the dashboard page.");
+        Thread.currentThread().interrupt();
       }
     }
   }
