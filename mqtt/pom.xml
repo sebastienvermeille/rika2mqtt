@@ -20,14 +20,36 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <groupId>ch.svermeille.rika.shared</groupId>
+            <artifactId>shared</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-mqtt</artifactId>
             <version>5.5.15</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.0.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>3.0.1-b06</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>top.code2life</groupId>
+            <artifactId>spring-boot-dynamic-config</artifactId>
+            <version>1.0.9</version>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>com.google.flogger</groupId>
@@ -41,9 +63,22 @@
             <scope>runtime</scope>
         </dependency>
         <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>8.0.0.Final</version>
+            <groupId>com.google.flogger</groupId>
+            <artifactId>flogger-slf4j-backend</artifactId>
+            <version>0.7.4</version>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.11</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>ch.svermeille.rika.health</groupId>
+            <artifactId>health</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

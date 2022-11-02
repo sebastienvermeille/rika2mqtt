@@ -1,0 +1,17 @@
+<audit timestamp="1667382734258" level="WARN">
+    <audited-action action="CHANGED_CONFIGURATION">
+        <props>
+            <entry>
+                <key>rika.keepAliveTimeout</key>
+                <value xsi:type="xs:string" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">PT1M1S
+                </value>
+            </entry>
+        </props>
+    </audited-action>
+</audit>
+<audit timestamp="1667382736704" level="INFO">
+<audited-action action="USER_RESTART_APPLICATION">
+    <props/>
+</audited-action>
+</audit>

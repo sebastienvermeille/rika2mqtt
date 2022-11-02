@@ -18,8 +18,6 @@ public class MqttServiceImpl implements MqttService {
   @Override
   public void publish(final String message) {
     log.atInfo().log("Publish %s to mqtt", message);
-    mqttGateway.sendToMqtt(message);
+    this.mqttGateway.sendToMqtt(message);
   }
-
-
 }

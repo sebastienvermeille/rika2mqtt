@@ -25,9 +25,19 @@
         <module>rika-firenet</module>
         <module>bridge</module>
         <module>mqtt</module>
+        <module>config</module>
+        <module>audit</module>
+        <module>ui</module>
+        <module>log-viewer</module>
+        <module>shared</module>
+        <module>health</module>
     </modules>
 
     <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-quartz</artifactId>
@@ -37,7 +47,49 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>3.0.1-b06</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
+
+    <!-- common libraries for all modules-->
+    <!--    TODO: this doesnt works I had to redeclare all deps on modules-->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>1.18.24</version>
+                <optional>true</optional>
+            </dependency>
+            <dependency>
+                <groupId>com.google.flogger</groupId>
+                <artifactId>flogger</artifactId>
+                <version>0.7.4</version>
+            </dependency>
+            <dependency>
+                <groupId>com.google.flogger</groupId>
+                <artifactId>flogger-system-backend</artifactId>
+                <version>0.7.4</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.google.flogger</groupId>
+                <artifactId>flogger-slf4j-backend</artifactId>
+                <version>0.7.4</version>
+                <scope>runtime</scope>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>1.2.11</version>
+                <scope>compile</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <build>
         <pluginManagement>
@@ -45,8 +97,22 @@
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <goals>
+                                <goal>build-info</goal>
+                            </goals>
+                            <configuration>
+                                <additionalProperties>
+                                    <encoding.source>UTF-8</encoding.source>
+                                    <encoding.reporting>UTF-8</encoding.reporting>
+                                    <java.source>${maven.compiler.source}</java.source>
+                                    <java.target>${maven.compiler.target}</java.target>
+                                </additionalProperties>
+                            </configuration>
+                        </execution>
+                    </executions>
                 </plugin>
-
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
@@ -95,6 +161,14 @@
             <url>https://repo.spring.io/release</url>
             <snapshots>
                 <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>vaadin-prereleases</id>
+            <name>Vaadin prereleases</name>
+            <url>http://maven.vaadin.com/vaadin-prereleases</url>
+            <snapshots>
+                <enabled>true</enabled>
             </snapshots>
         </pluginRepository>
     </pluginRepositories>

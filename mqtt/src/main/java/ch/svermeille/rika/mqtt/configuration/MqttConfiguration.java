@@ -30,11 +30,11 @@ public class MqttConfiguration {
 
   @Bean
   public MqttPahoClientFactory mqttClientFactory() {
-    DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
-    MqttConnectOptions options = new MqttConnectOptions();
-    options.setServerURIs(new String[] {"tcp://" + mqttConfigProperties.getHost() + ":" + mqttConfigProperties.getPort()});
-    options.setUserName(mqttConfigProperties.getUser());
-    options.setPassword(mqttConfigProperties.getPassword().toCharArray());
+    final DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
+    final MqttConnectOptions options = new MqttConnectOptions();
+    options.setServerURIs(new String[] {"tcp://" + this.mqttConfigProperties.getHost() + ":" + this.mqttConfigProperties.getPort()});
+    options.setUserName(this.mqttConfigProperties.getUser());
+    options.setPassword(this.mqttConfigProperties.getPassword().toCharArray());
     factory.setConnectionOptions(options);
     return factory;
   }
@@ -42,16 +42,19 @@ public class MqttConfiguration {
   @Bean
   @ServiceActivator(inputChannel = "mqttOutboundChannel")
   public MessageHandler mqttOutbound() {
-    var messageHandler = new MqttPahoMessageHandler(mqttConfigProperties.getClientName(), mqttClientFactory()); // TODO: use constant maybe parameter?
+    final var messageHandler = new MqttPahoMessageHandler(this.mqttConfigProperties.getClientName(), mqttClientFactory());
     messageHandler.setAsync(true);
-    messageHandler.setDefaultTopic(mqttConfigProperties.getTelemetryReportTopicName());
+    messageHandler.setDefaultTopic(this.mqttConfigProperties.getTelemetryReportTopicName());
     return messageHandler;
   }
 
+  /**
+   * @implNote this is using a workaround found here: https://stackoverflow.com/a/41241824
+   * the doc simply mention to do: `return new DirectChannel();`
+   */
   @Bean
   public MessageChannel mqttOutboundChannel() {
-    //TODO: review this workaround instead of returning `return new DirectChannel();` => https://stackoverflow.com/a/41241824
-    var dc = new DirectChannel();
+    final var dc = new DirectChannel();
     dc.subscribe(mqttOutbound());
     return dc;
   }
