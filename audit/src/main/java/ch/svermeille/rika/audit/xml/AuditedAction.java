@@ -23,6 +23,7 @@ import lombok.ToString;
 @NoArgsConstructor(access = PACKAGE)
 public class AuditedAction {
 
+  public static final String AUDITED_ACTION_TYPE = "audited-action";
   @XmlAttribute(name = "action")
   private Actions action;
 

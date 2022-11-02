@@ -30,7 +30,7 @@ public class SystemView extends HorizontalLayout {
   private final ServiceRef<LogViewerService> logViewerService;
   private final MessageList list = new MessageList();
 
-  private FeederThread thread;
+  private transient FeederThread thread;
 
   public SystemView(final ServiceRef<LogViewerService> logViewerService) {
     this.logViewerService = logViewerService;

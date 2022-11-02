@@ -24,6 +24,8 @@ import lombok.ToString;
 @EqualsAndHashCode
 public class Audit implements Comparable<Audit> {
 
+  public static final String AUDIT_TYPE = "audit";
+
   @XmlAttribute(name = "timestamp")
   private Long executedAt;
 

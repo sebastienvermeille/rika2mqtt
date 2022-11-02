@@ -1,5 +1,7 @@
 package ch.svermeille.rika.audit.service;
 
+import static ch.svermeille.rika.audit.xml.Audit.AUDIT_TYPE;
+import static ch.svermeille.rika.audit.xml.AuditedAction.AUDITED_ACTION_TYPE;
 import static java.lang.String.format;
 import static java.nio.file.Files.isDirectory;
 import static java.nio.file.Paths.get;
@@ -109,8 +111,8 @@ public class XmlAuditServiceImpl implements AuditService {
     checkPageNumber(pageNumber);
 
     final Map<Class<?>, String> map = new HashMap<>();
-    map.put(Audit.class, "audit");
-    map.put(AuditedAction.class, "audited-action");
+    map.put(Audit.class, AUDIT_TYPE);
+    map.put(AuditedAction.class, AUDITED_ACTION_TYPE);
 
     try(final var unmarshaller = new StreamingUnmarshaller(map)) {
       unmarshaller.open(getAuditInputStream(pageNumber), 1);

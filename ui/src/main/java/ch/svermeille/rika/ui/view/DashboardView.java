@@ -33,7 +33,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @Flogger
 public class DashboardView extends VerticalLayout {
 
-  private FeederThread thread;
+  private transient FeederThread thread;
 
   private final Grid<HealthCheckResult> grid;
 

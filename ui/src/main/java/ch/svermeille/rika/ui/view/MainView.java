@@ -30,6 +30,7 @@ import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
 import com.vaadin.flow.spring.annotation.UIScope;
+import de.codecamp.vaadin.serviceref.ServiceRef;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -46,10 +47,10 @@ public class MainView extends AppLayout {
 
   private UI ui;
 
-  private final ApplicationEventPublisher publisher;
+  private final ServiceRef<ApplicationEventPublisher> publisher;
 
   public MainView(@Autowired final EventBus eventBus,
-      @Autowired final ApplicationEventPublisher publisher) {
+      @Autowired final ServiceRef<ApplicationEventPublisher> publisher) {
     setPrimarySection(Section.DRAWER);
 
     this.publisher = publisher;
@@ -176,7 +177,7 @@ public class MainView extends AppLayout {
       undoButton.addThemeVariants(ButtonVariant.LUMO_TERTIARY_INLINE);
       undoButton.getElement().getStyle().set("margin-left", "var(--lumo-space-xl)");
       undoButton.addClickListener(event -> {
-        this.publisher.publishEvent(new UserRequestedRestartEvent("blabla", event));
+        this.publisher.get().publishEvent(new UserRequestedRestartEvent("blabla", event));
         notification.close();
       });
 
