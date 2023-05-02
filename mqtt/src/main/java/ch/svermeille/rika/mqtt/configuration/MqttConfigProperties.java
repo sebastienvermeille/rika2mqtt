@@ -30,7 +30,7 @@ public class MqttConfigProperties {
   @NotNull
   private Integer port = 1883;
 
-  private String user;
+  private String username;
 
   private String password;
 

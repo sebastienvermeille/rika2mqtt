@@ -36,7 +36,7 @@ The password of your rika-firenet account
 
 The host of your MQTT instance (ip or fqdn)
 
-## MQTT_USER
+## MQTT_USERNAME
 
 The user to use to connect to MQTT (optional depends on your mqtt config)
 
