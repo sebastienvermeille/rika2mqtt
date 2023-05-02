@@ -71,6 +71,5 @@ public class MqttConfiguration {
   @MessagingGateway(defaultRequestChannel = "mqttOutboundChannel")
   public interface MqttGateway {
     void sendToMqtt(String data);
-
   }
 }
