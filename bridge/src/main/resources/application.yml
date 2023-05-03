@@ -4,7 +4,7 @@ rika:
   keepAliveTimeout: PT60S
 mqtt:
   host:
-  user:
+  username:
   password:
 bridge:
   reportInterval: PT60S
