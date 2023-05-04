@@ -8,8 +8,8 @@
 
 package ch.svermeille.rika.firenet.configuration;
 
+import jakarta.validation.constraints.NotEmpty;
 import java.time.Duration;
-import javax.validation.constraints.NotEmpty;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;

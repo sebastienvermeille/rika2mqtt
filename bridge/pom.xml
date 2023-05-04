@@ -55,6 +55,7 @@
       <artifactId>lombok</artifactId>
       <groupId>org.projectlombok</groupId>
       <optional>true</optional>
+      <version>1.18.26</version>
     </dependency>
     <dependency>
       <artifactId>javax.el-api</artifactId>
@@ -140,8 +141,8 @@
 
 
   <properties>
-    <maven.compiler.source>18</maven.compiler.source>
-    <maven.compiler.target>18</maven.compiler.target>
+    <maven.compiler.source>${java.sdk.version}</maven.compiler.source>
+    <maven.compiler.target>${java.sdk.version}</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <start-class>ch.svermeille.rika.Rika2MqttApplication</start-class>
   </properties>

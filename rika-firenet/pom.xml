@@ -28,6 +28,7 @@
       <artifactId>lombok</artifactId>
       <groupId>org.projectlombok</groupId>
       <optional>true</optional>
+      <version>1.18.26</version>
     </dependency>
     <dependency>
       <artifactId>flogger</artifactId>
@@ -115,8 +116,8 @@
   </parent>
 
   <properties>
-    <maven.compiler.source>18</maven.compiler.source>
-    <maven.compiler.target>18</maven.compiler.target>
+    <maven.compiler.source>${java.sdk.version}</maven.compiler.source>
+    <maven.compiler.target>${java.sdk.version}</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <retrofit.version>2.9.0</retrofit.version>
     <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
