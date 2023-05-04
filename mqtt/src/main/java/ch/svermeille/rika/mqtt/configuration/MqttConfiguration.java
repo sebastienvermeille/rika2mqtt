@@ -40,17 +40,20 @@ public class MqttConfiguration {
   public MqttPahoClientFactory mqttClientFactory() {
     DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
     MqttConnectOptions options = new MqttConnectOptions();
-    options.setServerURIs(new String[] {"tcp://" + mqttConfigProperties.getHost() + ":" + mqttConfigProperties.getPort()});
+    options.setServerURIs(new String[]{
+        "tcp://" + mqttConfigProperties.getHost() + ":" + mqttConfigProperties.getPort()});
     options.setUserName(mqttConfigProperties.getUsername());
     options.setPassword(mqttConfigProperties.getPassword().toCharArray());
     factory.setConnectionOptions(options);
     return factory;
   }
 
+
   @Bean
-  @ServiceActivator(inputChannel = "mqttOutboundChannel")
+  @ServiceActivator(inputChannel = "mqttOutboundChannel", autoStartup = "true")
   public MessageHandler mqttOutbound() {
-    var messageHandler = new MqttPahoMessageHandler(mqttConfigProperties.getClientName(), mqttClientFactory());
+    var messageHandler = new MqttPahoMessageHandler(mqttConfigProperties.getClientName(),
+        mqttClientFactory());
     messageHandler.setAsync(true);
     messageHandler.setDefaultTopic(mqttConfigProperties.getTelemetryReportTopicName());
     return messageHandler;
@@ -70,6 +73,7 @@ public class MqttConfiguration {
 
   @MessagingGateway(defaultRequestChannel = "mqttOutboundChannel")
   public interface MqttGateway {
+
     void sendToMqtt(String data);
   }
 }

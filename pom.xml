@@ -45,6 +45,12 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <artifactId>flogger-slf4j-backend</artifactId>
+            <groupId>com.google.flogger</groupId>
+            <scope>runtime</scope>
+            <version>0.7.4</version>
+        </dependency>
     </dependencies>
 
     <build>
