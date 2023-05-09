@@ -21,6 +21,10 @@
         <sonar.organization>sebastienvermeille</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <java.sdk.version>20</java.sdk.version>
+        <sonar.coverage.jacoco.xmlReportPaths>
+            ${project.basedir}/target/site/jacoco-aggregate/jacoco.xml
+        </sonar.coverage.jacoco.xmlReportPaths>
+
     </properties>
 
     <parent>
@@ -34,6 +38,7 @@
         <module>rika-firenet</module>
         <module>bridge</module>
         <module>mqtt</module>
+        <module>coverage-report</module>
     </modules>
 
     <dependencies>
@@ -82,13 +87,13 @@
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>prepare-agent</id>
+                        <id>jacoco-initialize</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
                     <execution>
-                        <id>report</id>
+                        <id>jacoco-report</id>
                         <phase>test</phase>
                         <goals>
                             <goal>report</goal>
