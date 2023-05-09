@@ -32,7 +32,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest(classes = {MqttServiceImpl.class, MqttConfiguration.class})
 @ActiveProfiles("test")
-public class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
+class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
 
 
   @Autowired
@@ -46,7 +46,7 @@ public class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
   }
 
   @Test
-  public void publishMqttMessageShouldNotGenerateAnyException()
+  void publishMqttMessageShouldNotGenerateAnyException()
       throws MqttException {
 // TODO: refactore and provide convenient assert methods/framework kit for integrations tests
     List<String> receivedAnswers = new ArrayList<>();
