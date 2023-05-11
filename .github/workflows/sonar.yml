@@ -37,6 +37,8 @@ jobs:
         run: mvn -B package -DskipTest
       - name: Verify
         run: mvn -B verify -DskipTest
+      - name: Cat
+        run: ls
       - name: Sonarcloud analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
