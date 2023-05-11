@@ -34,7 +34,7 @@ jobs:
       - name: Test
         run: mvn -B test -ff
       - name: Package
-        run: mvn -B package
+        run: mvn -B package -DskipTest
       - name: Sonarcloud analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
