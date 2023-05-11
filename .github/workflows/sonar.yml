@@ -38,7 +38,7 @@ jobs:
       - name: Verify
         run: mvn -B verify -DskipTest
       - name: Cat
-        run: ls
+        run: cat coverage-report/target/site/jacoco-aggregate/jacoco.xml
       - name: Sonarcloud analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
