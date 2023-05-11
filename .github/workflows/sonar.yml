@@ -29,8 +29,12 @@ jobs:
           path: ~/.m2
           key: ${{ runner.os }}-m2-${{ hashFiles('**/pom.xml') }}
           restore-keys: ${{ runner.os }}-m2
-      - name: Build and analyze
+      - name: Build
+        run: mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn compile
+      - name: Test
+        run: mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn verify
+      - name: Sonarcloud analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=sebastienvermeille_rika2mqtt -Dsonar.coverage.jacoco.xmlReportPaths=rika2mqtt/coverage-report/target/site/jacoco-aggregate/jacoco.xml
+        run: mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=sebastienvermeille_rika2mqtt -Dsonar.coverage.jacoco.xmlReportPaths=rika2mqtt/coverage-report/target/site/jacoco-aggregate/jacoco.xml
