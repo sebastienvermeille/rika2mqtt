@@ -39,8 +39,8 @@ jobs:
         run: mvn -B package -Dmaven.test.skip
       - name: Verify
         run: mvn -B verify -Dmaven.test.skip
-      - name: Cat
-        run: cat bridge/target/site/jacoco-aggregate/jacoco.xml
+      - name: Install
+        run: mvn -B install -Dmaven.test.skip
       - name: Sonarcloud Scan
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
