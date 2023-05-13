@@ -25,6 +25,8 @@
         <sonar.language>java</sonar.language>
         <project.sonar.root.projectKey>sebastienvermeille_rika2mqtt</project.sonar.root.projectKey>
         <sonar.projectKey>${project.sonar.root.projectKey}</sonar.projectKey>
+        <sonar.sources>src/main/java</sonar.sources>
+        <sonar.tests>src/test/java</sonar.tests>
     </properties>
 
     <parent>
