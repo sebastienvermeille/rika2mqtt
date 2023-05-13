@@ -28,7 +28,6 @@
         <sonar.tests>src/test/java</sonar.tests>
         <sonar.links.homepage>https://cookiecode.dev/oss_projects/rika2mqtt</sonar.links.homepage>
         <sonar.links.scm>https://github.com/sebastienvermeille/rika2mqtt</sonar.links.scm>
-        <sonar.coverage.exclusions>src/main/java/**/*Exception.java</sonar.coverage.exclusions>
     </properties>
 
     <parent>

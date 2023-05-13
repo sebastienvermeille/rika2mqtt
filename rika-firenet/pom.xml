@@ -122,5 +122,6 @@
     <retrofit.version>2.9.0</retrofit.version>
     <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
     <sonar.projectKey>${project.sonar.root.projectKey}-${project.groupId}-${project.artifactId}</sonar.projectKey>
+    <sonar.coverage.exclusions>src/main/java/**/*Exception.java</sonar.coverage.exclusions>
   </properties>
 </project>
