@@ -21,7 +21,7 @@
         <java.sdk.version>20</java.sdk.version>
         <sonar.organization>sebastienvermeille</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.coverage.jacoco.xmlReportPaths>bridge/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
+<!--        <sonar.coverage.jacoco.xmlReportPaths>bridge/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>-->
         <sonar.language>java</sonar.language>
         <project.sonar.root.projectKey>sebastienvermeille_rika2mqtt</project.sonar.root.projectKey>
         <sonar.projectKey>${project.sonar.root.projectKey}</sonar.projectKey>
