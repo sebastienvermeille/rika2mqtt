@@ -38,9 +38,9 @@ jobs:
       - name: Verify
         run: mvn -B verify -DskipTest
       - name: Cat
-        run: cat coverage-report/target/site/jacoco-aggregate/jacoco.xml
+        run: cat bridge/target/site/jacoco-aggregate/jacoco.xml
       - name: Sonarcloud analyze
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Needed to get PR information, if any
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        run: mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=sebastienvermeille_rika2mqtt -Dsonar.coverage.jacoco.xmlReportPaths=coverage-report/target/site/jacoco-aggregate/jacoco.xml
+        run: mvn -B org.sonarsource.scanner.maven:sonar-maven-plugin:sonar

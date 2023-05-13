@@ -14,15 +14,11 @@
     <artifactId>rika2mqtt</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>rika2mqtt</name>
-    <description>Bridge to control a Rika firenet stove through MQTT</description>
+    <description>Bridge to control a Rka firenet stove through MQTT</description>
     <packaging>pom</packaging>
 
     <properties>
-        <sonar.organization>sebastienvermeille</sonar.organization>
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.coverage.jacoco.xmlReportPaths>${project.basedir}/../coverage-report/target/site/jacoco-aggregate/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
         <java.sdk.version>20</java.sdk.version>
-
     </properties>
 
     <parent>
@@ -36,7 +32,6 @@
         <module>rika-firenet</module>
         <module>bridge</module>
         <module>mqtt</module>
-        <module>coverage-report</module>
     </modules>
 
     <dependencies>
@@ -83,9 +78,15 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
+                <configuration>
+                    <formats>
+                        <format>HTML</format>
+                        <format>XML</format>
+                    </formats>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>jacoco-initialize</id>
+                        <id>agent</id>
                         <goals>
                             <goal>prepare-agent</goal>
                         </goals>
