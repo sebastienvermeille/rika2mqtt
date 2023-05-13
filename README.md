@@ -5,7 +5,7 @@ Bridge to let you take control and monitor your RIKA firenet stove through MQTT
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sebastienvermeille_rika2mqtt&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=sebastienvermeille_rika2mqtt)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=sebastienvermeille_rika2mqtt&metric=coverage)](https://sonarcloud.io/summary/new_code?id=sebastienvermeille_rika2mqtt)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sebastienvermeille_rika2mqtt&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=sebastienvermeille_rika2mqtt)
-[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=sebastienvermeille_rika2mqtt&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=sebastienvermeille_rika2mqtt)
+[![Known Vulnerabilities](https://snyk.io/test/github/sebastienvermeille/rika2mqtt/badge.svg)]()
 
 
 # Run it via docker
