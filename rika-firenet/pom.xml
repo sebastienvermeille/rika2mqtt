@@ -121,5 +121,6 @@
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <retrofit.version>2.9.0</retrofit.version>
     <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+    <sonar.projectKey>${sonar.projectKey}-${project.groupId}-${project.artifactId}</sonar.projectKey>
   </properties>
 </project>

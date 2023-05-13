@@ -161,5 +161,6 @@
     <maven.compiler.target>${java.sdk.version}</maven.compiler.target>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <start-class>ch.svermeille.rika.Rika2MqttApplication</start-class>
+    <sonar.projectKey>${sonar.projectKey}-${project.groupId}-${project.artifactId}</sonar.projectKey>
   </properties>
 </project>
