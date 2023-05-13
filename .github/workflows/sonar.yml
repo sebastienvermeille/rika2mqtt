@@ -34,9 +34,9 @@ jobs:
       - name: Test
         run: mvn -B test -ff
       - name: Package
-        run: mvn -B package -DskipTest
+        run: mvn -B package -Dmaven.test.skip
       - name: Verify
-        run: mvn -B verify -DskipTest
+        run: mvn -B verify -Dmaven.test.skip
       - name: Cat
         run: cat bridge/target/site/jacoco-aggregate/jacoco.xml
 #      - name: Sonarcloud analyze
