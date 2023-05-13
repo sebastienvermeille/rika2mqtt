@@ -26,7 +26,6 @@
         <sonar.projectKey>${project.sonar.root.projectKey}</sonar.projectKey>
         <sonar.sources>src/main/java</sonar.sources>
         <sonar.tests>src/test/java</sonar.tests>
-        <sonar.analysis.mode>preview</sonar.analysis.mode>
         <sonar.links.homepage>https://cookiecode.dev/oss_projects/rika2mqtt</sonar.links.homepage>
         <sonar.links.scm>https://github.com/sebastienvermeille/rika2mqtt</sonar.links.scm>
     </properties>
