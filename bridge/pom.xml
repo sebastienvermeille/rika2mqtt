@@ -10,7 +10,31 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <artifactId>bridge</artifactId>
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>bridge</name>
+  <description>Bridge (Main)</description>
+  <artifactId>rika2mqtt-bridge</artifactId>
+
+  <parent>
+    <groupId>dev.cookiecode</groupId>
+    <artifactId>rika2mqtt-parent</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <maven.compiler.source>${java.sdk.version}</maven.compiler.source>
+    <maven.compiler.target>${java.sdk.version}</maven.compiler.target>
+    <project.build.sourceEncoding>${source.encoding}</project.build.sourceEncoding>
+    <start-class>dev.cookiecode.rika2mqtt.Rika2MqttApplication</start-class>
+
+    <!-- test dependencies version -->
+    <mockserver.client.version>5.14.0</mockserver.client.version>
+
+    <!-- sonar analysis -->
+    <sonar.projectKey>${project.sonar.root.projectKey}-${project.groupId}-${project.artifactId}</sonar.projectKey>
+  </properties>
+
   <build>
     <plugins>
       <plugin>
@@ -50,29 +74,20 @@
   </build>
 
   <dependencies>
+    <!-- project modules-->
     <dependency>
-      <artifactId>rika-firenet</artifactId>
-      <groupId>ch.svermeille.rika.firenet</groupId>
+      <groupId>dev.cookiecode</groupId>
+      <artifactId>rika2mqtt-rika-firenet</artifactId>
       <scope>compile</scope>
       <version>0.0.1-SNAPSHOT</version>
     </dependency>
     <dependency>
-      <artifactId>flogger</artifactId>
-      <groupId>com.google.flogger</groupId>
-      <version>0.7.4</version>
+      <groupId>dev.cookiecode</groupId>
+      <artifactId>rika2mqtt-mqtt</artifactId>
+      <scope>compile</scope>
+      <version>0.0.1-SNAPSHOT</version>
     </dependency>
-    <dependency>
-      <artifactId>flogger-system-backend</artifactId>
-      <groupId>com.google.flogger</groupId>
-      <scope>runtime</scope>
-      <version>0.7.4</version>
-    </dependency>
-    <dependency>
-      <artifactId>lombok</artifactId>
-      <groupId>org.projectlombok</groupId>
-      <optional>true</optional>
-      <version>1.18.26</version>
-    </dependency>
+    <!-- 3rd part dependencies-->
     <dependency>
       <artifactId>javax.el-api</artifactId>
       <groupId>javax.el</groupId>
@@ -83,46 +98,18 @@
       <groupId>org.glassfish</groupId>
       <version>3.0.0</version>
     </dependency>
-    <dependency>
-      <artifactId>mqtt</artifactId>
-      <groupId>ch.svermeille.rika.mqtt</groupId>
-      <scope>compile</scope>
-      <version>0.0.1-SNAPSHOT</version>
-    </dependency>
     <!-- test dependencies -->
-    <dependency>
-      <artifactId>junit-jupiter</artifactId>
-      <groupId>org.junit.jupiter</groupId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <artifactId>junit-jupiter-engine</artifactId>
-      <groupId>org.junit.jupiter</groupId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <artifactId>testcontainers</artifactId>
-      <groupId>org.testcontainers</groupId>
-      <scope>test</scope>
-      <version>1.18.0</version>
-    </dependency>
-    <dependency>
-      <artifactId>junit-jupiter</artifactId>
-      <groupId>org.testcontainers</groupId>
-      <scope>test</scope>
-      <version>1.18.0</version>
-    </dependency>
     <dependency>
       <artifactId>mockserver</artifactId>
       <groupId>org.testcontainers</groupId>
+      <version>${testcontainers.version}</version>
       <scope>test</scope>
-      <version>1.18.0</version>
     </dependency>
     <dependency>
-      <artifactId>mockserver-client-java</artifactId>
       <groupId>org.mock-server</groupId>
-      <scope>test</scope> <!-- this version has to match the testcontainers docker image used -->
-      <version>5.14.0</version>
+      <artifactId>mockserver-client-java</artifactId>
+      <version>${mockserver.client.version}</version>
+      <scope>test</scope>
     </dependency>
     <dependency>
       <artifactId>spring-boot-starter-test</artifactId>
@@ -143,24 +130,4 @@
       </dependency>
     </dependencies>
   </dependencyManagement>
-  <description>Bridge (Main)</description>
-  <groupId>ch.svermeille.rika.bridge</groupId>
-  <modelVersion>4.0.0</modelVersion>
-
-  <name>bridge</name>
-
-  <parent>
-    <artifactId>rika2mqtt</artifactId>
-    <groupId>ch.svermeille.rika</groupId>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
-
-
-  <properties>
-    <maven.compiler.source>${java.sdk.version}</maven.compiler.source>
-    <maven.compiler.target>${java.sdk.version}</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <start-class>ch.svermeille.rika.Rika2MqttApplication</start-class>
-    <sonar.projectKey>${project.sonar.root.projectKey}-${project.groupId}-${project.artifactId}</sonar.projectKey>
-  </properties>
 </project>

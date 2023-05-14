@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration = ch.svermeille.rika.mqtt.configuration.MqttConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration = dev.cookiecode.rika2mqtt.rika.mqtt.configuration.MqttConfiguration

@@ -10,49 +10,32 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <parent>
-        <artifactId>rika2mqtt</artifactId>
-        <groupId>ch.svermeille.rika</groupId>
-        <version>0.0.1-SNAPSHOT</version>
-    </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>ch.svermeille.rika.mqtt</groupId>
-    <artifactId>mqtt</artifactId>
+    <name>mqtt</name>
+    <description>Mqtt Module</description>
+    <artifactId>rika2mqtt-mqtt</artifactId>
+
+    <parent>
+        <groupId>dev.cookiecode</groupId>
+        <artifactId>rika2mqtt-parent</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
 
     <properties>
         <maven.compiler.source>${java.sdk.version}</maven.compiler.source>
         <maven.compiler.target>${java.sdk.version}</maven.compiler.target>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.sourceEncoding>${source.encoding}</project.build.sourceEncoding>
+        <spring.mqtt.version>6.0.5</spring.mqtt.version>
+        <!-- sonar analysis -->
         <sonar.projectKey>${project.sonar.root.projectKey}-${project.groupId}-${project.artifactId}</sonar.projectKey>
     </properties>
 
     <dependencies>
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
-        </dependency>
-        <dependency>
             <groupId>org.springframework.integration</groupId>
             <artifactId>spring-integration-mqtt</artifactId>
-            <version>6.0.5</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.flogger</groupId>
-            <artifactId>flogger</artifactId>
-            <version>0.7.4</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.flogger</groupId>
-            <artifactId>flogger-system-backend</artifactId>
-            <version>0.7.4</version>
-            <scope>runtime</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.hibernate.validator</groupId>
-            <artifactId>hibernate-validator</artifactId>
-            <version>8.0.0.Final</version>
+            <version>${spring.mqtt.version}</version>
         </dependency>
     </dependencies>
 

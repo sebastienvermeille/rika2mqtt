@@ -10,8 +10,8 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>ch.svermeille.rika</groupId>
-    <artifactId>rika2mqtt</artifactId>
+    <groupId>dev.cookiecode</groupId>
+    <artifactId>rika2mqtt-parent</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>rika2mqtt</name>
     <description>Bridge to control a Rka firenet stove through MQTT</description>
@@ -19,6 +19,21 @@
 
     <properties>
         <java.sdk.version>20</java.sdk.version>
+        <source.encoding>UTF-8</source.encoding>
+
+        <!-- dependencies version-->
+        <lombok.version>1.18.26</lombok.version>
+        <flogger.version>0.7.4</flogger.version>
+        <hibernate.validator.version>8.0.0.Final</hibernate.validator.version>
+
+        <!-- test dependencies version -->
+        <testcontainers.version>1.18.0</testcontainers.version>
+
+        <!--plugins version -->
+        <jacoco.maven.plugin.version>0.8.9</jacoco.maven.plugin.version>
+        <sonar.maven.plugin.version>3.7.0.1746</sonar.maven.plugin.version>
+
+        <!-- sonar analysis -->
         <sonar.organization>sebastienvermeille</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.language>java</sonar.language>
@@ -44,9 +59,43 @@
     </modules>
 
     <dependencies>
+        <!-- dependencies shared with all modules -->
+        <dependency>
+            <artifactId>lombok</artifactId>
+            <groupId>org.projectlombok</groupId>
+            <optional>true</optional>
+            <version>${lombok.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.flogger</groupId>
+            <artifactId>flogger</artifactId>
+            <version>${flogger.version}</version>
+        </dependency>
+        <dependency>
+            <artifactId>flogger-slf4j-backend</artifactId>
+            <groupId>com.google.flogger</groupId>
+            <scope>runtime</scope>
+            <version>${flogger.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibernate.validator.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-quartz</artifactId>
+        </dependency>
+        <!-- test dependencies shared with all modules -->
+        <dependency>
+            <artifactId>junit-jupiter</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -54,17 +103,18 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <artifactId>flogger-slf4j-backend</artifactId>
-            <groupId>com.google.flogger</groupId>
-            <scope>runtime</scope>
-            <version>0.7.4</version>
+            <groupId>org.testcontainers</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
-            <artifactId>lombok</artifactId>
-            <groupId>org.projectlombok</groupId>
-            <optional>true</optional>
-            <version>1.18.26</version>
+            <artifactId>testcontainers</artifactId>
+            <groupId>org.testcontainers</groupId>
+            <version>${testcontainers.version}</version>
+            <scope>test</scope>
         </dependency>
+
 
     </dependencies>
 
@@ -78,12 +128,12 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.9</version>
+                    <version>${jacoco.maven.plugin.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.sonarsource.scanner.maven</groupId>
                     <artifactId>sonar-maven-plugin</artifactId>
-                    <version>3.7.0.1746</version>
+                    <version>${sonar.maven.plugin.version}</version>
                 </plugin>
             </plugins>
         </pluginManagement>

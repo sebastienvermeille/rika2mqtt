@@ -10,38 +10,38 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <artifactId>rika-firenet</artifactId>
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-        <configuration>
-          <skip>true</skip>
-        </configuration>
-        <groupId>org.springframework.boot</groupId>
-      </plugin>
-    </plugins>
-  </build>
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>rika-firenet</name>
+  <description>Rika firenet API client</description>
+  <artifactId>rika2mqtt-rika-firenet</artifactId>
+
+  <parent>
+    <artifactId>rika2mqtt-parent</artifactId>
+    <groupId>dev.cookiecode</groupId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+
+  <properties>
+    <maven.compiler.source>${java.sdk.version}</maven.compiler.source>
+    <maven.compiler.target>${java.sdk.version}</maven.compiler.target>
+    <project.build.sourceEncoding>${source.encoding}</project.build.sourceEncoding>
+
+    <!-- dependencies version -->
+    <retrofit.version>2.9.0</retrofit.version>
+    <okhttp3.version>4.10.0</okhttp3.version>
+    <httpclient5.version>5.2.1</httpclient5.version>
+    <jsoup.version>1.15.4</jsoup.version>
+
+    <!-- test dependencies version -->
+    <mockserver.client.version>5.14.0</mockserver.client.version>
+
+    <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+    <!-- sonar analysis -->
+    <sonar.projectKey>${project.sonar.root.projectKey}-${project.groupId}-${project.artifactId}</sonar.projectKey>
+  </properties>
 
   <dependencies>
-    <dependency>
-      <artifactId>lombok</artifactId>
-      <groupId>org.projectlombok</groupId>
-      <optional>true</optional>
-      <version>1.18.26</version>
-    </dependency>
-    <dependency>
-      <artifactId>flogger</artifactId>
-      <groupId>com.google.flogger</groupId>
-      <version>0.7.4</version>
-    </dependency>
-    <dependency>
-      <artifactId>flogger-system-backend</artifactId>
-      <groupId>com.google.flogger</groupId>
-      <scope>runtime</scope>
-      <version>0.7.4</version>
-    </dependency>
-
     <dependency>
       <artifactId>retrofit</artifactId>
       <groupId>com.squareup.retrofit2</groupId>
@@ -56,72 +56,53 @@
     <dependency>
       <artifactId>okhttp-urlconnection</artifactId>
       <groupId>com.squareup.okhttp3</groupId>
-      <version>4.10.0</version>
+      <version>${okhttp3.version}</version>
     </dependency>
-
     <dependency>
       <artifactId>logging-interceptor</artifactId>
       <groupId>com.squareup.okhttp3</groupId>
-      <version>4.10.0</version>
-    </dependency>
-
-    <dependency>
-      <artifactId>hibernate-validator</artifactId>
-      <groupId>org.hibernate.validator</groupId>
-      <version>8.0.0.Final</version>
+      <version>${okhttp3.version}</version>
     </dependency>
     <dependency>
       <artifactId>httpclient5</artifactId>
       <groupId>org.apache.httpcomponents.client5</groupId>
-      <version>5.2.1</version>
+      <version>${httpclient5.version}</version>
     </dependency>
     <dependency>
       <artifactId>httpclient5-fluent</artifactId>
       <groupId>org.apache.httpcomponents.client5</groupId>
-      <version>5.2.1</version>
+      <version>${httpclient5.version}</version>
     </dependency>
     <dependency>
       <artifactId>jsoup</artifactId>
       <groupId>org.jsoup</groupId>
-      <version>1.15.4</version>
+      <version>${jsoup.version}</version>
     </dependency>
+
+    <!-- test dependencies -->
     <dependency>
-      <artifactId>junit-jupiter</artifactId>
       <groupId>org.testcontainers</groupId>
-      <scope>test</scope>
-      <version>1.17.3</version>
-    </dependency>
-    <dependency>
       <artifactId>mockserver</artifactId>
-      <groupId>org.testcontainers</groupId>
+      <version>${testcontainers.version}</version>
       <scope>test</scope>
-      <version>1.17.4</version>
     </dependency>
     <dependency>
       <artifactId>mockserver-client-java</artifactId>
       <groupId>org.mock-server</groupId>
-      <scope>test</scope> <!-- this version has to match the testcontainers docker image used -->
-      <version>5.14.0
-      </version>
+      <version>${mockserver.client.version}</version>
+      <scope>test</scope>
     </dependency>
   </dependencies>
-  <groupId>ch.svermeille.rika.firenet</groupId>
 
-  <modelVersion>4.0.0</modelVersion>
-
-  <parent>
-    <artifactId>rika2mqtt</artifactId>
-    <groupId>ch.svermeille.rika</groupId>
-    <version>0.0.1-SNAPSHOT</version>
-  </parent>
-
-  <properties>
-    <maven.compiler.source>${java.sdk.version}</maven.compiler.source>
-    <maven.compiler.target>${java.sdk.version}</maven.compiler.target>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <retrofit.version>2.9.0</retrofit.version>
-    <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
-    <sonar.projectKey>${project.sonar.root.projectKey}-${project.groupId}-${project.artifactId}</sonar.projectKey>
-    <sonar.coverage.exclusions>src/main/java/**/*Exception.java</sonar.coverage.exclusions>
-  </properties>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+                <groupId>org.springframework.boot</groupId>
+            </plugin>
+        </plugins>
+    </build>
 </project>
