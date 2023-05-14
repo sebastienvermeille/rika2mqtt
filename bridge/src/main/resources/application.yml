@@ -1,10 +1,10 @@
 rika:
-  email:
-  password:
+  email: ${RIKA_EMAIL}
+  password: ${RIKA_PASSWORD}
   keepAliveTimeout: PT60S
 mqtt:
-  host:
-  username:
-  password:
+  host: ${MQTT_HOST}
+  username: ${MQTT_USERNAME}
+  password: ${MQTT_PASSWORD}
 bridge:
   reportInterval: PT60S

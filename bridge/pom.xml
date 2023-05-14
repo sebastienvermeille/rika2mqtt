@@ -89,14 +89,9 @@
     </dependency>
     <!-- 3rd part dependencies-->
     <dependency>
-      <artifactId>javax.el-api</artifactId>
-      <groupId>javax.el</groupId>
-      <version>3.0.0</version>
-    </dependency>
-    <dependency>
-      <artifactId>javax.el</artifactId>
-      <groupId>org.glassfish</groupId>
-      <version>3.0.0</version>
+      <groupId>org.glassfish.expressly</groupId>
+      <artifactId>expressly</artifactId>
+      <version>5.0.0</version>
     </dependency>
     <!-- test dependencies -->
     <dependency>

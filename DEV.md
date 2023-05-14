@@ -26,3 +26,12 @@ Then you can create a run configuration similar to that:
 > (You can do other ways, the advantage here is that you never risk to publish your credentials by accident)
 
 Then you can run the project and enjoy :) 
+
+## CLI Style
+
+If you want to run the project in pure CLI there is a `Makefile` available.
+
+You can run: 
+* `make jar`
+* `make test`
+* `make docker`

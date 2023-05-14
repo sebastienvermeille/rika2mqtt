@@ -17,7 +17,7 @@ docker run \
     -e MQTT_HOST=127.0.0.1 \
     -e MQTT_USER=<optional> \
     -e MQTT_PASSWORD=<optional> \
-    -d --name rika2mqtt sbeex/rika2mqtt:latest
+    -d --name rika2mqtt cookiecodedev/rika2mqtt:latest
 ```
 
 It will publish to the defined mqtt server in topic `tele/rika2mqtt`.
