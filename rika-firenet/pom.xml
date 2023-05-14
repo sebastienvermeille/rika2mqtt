@@ -95,7 +95,7 @@
       <artifactId>mockserver</artifactId>
       <groupId>org.testcontainers</groupId>
       <scope>test</scope>
-      <version>1.17.4</version>
+      <version>1.18.1</version>
     </dependency>
     <dependency>
       <artifactId>mockserver-client-java</artifactId>
