@@ -56,6 +56,9 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
   @Value("${rika.keepAliveTimeout}")
   private Duration rikaFirenetKeepAliveTimeout;
 
+  @Value("${rika.url:https://www.rika-firenet.com}")
+  private String rikaFirenetApiBaseUrl;
+
   private boolean connected = false;
 
   private Instant lastConnectivity;
@@ -139,7 +142,7 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
   @SneakyThrows
   public boolean isValidCredentials(final String email, final String password) {
     try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-      var response = Request.post("https://www.rika-firenet.com/web/login")
+      var response = Request.post(rikaFirenetApiBaseUrl + "/web/login")
           .addHeader("Content-Type", "application/x-www-form-urlencoded")
           .bodyForm(Form.form().add("email", email).add("password", password).build())
           .execute(httpclient);

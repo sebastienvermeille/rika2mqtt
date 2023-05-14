@@ -59,7 +59,6 @@ public abstract class AbstractBaseIntegrationTest {
     registry.add("mqtt.port", MQTT_SERVER::getFirstMappedPort); // TODO: not safe IMHO
   }
 
-  //  @DynamicPropertySource
   @DynamicPropertySource
   static void registerMockServerProperties(final DynamicPropertyRegistry registry) {
     registry.add("rika.url",
