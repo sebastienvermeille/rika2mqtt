@@ -1,0 +1,28 @@
+version: 2
+updates:
+  # Enable version updates for maven
+  - package-ecosystem: "maven"
+    directory: "/"
+    # Check the npm registry for updates every day (weekdays)
+    schedule:
+      interval: "daily"
+    assignees:
+      - "sebastienvermeille"
+    reviewers:
+      - "sebastienvermeille"
+    commit-message:
+      prefix: "[maven] "
+
+  # Enable version updates for Docker
+  - package-ecosystem: "docker"
+    # Look for a `Dockerfile` in the `root` directory
+    directory: "/"
+    # Check for updates once a week
+    schedule:
+      interval: "weekly"
+    assignees:
+      - "sebastienvermeille"
+    reviewers:
+      - "sebastienvermeille"
+    commit-message:
+      prefix: "[docker] "
