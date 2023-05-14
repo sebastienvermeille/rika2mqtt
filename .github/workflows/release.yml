@@ -4,7 +4,6 @@ on:
     types: [created]
 jobs:
   publish:
-    environment: prod
     runs-on: ubuntu-latest
     permissions:
       contents: read
