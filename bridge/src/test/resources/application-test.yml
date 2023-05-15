@@ -1,0 +1,10 @@
+rika:
+  email: john.smith42@gmail.com
+  password: kangourou
+  keepAliveTimeout: PT60S
+mqtt:
+  host: 1.1.1.1
+  username: testuser
+  password: secret
+bridge:
+  reportInterval: PT60S

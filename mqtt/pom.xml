@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2023 Sebastien Vermeille and contributors.
+  ~
+  ~ Use of this source code is governed by an MIT
+  ~ license that can be found in the LICENSE file or at
+  ~ https://opensource.org/licenses/MIT.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <name>mqtt</name>
+    <description>Mqtt Module</description>
+    <artifactId>rika2mqtt-mqtt</artifactId>
+
+    <parent>
+        <groupId>dev.cookiecode</groupId>
+        <artifactId>rika2mqtt-parent</artifactId>
+        <version>0.0.1</version>
+    </parent>
+
+    <properties>
+        <maven.compiler.source>${java.sdk.version}</maven.compiler.source>
+        <maven.compiler.target>${java.sdk.version}</maven.compiler.target>
+        <project.build.sourceEncoding>${source.encoding}</project.build.sourceEncoding>
+        <spring.mqtt.version>6.0.5</spring.mqtt.version>
+        <!-- sonar analysis -->
+        <sonar.projectKey>${project.sonar.root.projectKey}-${project.groupId}-${project.artifactId}</sonar.projectKey>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.integration</groupId>
+            <artifactId>spring-integration-mqtt</artifactId>
+            <version>${spring.mqtt.version}</version>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

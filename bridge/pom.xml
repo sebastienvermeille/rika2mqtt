@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2023 Sebastien Vermeille and contributors.
+  ~
+  ~ Use of this source code is governed by an MIT
+  ~ license that can be found in the LICENSE file or at
+  ~ https://opensource.org/licenses/MIT.
+  -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>bridge</name>
+  <description>Bridge (Main)</description>
+  <artifactId>rika2mqtt-bridge</artifactId>
+
+  <parent>
+    <groupId>dev.cookiecode</groupId>
+    <artifactId>rika2mqtt-parent</artifactId>
+    <version>0.0.1</version>
+  </parent>
+
+  <properties>
+    <maven.compiler.source>${java.sdk.version}</maven.compiler.source>
+    <maven.compiler.target>${java.sdk.version}</maven.compiler.target>
+    <project.build.sourceEncoding>${source.encoding}</project.build.sourceEncoding>
+    <start-class>dev.cookiecode.rika2mqtt.Rika2MqttApplication</start-class>
+
+    <!-- test dependencies version -->
+    <mockserver.client.version>5.14.0</mockserver.client.version>
+
+    <!-- sonar analysis -->
+    <sonar.projectKey>${project.sonar.root.projectKey}-${project.groupId}-${project.artifactId}</sonar.projectKey>
+  </properties>
+
+  <build>
+    <plugins>
+      <plugin>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+        <configuration>
+          <docker>
+            <publishRegistry>
+              <password></password>
+              <url>https://docker.io</url>
+              <username></username>
+            </publishRegistry>
+          </docker>
+          <image>
+            <name>sbeex/rika2mqtt:${project.version}</name>
+            <publish>true</publish>
+          </image>
+        </configuration>
+        <groupId>org.springframework.boot</groupId>
+      </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>report-aggregate</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report-aggregate</goal>
+            </goals>
+            <configuration>
+              <includeCurrentProject>true</includeCurrentProject>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <dependencies>
+    <!-- project modules-->
+    <dependency>
+      <groupId>dev.cookiecode</groupId>
+      <artifactId>rika2mqtt-rika-firenet</artifactId>
+      <scope>compile</scope>
+      <version>0.0.1</version>
+    </dependency>
+    <dependency>
+      <groupId>dev.cookiecode</groupId>
+      <artifactId>rika2mqtt-mqtt</artifactId>
+      <scope>compile</scope>
+      <version>0.0.1</version>
+    </dependency>
+    <!-- 3rd part dependencies-->
+    <dependency>
+      <groupId>org.glassfish.expressly</groupId>
+      <artifactId>expressly</artifactId>
+      <version>5.0.0</version>
+    </dependency>
+    <!-- test dependencies -->
+    <dependency>
+      <artifactId>mockserver</artifactId>
+      <groupId>org.testcontainers</groupId>
+      <version>${testcontainers.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mock-server</groupId>
+      <artifactId>mockserver-client-java</artifactId>
+      <version>${mockserver.client.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <artifactId>spring-boot-starter-test</artifactId>
+      <groupId>org.springframework.boot</groupId>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <artifactId>junit-bom</artifactId>
+        <groupId>org.junit</groupId>
+        <scope>import</scope>
+        <type>pom</type>
+        <version>5.9.3</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+</project>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2023 Sebastien Vermeille and contributors.
+  ~
+  ~ Use of this source code is governed by an MIT
+  ~ license that can be found in the LICENSE file or at
+  ~ https://opensource.org/licenses/MIT.
+  -->
+
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <name>rika-firenet</name>
+  <description>Rika firenet API client</description>
+  <artifactId>rika2mqtt-rika-firenet</artifactId>
+
+  <parent>
+    <artifactId>rika2mqtt-parent</artifactId>
+    <groupId>dev.cookiecode</groupId>
+    <version>0.0.1</version>
+  </parent>
+
+  <properties>
+    <maven.compiler.source>${java.sdk.version}</maven.compiler.source>
+    <maven.compiler.target>${java.sdk.version}</maven.compiler.target>
+    <project.build.sourceEncoding>${source.encoding}</project.build.sourceEncoding>
+
+    <!-- dependencies version -->
+    <retrofit.version>2.9.0</retrofit.version>
+    <okhttp3.version>4.10.0</okhttp3.version>
+    <httpclient5.version>5.2.1</httpclient5.version>
+    <jsoup.version>1.15.4</jsoup.version>
+
+    <!-- test dependencies version -->
+    <mockserver.client.version>5.14.0</mockserver.client.version>
+
+    <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
+    <!-- sonar analysis -->
+    <sonar.projectKey>${project.sonar.root.projectKey}-${project.groupId}-${project.artifactId}</sonar.projectKey>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <artifactId>retrofit</artifactId>
+      <groupId>com.squareup.retrofit2</groupId>
+      <version>${retrofit.version}</version>
+    </dependency>
+    <dependency>
+      <artifactId>converter-gson</artifactId>
+      <groupId>com.squareup.retrofit2</groupId>
+      <version>${retrofit.version}</version>
+    </dependency>
+
+    <dependency>
+      <artifactId>okhttp-urlconnection</artifactId>
+      <groupId>com.squareup.okhttp3</groupId>
+      <version>${okhttp3.version}</version>
+    </dependency>
+    <dependency>
+      <artifactId>logging-interceptor</artifactId>
+      <groupId>com.squareup.okhttp3</groupId>
+      <version>${okhttp3.version}</version>
+    </dependency>
+    <dependency>
+      <artifactId>httpclient5</artifactId>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <version>${httpclient5.version}</version>
+    </dependency>
+    <dependency>
+      <artifactId>httpclient5-fluent</artifactId>
+      <groupId>org.apache.httpcomponents.client5</groupId>
+      <version>${httpclient5.version}</version>
+    </dependency>
+    <dependency>
+      <artifactId>jsoup</artifactId>
+      <groupId>org.jsoup</groupId>
+      <version>${jsoup.version}</version>
+    </dependency>
+
+    <!-- test dependencies -->
+    <dependency>
+      <groupId>org.testcontainers</groupId>
+      <artifactId>mockserver</artifactId>
+      <version>${testcontainers.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <artifactId>mockserver-client-java</artifactId>
+      <groupId>org.mock-server</groupId>
+      <version>${mockserver.client.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+                <groupId>org.springframework.boot</groupId>
+            </plugin>
+        </plugins>
+    </build>
+</project>
