@@ -17,7 +17,6 @@ import dev.cookiecode.rika2mqtt.rika.firenet.exception.UnableToRetrieveRikaFiren
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveStatus;
 import dev.cookiecode.rika2mqtt.rika.mqtt.MqttService;
-import dev.cookiecode.rika2mqtt.rika.mqtt.event.MqttCommandEvent;
 import jakarta.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -25,7 +24,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.flogger.Flogger;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -92,10 +90,6 @@ public class Bridge {
         log.atSevere().log(e.getMessage(), e);
       }
     });
-  }
 
-  @EventListener(MqttCommandEvent.class)
-  public void handleContextStart(MqttCommandEvent event) {
-    System.out.println("Received mqtt command.");
   }
 }
