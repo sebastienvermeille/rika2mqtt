@@ -14,5 +14,4 @@ package dev.cookiecode.rika2mqtt.rika.mqtt;
 public interface MqttService {
 
   void publish(String message);
-
 }
