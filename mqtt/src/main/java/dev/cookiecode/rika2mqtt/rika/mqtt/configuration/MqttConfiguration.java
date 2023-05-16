@@ -18,11 +18,16 @@ import org.springframework.integration.annotation.MessagingGateway;
 import org.springframework.integration.annotation.ServiceActivator;
 import org.springframework.integration.channel.DirectChannel;
 import org.springframework.integration.config.EnableIntegration;
+import org.springframework.integration.core.MessageProducer;
 import org.springframework.integration.mqtt.core.DefaultMqttPahoClientFactory;
 import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
+import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
+import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
+import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
+import org.springframework.messaging.MessagingException;
 
 /**
  * @author Sebastien Vermeille
@@ -75,5 +80,37 @@ public class MqttConfiguration {
   public interface MqttGateway {
 
     void sendToMqtt(String data);
+  }
+
+  @Bean
+  public MessageChannel mqttInputChannel() {
+    return new DirectChannel();
+  }
+
+  @Bean
+  public MessageProducer inbound() {
+    final var adapter = new MqttPahoMessageDrivenChannelAdapter(
+        mqttConfigProperties.getClientName(),
+        mqttClientFactory(),
+        mqttConfigProperties.getCommandTopicName()
+    );
+    adapter.setCompletionTimeout(5000);
+    adapter.setConverter(new DefaultPahoMessageConverter());
+    adapter.setQos(1);
+    adapter.setOutputChannel(mqttInputChannel());
+    return adapter;
+  }
+
+  @Bean
+  @ServiceActivator(inputChannel = "mqttInputChannel")
+  public MessageHandler handler() {
+    return new MessageHandler() {
+
+      @Override
+      public void handleMessage(Message<?> message) throws MessagingException {
+        System.out.println(message.getPayload());
+      }
+
+    };
   }
 }
