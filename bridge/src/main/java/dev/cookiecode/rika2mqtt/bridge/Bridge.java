@@ -67,6 +67,7 @@ public class Bridge {
           bridgeReportInterval);
 
       publishToMqtt();
+      subscribeToMqtt();
     }
   }
 
@@ -90,6 +91,12 @@ public class Bridge {
         log.atSevere().log(e.getMessage(), e);
       }
     });
+  }
 
+  /**
+   * Subscribe to MQTT input commands and forward them to RIKA
+   */
+  void subscribeToMqtt() {
+    mqttService.
   }
 }
