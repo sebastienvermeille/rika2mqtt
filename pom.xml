@@ -30,7 +30,7 @@
         <testcontainers.version>1.18.1</testcontainers.version>
 
         <!--plugins version -->
-        <jacoco.maven.plugin.version>0.8.9</jacoco.maven.plugin.version>
+        <jacoco.maven.plugin.version>0.8.10</jacoco.maven.plugin.version>
         <sonar.maven.plugin.version>3.9.1.2184</sonar.maven.plugin.version>
 
         <!-- sonar analysis -->
