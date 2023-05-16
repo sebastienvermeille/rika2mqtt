@@ -308,3 +308,4 @@ $RECYCLE.BIN/
 # Custom
 /excluded/
 /bridge/logs/
+docker-compose.override.yml
