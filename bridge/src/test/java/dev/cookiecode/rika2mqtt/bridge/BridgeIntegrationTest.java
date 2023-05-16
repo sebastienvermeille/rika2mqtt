@@ -16,6 +16,7 @@ import dev.cookiecode.rika2mqtt.rika.mqtt.MqttService;
 import dev.cookiecode.rika2mqtt.rika.mqtt.MqttServiceImpl;
 import dev.cookiecode.rika2mqtt.rika.mqtt.configuration.MqttConfigProperties;
 import dev.cookiecode.rika2mqtt.rika.mqtt.configuration.MqttConfiguration;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,6 +24,7 @@ import java.util.UUID;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
+import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +68,24 @@ class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
       assertFalse(receivedAnswers.isEmpty());
       assertTrue(receivedAnswers.contains("test"));
     });
+  }
+
+  @Test
+  void publishMqttCommandMessageShouldNotGenerateAnyException()
+      throws MqttException {
+// TODO: refactore and provide convenient assert methods/framework kit for integrations tests
+    List<String> receivedAnswers = new ArrayList<>();
+
+    var mqttClient = getRandomMqttClient();
+    MqttMessage msg = new MqttMessage();
+    msg.setQos(1);
+    msg.setPayload("hello world".getBytes(StandardCharsets.UTF_8));
+    mqttClient.publish(mqttConfigProperties.getCommandTopicName(), msg);
+
+    assertTimeout(Duration.ofSeconds(15), () -> {
+
+    });
+
   }
 
   private MqttClient getRandomMqttClient() throws MqttException {

@@ -8,9 +8,11 @@
 
 package dev.cookiecode.rika2mqtt.rika.mqtt.configuration;
 
+import dev.cookiecode.rika2mqtt.rika.mqtt.event.MqttCommandEvent;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.integration.annotation.IntegrationComponentScan;
@@ -40,6 +42,8 @@ import org.springframework.messaging.MessagingException;
 public class MqttConfiguration {
 
   private final MqttConfigProperties mqttConfigProperties;
+  private final ApplicationEventPublisher applicationEventPublisher;
+
 
   @Bean
   public MqttPahoClientFactory mqttClientFactory() {
@@ -90,7 +94,7 @@ public class MqttConfiguration {
   @Bean
   public MessageProducer inbound() {
     final var adapter = new MqttPahoMessageDrivenChannelAdapter(
-        mqttConfigProperties.getClientName(),
+        mqttConfigProperties.getClientName() + "_writer",
         mqttClientFactory(),
         mqttConfigProperties.getCommandTopicName()
     );
@@ -108,7 +112,7 @@ public class MqttConfiguration {
 
       @Override
       public void handleMessage(Message<?> message) throws MessagingException {
-        System.out.println(message.getPayload());
+        applicationEventPublisher.publishEvent(new MqttCommandEvent("it works"));
       }
 
     };
