@@ -40,4 +40,13 @@ jobs:
           path: PR_NUMBER.txt
           retention-days: 1
           if-no-files-found: error
-
+      - name: Store target
+        uses: actions/upload-artifact@v3
+        with:
+          name: BUILD_FILES
+          path: |
+            bridge/target
+            mqtt/target
+            rika-firenet/target
+          retention-days: 1
+          if-no-files-found: error
