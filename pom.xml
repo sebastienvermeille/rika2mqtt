@@ -31,7 +31,7 @@
 
         <!--plugins version -->
         <jacoco.maven.plugin.version>0.8.9</jacoco.maven.plugin.version>
-        <sonar.maven.plugin.version>3.7.0.1746</sonar.maven.plugin.version>
+        <sonar.maven.plugin.version>3.9.1.2184</sonar.maven.plugin.version>
 
         <!-- sonar analysis -->
         <sonar.organization>sebastienvermeille</sonar.organization>
