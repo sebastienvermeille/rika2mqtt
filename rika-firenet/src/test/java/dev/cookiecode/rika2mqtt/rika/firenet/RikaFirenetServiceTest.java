@@ -49,7 +49,7 @@ class RikaFirenetServiceTest {
 
   @Container
   static MockServerContainer mockServer = new MockServerContainer(
-      DockerImageName.parse("mockserver/mockserver:5.14.0"));
+      DockerImageName.parse("mockserver/mockserver:5.15.0"));
   @Autowired
   private RikaFirenetServiceImpl rikaFirenetService;
 

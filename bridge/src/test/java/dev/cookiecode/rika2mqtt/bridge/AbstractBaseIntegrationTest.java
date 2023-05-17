@@ -46,7 +46,7 @@ public abstract class AbstractBaseIntegrationTest {
 
   @Container
   static MockServerContainer rikaMockServer = new MockServerContainer(
-      DockerImageName.parse("mockserver/mockserver:5.14.0"));
+      DockerImageName.parse("mockserver/mockserver:5.15.0"));
 
   @AfterAll
   public static void stopMqttBrokerTestContainer() {

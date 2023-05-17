@@ -29,7 +29,7 @@
     <start-class>dev.cookiecode.rika2mqtt.Rika2MqttApplication</start-class>
 
     <!-- test dependencies version -->
-    <mockserver.client.version>5.14.0</mockserver.client.version>
+    <mockserver.client.version>5.15.0</mockserver.client.version>
 
     <!-- sonar analysis -->
     <sonar.projectKey>${project.sonar.root.projectKey}-${project.groupId}-${project.artifactId}</sonar.projectKey>
