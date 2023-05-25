@@ -22,7 +22,7 @@
         <source.encoding>UTF-8</source.encoding>
 
         <!-- dependencies version-->
-        <lombok.version>1.18.26</lombok.version>
+        <lombok.version>1.18.28</lombok.version>
         <flogger.version>0.7.4</flogger.version>
         <hibernate.validator.version>8.0.0.Final</hibernate.validator.version>
 
