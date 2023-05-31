@@ -27,7 +27,7 @@
         <hibernate.validator.version>8.0.0.Final</hibernate.validator.version>
 
         <!-- test dependencies version -->
-        <testcontainers.version>1.18.1</testcontainers.version>
+        <testcontainers.version>1.18.2</testcontainers.version>
 
         <!--plugins version -->
         <jacoco.maven.plugin.version>0.8.10</jacoco.maven.plugin.version>
