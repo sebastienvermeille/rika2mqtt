@@ -8,8 +8,14 @@
 
 package dev.cookiecode.rika2mqtt.rika.mqtt.configuration;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
+import com.google.gson.reflect.TypeToken;
 import dev.cookiecode.rika2mqtt.rika.mqtt.event.MqttCommandEvent;
+import dev.cookiecode.rika2mqtt.rika.mqtt.event.RawStoveControlMessage;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.flogger.Flogger;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.ApplicationEventPublisher;
@@ -39,11 +45,12 @@ import org.springframework.messaging.MessagingException;
 @IntegrationComponentScan
 @RequiredArgsConstructor
 @EnableIntegration
+@Flogger
 public class MqttConfiguration {
 
   private final MqttConfigProperties mqttConfigProperties;
   private final ApplicationEventPublisher applicationEventPublisher;
-
+  private final Gson gson;
 
   @Bean
   public MqttPahoClientFactory mqttClientFactory() {
@@ -107,12 +114,28 @@ public class MqttConfiguration {
 
   @Bean
   @ServiceActivator(inputChannel = "mqttInputChannel")
-  public MessageHandler handler() {
+  public MessageHandler mqttInputMessageHandler() {
+//    final var gson = new Gson(); // TODO: remove it is provided via spring DI
+
     return new MessageHandler() {
 
       @Override
       public void handleMessage(Message<?> message) throws MessagingException {
-        applicationEventPublisher.publishEvent(new MqttCommandEvent("it works"));
+        var payload = (String) message.getPayload();
+        try {
+          final var json = gson.fromJson(payload, RawStoveControlMessage.class);
+          final var type = new TypeToken<Map<String, String>>() {
+          }.getType();
+          final Map<String, String> props = gson.fromJson(payload, type);
+          applicationEventPublisher.publishEvent(
+              new MqttCommandEvent(json.getStoveID(), props, json)
+          );
+        } catch (JsonSyntaxException ex) {
+          log.atWarning()
+              .log(
+                  "Received an invalid json payload via MQTT. Please ensure it follows the format defined in the doc."); // TODO: document it and provide a link to it
+        }
+
       }
 
     };

@@ -34,7 +34,7 @@
     <jsoup.version>1.16.1</jsoup.version>
 
     <!-- test dependencies version -->
-    <mockserver.client.version>5.14.0</mockserver.client.version>
+    <mockserver.client.version>5.15.0</mockserver.client.version>
 
     <spring-boot.repackage.skip>true</spring-boot.repackage.skip>
     <!-- sonar analysis -->

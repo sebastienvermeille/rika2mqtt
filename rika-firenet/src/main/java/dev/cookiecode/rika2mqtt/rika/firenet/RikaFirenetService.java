@@ -10,11 +10,12 @@ package dev.cookiecode.rika2mqtt.rika.firenet;
 
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.CouldNotAuthenticateToRikaFirenetException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.InvalidStoveIdException;
+import dev.cookiecode.rika2mqtt.rika.firenet.exception.UnableToControlRikaFirenetException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.UnableToRetrieveRikaFirenetDataException;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveStatus;
 import java.util.List;
-
+import java.util.Map;
 import lombok.NonNull;
 
 /**
@@ -24,9 +25,13 @@ public interface RikaFirenetService {
 
   List<StoveId> getStoves();
 
-  StoveStatus getStatus(@NonNull final StoveId stoveId) throws InvalidStoveIdException, CouldNotAuthenticateToRikaFirenetException, UnableToRetrieveRikaFirenetDataException;
+  StoveStatus getStatus(@NonNull final StoveId stoveId)
+      throws InvalidStoveIdException, CouldNotAuthenticateToRikaFirenetException, UnableToRetrieveRikaFirenetDataException;
 
   boolean isAuthenticated();
 
   boolean isValidCredentials(final String email, final String password);
+
+  void updateControls(@NonNull final StoveId stoveId, Map<String, String> fields)
+      throws UnableToControlRikaFirenetException;
 }
