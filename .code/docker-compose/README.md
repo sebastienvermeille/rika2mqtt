@@ -22,3 +22,31 @@ rika2mqtt:
 ```
 
 This file is git ignored.
+
+## Testing MQTT
+
+I use mqtt-explorer (https://mqtt-explorer.com/) to be able to read mqtt messages and I connect it
+to the docker-compose mqtt server.
+Then I can debug the app and send commands on topic `cmnd/rika2mqtt`
+
+With body:
+
+```json
+"stoveID": <put yours>,
+"operatingMode": 2,
+"heatingPower": 70,
+"targetTemperature": 18,
+"bakeTemperature": 340,
+"onOff": true,
+"heatingTimesActiveForComfort": false,
+"setBackTemperature": 13,
+"convectionFan1Active": true,
+"convectionFan1Level": 0,
+"convectionFan1Area": 12,
+"convectionFan2Active": true,
+"convectionFan2Level": 0,
+"convectionFan2Area": 12,
+"frostProtectionActive": true,
+"frostProtectionTemperature": 10,
+"revision": 1684317751
+```

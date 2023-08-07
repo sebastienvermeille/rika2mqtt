@@ -12,16 +12,17 @@ services:
     ports:
       - 1883:1883
 
-  rika2mqtt:
-    container_name: rika2mqtt_bridge
-    depends_on: mqtt-server
-    image: cookiecodedev/rika2mqtt
-    environment:
-      - MQTT_HOST=localhost
-      - MQTT_USERNAME=testuser
-      - MQTT_PASSWORD=secret
-      - RIKA_EMAIL=<your email>
-      - RIKA_PASSWORD=<your password>
+#  rika2mqtt:
+#    container_name: rika2mqtt_bridge
+#    depends_on:
+#      - mqtt-server
+#    image: cookiecodedev/rika2mqtt
+#    environment:
+#      - MQTT_HOST=localhost
+#      - MQTT_USERNAME=testuser
+#      - MQTT_PASSWORD=secret
+#      - RIKA_EMAIL=<your email>
+#      - RIKA_PASSWORD=<your password>
 
 volumes:
   data:

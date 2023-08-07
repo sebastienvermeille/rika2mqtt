@@ -22,6 +22,7 @@ import jakarta.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.flogger.Flogger;
 import org.springframework.beans.factory.annotation.Value;
@@ -72,6 +73,9 @@ public class Bridge {
     }
   }
 
+  /**
+   * Poll rika-firenet stove status regularly and publish to MQTT
+   */
   @Scheduled(fixedDelayString = "${bridge.reportInterval}")
   void publishToMqtt() {
     stoveIds.forEach(stoveId -> {
@@ -94,8 +98,42 @@ public class Bridge {
     });
   }
 
+  /**
+   * Forward MQTT commands to Rika-firenet
+   */
   @EventListener(MqttCommandEvent.class)
-  public void handleContextStart(MqttCommandEvent event) {
-    System.out.println("Received mqtt command.");
+  public void onReceiveMqttCommand(@NonNull MqttCommandEvent event) {
+    try {
+      log.atInfo()
+          .log("Received mqtt command for stove: {}", event.getStoveId().toString());
+
+      event.getProps()
+          .remove("stoveID"); // TODO: it's ugly! why is this property provided if it's not needed?
+      // TODO: if not provided could use the stove (if only one stove is available) otherwise its mandatory to know which stove should be contacted
+      event.getProps().remove("revision"); // this property is anyway override later
+      rikaFirenetService.updateControls(new StoveId(event.getStoveId()), event.getProps());
+    } catch (Exception ex) {
+      log.atSevere().log(ex.getMessage());
+    }
+
+    // TODO: publish to https://rika-firenet.com/api/client/{stoveId}/controls (POST)
+    // form data:
+
+    // operatingMode: 2
+    // heatingPower: 70
+    // targetTemperature: 18
+    // bakeTemperature: 340
+    // onOff: true
+    // heatingTimesActiveForComfort: false
+    // setBackTemperature: 13
+    // convectionFan1Active: true
+    // convectionFan1Level: 0
+    // convectionFan1Area: 12
+    // convectionFan2Active: true
+    // convectionFan2Level: 0
+    // convectionFan2Area: 12
+    // frostProtectionActive: true
+    // frostProtectionTemperature: 10
+    // revision: 1684317751
   }
 }

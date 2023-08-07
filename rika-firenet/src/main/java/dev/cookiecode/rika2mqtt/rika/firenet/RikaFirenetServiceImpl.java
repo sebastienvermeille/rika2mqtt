@@ -11,6 +11,7 @@ package dev.cookiecode.rika2mqtt.rika.firenet;
 import dev.cookiecode.rika2mqtt.rika.firenet.api.RikaFirenetApi;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.CouldNotAuthenticateToRikaFirenetException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.InvalidStoveIdException;
+import dev.cookiecode.rika2mqtt.rika.firenet.exception.UnableToControlRikaFirenetException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.UnableToRetrieveRikaFirenetDataException;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.Auth;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
@@ -22,6 +23,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -148,6 +150,42 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
           .execute(httpclient);
       var ct = response.returnContent().asString();
       return ct.contains("/web/logout");
+    }
+  }
+
+  @Override
+  public void updateControls(@NonNull StoveId stoveId, Map<String, String> fields)
+      throws UnableToControlRikaFirenetException {
+    try {
+      var status = getStatus(stoveId);
+      fields.put("revision", String.valueOf(status.getControls()
+          .getRevision())); // interesting code https://github.com/antibill51/rika-firenet-custom-component/blob/main/custom_components/rika_firenet/core.py
+      this.lastConnectivity = Instant.now(Clock.systemUTC());
+      final var query = this.firenetApi.updateControls(stoveId.id().toString(), fields);
+      final var response = query.execute();
+      // TODO: cleanup
+      System.out.println(response.code());
+      System.out.println(response.code());
+      System.out.println(response.code());
+      System.out.println(response.code());
+      System.out.println(response.code());
+      System.out.println(response.code());
+      System.out.println(response.code());
+      System.out.println(response.code());
+    } catch (IOException e) {
+      throw new UnableToControlRikaFirenetException(
+          String.format(
+              "Could not take control of stove %s. An error occurred.",
+              stoveId
+          ),
+          e
+      );
+    } catch (CouldNotAuthenticateToRikaFirenetException e) {
+      throw new RuntimeException(e);
+    } catch (InvalidStoveIdException e) {
+      throw new RuntimeException(e);
+    } catch (UnableToRetrieveRikaFirenetDataException e) {
+      throw new RuntimeException(e);
     }
   }
 
