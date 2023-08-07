@@ -10,9 +10,12 @@ package dev.cookiecode.rika2mqtt.rika.firenet.api;
 
 import dev.cookiecode.rika2mqtt.rika.firenet.model.Auth;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveStatus;
+import java.util.Map;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.FieldMap;
+import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
@@ -22,6 +25,7 @@ import retrofit2.http.Path;
  * @author Sebastien Vermeille
  */
 public interface RikaFirenetApi {
+
   @GET("/api/client/{stoveId}/status")
   @Headers("Content-Type: application/json")
   Call<StoveStatus> getStoveStatus(@Path("stoveId") String stoveId);
@@ -34,4 +38,9 @@ public interface RikaFirenetApi {
 
   @GET("/web/summary")
   Call<ResponseBody> getStoves();
+
+  @POST("/api/client/{stoveId}/controls")
+  @FormUrlEncoded
+  Call<ResponseBody> updateControls(@Path("stoveId") String stoveId,
+      @FieldMap(encoded = true) Map<String, String> fields);
 }
