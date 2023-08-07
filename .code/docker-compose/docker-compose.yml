@@ -1,4 +1,4 @@
-name: rika2mqtt-stack
+version: "2.4"
 services:
   mqtt-server:
     # user: testuser
