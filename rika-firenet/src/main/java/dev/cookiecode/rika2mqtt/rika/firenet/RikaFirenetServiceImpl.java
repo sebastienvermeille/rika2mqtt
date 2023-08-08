@@ -18,6 +18,7 @@ import dev.cookiecode.rika2mqtt.rika.firenet.model.Auth;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveStatus;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.UpdatableControls;
+import dev.cookiecode.rika2mqtt.rika.firenet.model.UpdatableControls.Fields;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.Clock;
@@ -161,27 +162,22 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
   public void updateControls(@NonNull StoveId stoveId, Map<String, String> fields)
       throws UnableToControlRikaFirenetException {
     try {
-      // here we simplify the life of the user:
-      // 1) we grab the last status of the stove
-      // 2) check for diffs
-      // 3) update
       var status = getStatus(stoveId);
       this.lastConnectivity = Instant.now(Clock.systemUTC());
 
       final var currentControls = updatableControlsMapper.toUpdateControls(status.getControls());
 
-      fields.put(UpdatableControls.Fields.REVISION, String.valueOf(status.getControls()
-          .getRevision())); // interesting code https://github.com/antibill51/rika-firenet-custom-component/blob/main/custom_components/rika_firenet/core.py
-
-      updatableControlsMapper.mergeWithMap(fields, currentControls);
+      overrideRevision(fields, currentControls);
 
       // patch current status with these new properties
+      updatableControlsMapper.mergeWithMap(fields, currentControls);
 
-      log.atSevere().log("changes: %s", currentControls);
+      log.atFine()
+          .log("Send payload to rika-firenet: \n%s", currentControls);
 
       final var query = this.firenetApi.updateControls(stoveId.id().toString(), currentControls);
       final var response = query.execute();
-      // TODO: handle response result / errors
+      // TODO: handle response result / errors implements auto retry and adjustment of the revision
       System.out.println(response.code());
     } catch (IOException e) {
       throw new UnableToControlRikaFirenetException(
@@ -200,9 +196,19 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
     }
   }
 
-  private void mergeControlsIgnoreNulls(UpdatableControls currentControls,
-      UpdatableControls diffControls) {
-
+  /**
+   * Override revision property
+   *
+   * @implNote This property can't really be determined by the end user safely. Let's do that here.
+   * inspired from https://github.com/antibill51/rika-firenet-custom-component/blob/main/custom_components/rika_firenet/core.py
+   */
+  private void overrideRevision(Map<String, String> fields, UpdatableControls currentControls) {
+    if(fields.containsKey(Fields.REVISION)){
+      log.atWarning()
+          .log("Ignore received property '%s'. This property is already managed by rika2mqtt.", Fields.REVISION);
+      fields.remove(Fields.REVISION); // this property is anyway override later
+    }
+    fields.put(UpdatableControls.Fields.REVISION, String.valueOf(currentControls.getRevision()));
   }
 
   @Override

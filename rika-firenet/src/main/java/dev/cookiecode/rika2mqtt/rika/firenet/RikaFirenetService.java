@@ -64,8 +64,7 @@ public interface RikaFirenetService {
    * Update stove controls (such as target temperature, on/off, heating mode, multiair, etc.)
    *
    * @param stoveId Id of the stove to perform update on
-   * @param fields  For safety, you are highly encouraged to use {@link Fields} that will provide
-   *                valid field names instead of plain strings.
+   * @param fields  You can provide any of these {@link Fields} and rika2mqtt will manage to do the rest.
    * @throws UnableToControlRikaFirenetException
    */
   void updateControls(@NonNull final StoveId stoveId, Map<String, String> fields)
@@ -73,7 +72,6 @@ public interface RikaFirenetService {
 
   /**
    * Update stove heating times
-   * TODO: document better when implemented
    */
   void updateHeatingTimes(@NonNull final StoveId stoveId, Map<String, String> fields)
       throws UnableToControlRikaFirenetException;
