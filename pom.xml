@@ -23,12 +23,12 @@
     <source.encoding>UTF-8</source.encoding>
 
     <!-- dependencies version-->
-    <lombok.version>1.18.26</lombok.version>
+    <lombok.version>1.18.28</lombok.version>
     <flogger.version>0.7.4</flogger.version>
     <hibernate.validator.version>8.0.0.Final</hibernate.validator.version>
 
     <!-- test dependencies version -->
-    <testcontainers.version>1.18.1</testcontainers.version>
+    <testcontainers.version>1.18.3</testcontainers.version>
 
     <!--plugins version -->
     <jacoco.maven.plugin.version>0.8.10</jacoco.maven.plugin.version>
@@ -49,7 +49,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.0.6</version>
+    <version>3.1.0</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
@@ -205,7 +205,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-source-plugin</artifactId>
-          <version>3.2.1</version>
+          <version>3.3.0</version>
           <executions>
             <execution>
               <id>attach-sources</id>
