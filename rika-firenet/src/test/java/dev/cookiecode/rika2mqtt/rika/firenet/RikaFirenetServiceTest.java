@@ -18,6 +18,8 @@ import static org.mockserver.model.MediaType.HTML_UTF_8;
 import dev.cookiecode.rika2mqtt.rika.firenet.api.RetrofitConfiguration;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.CouldNotAuthenticateToRikaFirenetException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.InvalidStoveIdException;
+import dev.cookiecode.rika2mqtt.rika.firenet.mapper.UpdatableControlsMapper;
+import dev.cookiecode.rika2mqtt.rika.firenet.mapper.UpdatableControlsMapperImpl;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
 import java.util.List;
 import lombok.NonNull;
@@ -41,6 +43,7 @@ import org.testcontainers.utility.DockerImageName;
  * @author Sebastien Vermeille
  */
 @SpringBootTest(classes = {
+    UpdatableControlsMapperImpl.class,
     RikaFirenetServiceImpl.class,
     RetrofitConfiguration.class
 })
