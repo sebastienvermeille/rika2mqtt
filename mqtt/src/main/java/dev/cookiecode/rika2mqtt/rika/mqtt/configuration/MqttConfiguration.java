@@ -12,7 +12,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
 import dev.cookiecode.rika2mqtt.rika.mqtt.event.MqttCommandEvent;
-import dev.cookiecode.rika2mqtt.rika.mqtt.event.RawStoveControlMessage;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.flogger.Flogger;
@@ -118,21 +117,21 @@ public class MqttConfiguration {
     return message -> {
       var payload = (String) message.getPayload();
       try {
-//        final var json = gson.fromJson(payload, RawStoveControlMessage.class);
-        final RawStoveControlMessage json = null;
         final var type = new TypeToken<Map<String, String>>() {
         }.getType();
         final Map<String, String> props = gson.fromJson(payload, type);
-
         final var stoveId = Long.parseUnsignedLong(props.get("stoveId"));
 
+        // remove stoveId props as it has its own property in the wrapping object
+        props.remove("stoveId");
+
         applicationEventPublisher.publishEvent(
-            new MqttCommandEvent(stoveId, props, json)
+            new MqttCommandEvent(stoveId, props)
         );
       } catch (JsonSyntaxException ex) {
         log.atWarning()
             .log(
-                "Received an invalid json payload via MQTT. Please ensure it follows the format defined in the doc."); // TODO: document it and provide a link to it
+                "Received an invalid json payload via MQTT. Please ensure it follows the format defined in the doc.");
       }
 
     };

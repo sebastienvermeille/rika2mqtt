@@ -16,6 +16,8 @@ import dev.cookiecode.rika2mqtt.rika.firenet.exception.InvalidStoveIdException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.UnableToRetrieveRikaFirenetDataException;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveStatus;
+import dev.cookiecode.rika2mqtt.rika.firenet.model.UpdatableControls;
+import dev.cookiecode.rika2mqtt.rika.firenet.model.UpdatableControls.Fields;
 import dev.cookiecode.rika2mqtt.rika.mqtt.MqttService;
 import dev.cookiecode.rika2mqtt.rika.mqtt.event.MqttCommandEvent;
 import jakarta.annotation.PostConstruct;
@@ -99,7 +101,7 @@ public class Bridge {
   }
 
   /**
-   * Forward MQTT commands to Rika-firenet
+   * Forward MQTT commands to rika-firenet
    */
   @EventListener(MqttCommandEvent.class)
   public void onReceiveMqttCommand(@NonNull MqttCommandEvent event) {
@@ -107,33 +109,9 @@ public class Bridge {
       log.atInfo()
           .log("Received mqtt command for stove: %s", event.getStoveId().toString());
 
-      event.getProps()
-          .remove("stoveId"); // TODO: it's ugly! why is this property provided if it's not needed?
-      // TODO: if not provided could use the stove (if only one stove is available) otherwise its mandatory to know which stove should be contacted
-      event.getProps().remove("revision"); // this property is anyway override later
       rikaFirenetService.updateControls(new StoveId(event.getStoveId()), event.getProps());
     } catch (Exception ex) {
       log.atSevere().log(ex.getMessage());
     }
-
-    // TODO: publish to https://rika-firenet.com/api/client/{stoveId}/controls (POST)
-    // form data:
-
-    // operatingMode: 2
-    // heatingPower: 70
-    // targetTemperature: 18
-    // bakeTemperature: 340
-    // onOff: true
-    // heatingTimesActiveForComfort: false
-    // setBackTemperature: 13
-    // convectionFan1Active: true
-    // convectionFan1Level: 0
-    // convectionFan1Area: 12
-    // convectionFan2Active: true
-    // convectionFan2Level: 0
-    // convectionFan2Area: 12
-    // frostProtectionActive: true
-    // frostProtectionTemperature: 10
-    // revision: 1684317751
   }
 }

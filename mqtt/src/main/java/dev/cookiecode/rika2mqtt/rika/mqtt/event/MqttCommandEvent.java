@@ -16,16 +16,13 @@ import lombok.ToString;
 /**
  * @author Sebastien Vermeille
  */
+@Getter
 @ToString
 @RequiredArgsConstructor
 public class MqttCommandEvent {
 
-  @Getter
   private final Long stoveId;
 
   @Getter
   private final Map<String, String> props;
-
-  @Getter
-  private final RawStoveControlMessage message;
 }
