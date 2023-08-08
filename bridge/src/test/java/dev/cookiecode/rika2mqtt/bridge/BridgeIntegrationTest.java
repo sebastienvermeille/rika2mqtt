@@ -12,6 +12,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertTimeout;
 
+import com.google.gson.Gson;
 import dev.cookiecode.rika2mqtt.rika.mqtt.MqttService;
 import dev.cookiecode.rika2mqtt.rika.mqtt.MqttServiceImpl;
 import dev.cookiecode.rika2mqtt.rika.mqtt.configuration.MqttConfigProperties;
@@ -36,7 +37,7 @@ import org.springframework.test.context.ActiveProfiles;
  *
  * @author Sebastien Vermeille
  */
-@SpringBootTest(classes = {MqttServiceImpl.class, MqttConfiguration.class})
+@SpringBootTest(classes = {MqttServiceImpl.class, MqttConfiguration.class, Gson.class})
 @ActiveProfiles("test")
 class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
 
@@ -62,11 +63,18 @@ class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
       receivedAnswers.add(msg.toString());
     });
 
-    mqttService.publish("test");
+    final var validCommand = """
+        {
+          "stoveId": 42,
+          "targetTemperature": 20
+        }
+        """;
+
+    mqttService.publish(validCommand);
 
     assertTimeout(Duration.ofSeconds(5), () -> {
       assertFalse(receivedAnswers.isEmpty());
-      assertTrue(receivedAnswers.contains("test"));
+      assertTrue(receivedAnswers.contains(validCommand));
     });
   }
 
