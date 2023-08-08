@@ -8,6 +8,7 @@
 
 package dev.cookiecode.rika2mqtt.rika.firenet.model;
 
+import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 
@@ -34,6 +35,9 @@ public class UpdatableControls {
   private Integer convectionFan2Area;
   private Boolean frostProtectionActive;
   private Integer frostProtectionTemperature;
+  private Boolean onOff;
+
+  // TODO: why is onOff not there ?
 
   // (these properties are provider with {@link Controls} but not updatable via this object
 //  private Boolean ecoMode;

@@ -13,6 +13,10 @@ package dev.cookiecode.rika2mqtt.rika.firenet.exception;
  */
 public class UnableToControlRikaFirenetException extends RikaFirenetException {
 
+  public UnableToControlRikaFirenetException(final String message){
+    super(message);
+  }
+
   public UnableToControlRikaFirenetException(final String message, final Throwable cause) {
     super(message, cause);
   }

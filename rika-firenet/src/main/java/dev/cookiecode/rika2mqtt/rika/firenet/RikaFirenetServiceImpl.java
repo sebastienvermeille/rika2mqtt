@@ -36,6 +36,7 @@ import org.apache.hc.client5.http.fluent.Form;
 import org.apache.hc.client5.http.fluent.Request;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.HttpStatus;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -177,8 +178,19 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
 
       final var query = this.firenetApi.updateControls(stoveId.id().toString(), currentControls);
       final var response = query.execute();
-      // TODO: handle response result / errors implements auto retry and adjustment of the revision
-      System.out.println(response.code());
+
+      if(response.code() == HttpStatus.SC_OK){
+        log.atInfo()
+            .log("Stove %s settings are now updated as follow: %s", stoveId, currentControls);
+      } else {
+        if(response.code() == HttpStatus.SC_NOT_FOUND && response.errorBody().string().endsWith(String.format("Revision %s is outdated!", currentControls.getRevision())))
+        {
+          // revision is outdated -> retry once again
+          throw new UnableToControlRikaFirenetException(String.format("Could not update settings of stove %s: Revision is outdated please retry.", stoveId));
+        } else {
+          throw new UnableToControlRikaFirenetException(String.format("Could not update settings of stove %s: Unknown reason.", stoveId));
+        }
+      }
     } catch (IOException e) {
       throw new UnableToControlRikaFirenetException(
           String.format(
@@ -284,7 +296,7 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
     } catch (final IOException e) {
       throw new UnableToRetrieveRikaFirenetDataException(
           String.format(
-              "Could not retrieve stove %s status from rika firenet",
+              "Could not retrieve stove %s status from rika-firenet",
               stoveId
           ),
           e

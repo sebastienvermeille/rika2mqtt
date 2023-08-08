@@ -17,12 +17,12 @@ import dev.cookiecode.rika2mqtt.rika.firenet.model.UpdatableControls.Fields;
 import java.util.Map;
 import lombok.NonNull;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 @Mapper(unmappedTargetPolicy = IGNORE) // ignore as we are using a map
 public interface UpdatableControlsMapper {
 
-  UpdatableControls toUpdateControls(@NonNull Map<String, String> map);
-
+//  @Mapping(source = "setBackTemperature", target = "setBackTemperature")
   UpdatableControls toUpdateControls(@NonNull Controls controls);
 
   default void mergeWithMap(@NonNull Map<String, String> fields,
@@ -73,6 +73,10 @@ public interface UpdatableControlsMapper {
 
     ofNullable(fields.getOrDefault(Fields.FROST_PROTECTION_TEMPERATURE, null))
         .ifPresent(value -> currentControls.setFrostProtectionTemperature(Integer.valueOf(value)));
+
+    ofNullable(fields.getOrDefault(Fields.ON_OFF, null))
+        .ifPresent(value -> currentControls.setOnOff(Boolean.valueOf(value)));
+
 
   }
 
