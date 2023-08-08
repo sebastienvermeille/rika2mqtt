@@ -10,6 +10,7 @@ package dev.cookiecode.rika2mqtt.rika.firenet.api;
 
 import dev.cookiecode.rika2mqtt.rika.firenet.model.Auth;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveStatus;
+import dev.cookiecode.rika2mqtt.rika.firenet.model.UpdatableControls;
 import java.util.Map;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
@@ -39,8 +40,26 @@ public interface RikaFirenetApi {
   @GET("/web/summary")
   Call<ResponseBody> getStoves();
 
+  /**
+   * Raw API call (be sure you know what you are doing)
+   *
+   * @param stoveId
+   * @param fields
+   * @return
+   */
   @POST("/api/client/{stoveId}/controls")
   @FormUrlEncoded
   Call<ResponseBody> updateControls(@Path("stoveId") String stoveId,
       @FieldMap(encoded = true) Map<String, String> fields);
+
+  /**
+   * Typed api call (safer)
+   *
+   * @param stoveId
+   * @param fields
+   * @return
+   */
+  @POST("/api/client/{stoveId}/controls")
+  Call<ResponseBody> updateControls(@Path("stoveId") String stoveId,
+      @Body UpdatableControls fields);
 }

@@ -13,9 +13,11 @@ import dev.cookiecode.rika2mqtt.rika.firenet.exception.CouldNotAuthenticateToRik
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.InvalidStoveIdException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.UnableToControlRikaFirenetException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.UnableToRetrieveRikaFirenetDataException;
+import dev.cookiecode.rika2mqtt.rika.firenet.mapper.UpdatableControlsMapper;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.Auth;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveStatus;
+import dev.cookiecode.rika2mqtt.rika.firenet.model.UpdatableControls;
 import jakarta.annotation.PostConstruct;
 import java.io.IOException;
 import java.time.Clock;
@@ -48,6 +50,8 @@ import retrofit2.Response;
 public class RikaFirenetServiceImpl implements RikaFirenetService {
 
   private final RikaFirenetApi firenetApi;
+
+  private final UpdatableControlsMapper updatableControlsMapper;
 
   @Value("${rika.email}")
   private String rikaFirenetUserEmail;
@@ -157,20 +161,27 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
   public void updateControls(@NonNull StoveId stoveId, Map<String, String> fields)
       throws UnableToControlRikaFirenetException {
     try {
+      // here we simplify the life of the user:
+      // 1) we grab the last status of the stove
+      // 2) check for diffs
+      // 3) update
       var status = getStatus(stoveId);
-      fields.put("revision", String.valueOf(status.getControls()
-          .getRevision())); // interesting code https://github.com/antibill51/rika-firenet-custom-component/blob/main/custom_components/rika_firenet/core.py
       this.lastConnectivity = Instant.now(Clock.systemUTC());
-      final var query = this.firenetApi.updateControls(stoveId.id().toString(), fields);
+
+      final var currentControls = updatableControlsMapper.toUpdateControls(status.getControls());
+
+      fields.put(UpdatableControls.Fields.REVISION, String.valueOf(status.getControls()
+          .getRevision())); // interesting code https://github.com/antibill51/rika-firenet-custom-component/blob/main/custom_components/rika_firenet/core.py
+
+      updatableControlsMapper.mergeWithMap(fields, currentControls);
+
+      // patch current status with these new properties
+
+      log.atSevere().log("changes: %s", currentControls);
+
+      final var query = this.firenetApi.updateControls(stoveId.id().toString(), currentControls);
       final var response = query.execute();
-      // TODO: cleanup
-      System.out.println(response.code());
-      System.out.println(response.code());
-      System.out.println(response.code());
-      System.out.println(response.code());
-      System.out.println(response.code());
-      System.out.println(response.code());
-      System.out.println(response.code());
+      // TODO: handle response result / errors
       System.out.println(response.code());
     } catch (IOException e) {
       throw new UnableToControlRikaFirenetException(
@@ -187,6 +198,17 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
     } catch (UnableToRetrieveRikaFirenetDataException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private void mergeControlsIgnoreNulls(UpdatableControls currentControls,
+      UpdatableControls diffControls) {
+
+  }
+
+  @Override
+  public void updateHeatingTimes(@NonNull StoveId stoveId, Map<String, String> fields)
+      throws UnableToControlRikaFirenetException {
+    throw new RuntimeException("This feature is not yet implemented.");
   }
 
   @Override

@@ -32,10 +32,8 @@ import org.springframework.integration.mqtt.core.MqttPahoClientFactory;
 import org.springframework.integration.mqtt.inbound.MqttPahoMessageDrivenChannelAdapter;
 import org.springframework.integration.mqtt.outbound.MqttPahoMessageHandler;
 import org.springframework.integration.mqtt.support.DefaultPahoMessageConverter;
-import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
 import org.springframework.messaging.MessageHandler;
-import org.springframework.messaging.MessagingException;
 
 /**
  * @author Sebastien Vermeille
@@ -76,8 +74,9 @@ public class MqttConfiguration {
   }
 
   /**
-   * @implNote this is using a workaround found here: https://stackoverflow.com/a/41241824 the doc
-   * simply mention to do: `return new DirectChannel();`
+   * @implNote this is using a workaround found <a
+   * href="https://stackoverflow.com/a/41241824">here</a> the doc simply mention to do: `return new
+   * DirectChannel();`
    */
   @Bean
   public MessageChannel mqttOutboundChannel() {
@@ -115,27 +114,25 @@ public class MqttConfiguration {
   @Bean
   @ServiceActivator(inputChannel = "mqttInputChannel")
   public MessageHandler mqttInputMessageHandler() {
-//    final var gson = new Gson(); // TODO: remove it is provided via spring DI
 
-    return new MessageHandler() {
+    return message -> {
+      var payload = (String) message.getPayload();
+      try {
+//        final var json = gson.fromJson(payload, RawStoveControlMessage.class);
+        final RawStoveControlMessage json = null;
+        final var type = new TypeToken<Map<String, String>>() {
+        }.getType();
+        final Map<String, String> props = gson.fromJson(payload, type);
 
-      @Override
-      public void handleMessage(Message<?> message) throws MessagingException {
-        var payload = (String) message.getPayload();
-        try {
-          final var json = gson.fromJson(payload, RawStoveControlMessage.class);
-          final var type = new TypeToken<Map<String, String>>() {
-          }.getType();
-          final Map<String, String> props = gson.fromJson(payload, type);
-          applicationEventPublisher.publishEvent(
-              new MqttCommandEvent(json.getStoveID(), props, json)
-          );
-        } catch (JsonSyntaxException ex) {
-          log.atWarning()
-              .log(
-                  "Received an invalid json payload via MQTT. Please ensure it follows the format defined in the doc."); // TODO: document it and provide a link to it
-        }
+        final var stoveId = Long.parseUnsignedLong(props.get("stoveId"));
 
+        applicationEventPublisher.publishEvent(
+            new MqttCommandEvent(stoveId, props, json)
+        );
+      } catch (JsonSyntaxException ex) {
+        log.atWarning()
+            .log(
+                "Received an invalid json payload via MQTT. Please ensure it follows the format defined in the doc."); // TODO: document it and provide a link to it
       }
 
     };

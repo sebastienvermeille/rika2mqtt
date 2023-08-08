@@ -105,10 +105,10 @@ public class Bridge {
   public void onReceiveMqttCommand(@NonNull MqttCommandEvent event) {
     try {
       log.atInfo()
-          .log("Received mqtt command for stove: {}", event.getStoveId().toString());
+          .log("Received mqtt command for stove: %s", event.getStoveId().toString());
 
       event.getProps()
-          .remove("stoveID"); // TODO: it's ugly! why is this property provided if it's not needed?
+          .remove("stoveId"); // TODO: it's ugly! why is this property provided if it's not needed?
       // TODO: if not provided could use the stove (if only one stove is available) otherwise its mandatory to know which stove should be contacted
       event.getProps().remove("revision"); // this property is anyway override later
       rikaFirenetService.updateControls(new StoveId(event.getStoveId()), event.getProps());
