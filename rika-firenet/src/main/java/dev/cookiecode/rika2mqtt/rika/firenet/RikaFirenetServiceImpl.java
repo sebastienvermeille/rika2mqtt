@@ -8,6 +8,7 @@
 
 package dev.cookiecode.rika2mqtt.rika.firenet;
 
+import com.google.common.annotations.VisibleForTesting;
 import dev.cookiecode.rika2mqtt.rika.firenet.api.RikaFirenetApi;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.CouldNotAuthenticateToRikaFirenetException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.InvalidStoveIdException;
@@ -232,7 +233,8 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
    * @implNote This property can't really be determined by the end user safely. Let's do that here.
    * inspired from https://github.com/antibill51/rika-firenet-custom-component/blob/main/custom_components/rika_firenet/core.py
    */
-  private void overrideRevision(Map<String, String> fields, UpdatableControls currentControls) {
+  @VisibleForTesting
+  void overrideRevision(Map<String, String> fields, UpdatableControls currentControls) {
     if(fields.containsKey(Fields.REVISION)){
       log.atWarning()
           .log("Ignore received property '%s'. This property is already managed by rika2mqtt.", Fields.REVISION);
