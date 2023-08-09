@@ -41,18 +41,6 @@ public interface RikaFirenetApi {
   Call<ResponseBody> getStoves();
 
   /**
-   * Raw API call (be sure you know what you are doing)
-   *
-   * @param stoveId
-   * @param fields
-   * @return
-   */
-  @POST("/api/client/{stoveId}/controls")
-  @FormUrlEncoded
-  Call<ResponseBody> updateControls(@Path("stoveId") String stoveId,
-      @FieldMap(encoded = true) Map<String, String> fields);
-
-  /**
    * Typed api call (safer)
    *
    * @param stoveId

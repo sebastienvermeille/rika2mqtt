@@ -11,6 +11,7 @@ package dev.cookiecode.rika2mqtt.rika.firenet;
 import dev.cookiecode.rika2mqtt.rika.firenet.api.RikaFirenetApi;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.CouldNotAuthenticateToRikaFirenetException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.InvalidStoveIdException;
+import dev.cookiecode.rika2mqtt.rika.firenet.exception.OutdatedRevisionException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.UnableToControlRikaFirenetException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.UnableToRetrieveRikaFirenetDataException;
 import dev.cookiecode.rika2mqtt.rika.firenet.mapper.UpdatableControlsMapper;
@@ -161,7 +162,7 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
 
   @Override
   public void updateControls(@NonNull StoveId stoveId, Map<String, String> fields)
-      throws UnableToControlRikaFirenetException {
+      throws UnableToControlRikaFirenetException, InvalidStoveIdException, OutdatedRevisionException {
     try {
       var status = getStatus(stoveId);
       this.lastConnectivity = Instant.now(Clock.systemUTC());
@@ -183,10 +184,29 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
         log.atInfo()
             .log("Stove %s settings are now updated as follow: %s", stoveId, currentControls);
       } else {
-        if(response.code() == HttpStatus.SC_NOT_FOUND && response.errorBody().string().endsWith(String.format("Revision %s is outdated!", currentControls.getRevision())))
+        if(response.code() == HttpStatus.SC_NOT_FOUND)
         {
-          // revision is outdated -> retry once again
-          throw new UnableToControlRikaFirenetException(String.format("Could not update settings of stove %s: Revision is outdated please retry.", stoveId));
+          var errorContent = response.errorBody().string();
+          if(errorContent.startsWith(String.format("Stove %s is not registered for user", stoveId.id()))){
+            throw new InvalidStoveIdException(
+                String.format("Could not control stove %s. %n cause reported by RIKA: %s",
+                    stoveId,
+                    response.errorBody().string()
+                )
+            );
+          }
+          else if(errorContent.endsWith(" is outdated!")) {
+            // revision is outdated -> retry once again
+            throw new OutdatedRevisionException(String.format(
+                "Could not update settings of stove %s: Revision is outdated please retry.",
+                stoveId));
+          }
+          else {
+            throw new UnableToControlRikaFirenetException(String.format(
+                "Could not update settings of stove %s: . %n cause reported by RIKA: %s",
+                stoveId,
+                errorContent));
+          }
         } else {
           throw new UnableToControlRikaFirenetException(String.format("Could not update settings of stove %s: Unknown reason.", stoveId));
         }
@@ -200,8 +220,6 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
           e
       );
     } catch (CouldNotAuthenticateToRikaFirenetException e) {
-      throw new RuntimeException(e);
-    } catch (InvalidStoveIdException e) {
       throw new RuntimeException(e);
     } catch (UnableToRetrieveRikaFirenetDataException e) {
       throw new RuntimeException(e);

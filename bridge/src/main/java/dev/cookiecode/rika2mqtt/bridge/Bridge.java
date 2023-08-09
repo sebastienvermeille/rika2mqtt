@@ -14,6 +14,7 @@ import dev.cookiecode.rika2mqtt.bridge.misc.EmailObfuscator;
 import dev.cookiecode.rika2mqtt.rika.firenet.RikaFirenetService;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.CouldNotAuthenticateToRikaFirenetException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.InvalidStoveIdException;
+import dev.cookiecode.rika2mqtt.rika.firenet.exception.OutdatedRevisionException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.UnableToControlRikaFirenetException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.UnableToRetrieveRikaFirenetDataException;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
@@ -118,10 +119,15 @@ public class Bridge {
           .log("Received mqtt command for stove: %s", event.getStoveId().toString());
 
       rikaFirenetService.updateControls(StoveId.of(event.getStoveId()), event.getProps());
-    } catch (UnableToControlRikaFirenetException ex) {
+    } catch (UnableToControlRikaFirenetException | InvalidStoveIdException ex) {
       log.atSevere()
           .withCause(ex)
           .log("Could not process the received mqtt command: %s", ex.getMessage());
+    } catch (OutdatedRevisionException ex) {
+      log.atWarning()
+          .withCause(ex)
+          .log("Could not process the received mqtt command: %s", ex.getMessage());
+      // TODO: implement a retry policy (once at least)
     }
   }
 }

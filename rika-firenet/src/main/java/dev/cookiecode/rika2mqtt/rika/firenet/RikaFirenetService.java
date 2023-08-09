@@ -11,6 +11,7 @@ package dev.cookiecode.rika2mqtt.rika.firenet;
 import dev.cookiecode.rika2mqtt.rika.firenet.configuration.RikaFirenetConfiguration;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.CouldNotAuthenticateToRikaFirenetException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.InvalidStoveIdException;
+import dev.cookiecode.rika2mqtt.rika.firenet.exception.OutdatedRevisionException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.UnableToControlRikaFirenetException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.UnableToRetrieveRikaFirenetDataException;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
@@ -68,7 +69,7 @@ public interface RikaFirenetService {
    * @throws UnableToControlRikaFirenetException
    */
   void updateControls(@NonNull final StoveId stoveId, Map<String, String> fields)
-      throws UnableToControlRikaFirenetException;
+      throws UnableToControlRikaFirenetException, InvalidStoveIdException, OutdatedRevisionException;
 
   /**
    * Update stove heating times
