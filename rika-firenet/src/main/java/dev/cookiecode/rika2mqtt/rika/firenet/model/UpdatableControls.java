@@ -8,19 +8,28 @@
 
 package dev.cookiecode.rika2mqtt.rika.firenet.model;
 
+import dev.cookiecode.rika2mqtt.rika.firenet.RikaFirenetServiceImpl;
+import dev.cookiecode.rika2mqtt.rika.firenet.mapper.UpdatableControlsMapper;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 
+import java.util.Map;
+
 /**
  * @author Sebastien Vermeille
+ * @implNote Each change in this field impacts directly {@link UpdatableControlsMapper}.
  */
 @Data
 @FieldNameConstants
 public class UpdatableControls {
-
-  // WARN: all changes performed here can have impacts on UpdatableControlsMapper toMap() method
-  private Long revision; // note: this field is optional as it get anyway overrided by the service
+  /**
+   * revision field is managed by rika2mqtt {@link RikaFirenetServiceImpl#overrideRevision(Map, UpdatableControls)}
+   */
+  private Long revision;
+  /**
+   * Fields below (some, or all) can be sent using MQTT command to pilot RIKA.
+   */
   private Integer operatingMode;
   private Integer heatingPower;
   private Integer targetTemperature;
@@ -36,32 +45,4 @@ public class UpdatableControls {
   private Boolean frostProtectionActive;
   private Integer frostProtectionTemperature;
   private Boolean onOff;
-
-  // TODO: why is onOff not there ?
-
-  // (these properties are provider with {@link Controls} but not updatable via this object
-//  private Boolean ecoMode;
-//  private String heatingTimeMon1;
-//  private String heatingTimeMon2;
-//  private String heatingTimeTue1;
-//  private String heatingTimeTue2;
-//  private String heatingTimeWed1;
-//  private String heatingTimeWed2;
-//  private String heatingTimeThu1;
-//  private String heatingTimeThu2;
-//  private String heatingTimeFri1;
-//  private String heatingTimeFri2;
-//  private String heatingTimeSat1;
-//  private String heatingTimeSat2;
-//  private String heatingTimeSun1;
-//  private String heatingTimeSun2;
-//  private Integer temperatureOffset;
-//
-//  @SerializedName("RoomPowerRequest") // for coherence (the rest of the api is using camelCase)
-//  private Integer roomPowerRequest;
-//  private Integer debug0;
-//  private Integer debug1;
-//  private Integer debug2;
-//  private Integer debug3;
-//  private Integer debug4;
 }

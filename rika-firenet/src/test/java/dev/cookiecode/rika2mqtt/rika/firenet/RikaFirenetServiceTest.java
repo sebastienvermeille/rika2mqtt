@@ -266,8 +266,8 @@ class RikaFirenetServiceTest {
   void getStovesShouldRetrieveTwoStovesDeclaredInSummaryPageGivenTwoStovesAreMocked() {
 
     // GIVEN
-    final var mainStoveId = new StoveId(111111L);
-    final var studioStoveId = new StoveId(222222L);
+    final var mainStoveId = StoveId.of(111111L);
+    final var studioStoveId = StoveId.of(222222L);
     final var stoveIds = List.of(mainStoveId, studioStoveId);
     initSummaryPageMock(stoveIds);
 
@@ -390,7 +390,7 @@ class RikaFirenetServiceTest {
   @Test
   void getStatusShouldRetrieveStatusGivenStoveIdExists() throws Exception {
     // GIVEN
-    final var mainStoveId = new StoveId(111111L);
+    final var mainStoveId = StoveId.of(111111L);
     initStoveStatusMock(mainStoveId);
 
     // WHEN
@@ -404,7 +404,7 @@ class RikaFirenetServiceTest {
   @Test
   void getStatusShouldRetrieveStatusGivenUserDoesntHavePermissionToSeeThatStove() {
     // GIVEN
-    final var invalidStoveId = new StoveId(111111L);
+    final var invalidStoveId = StoveId.of(111111L);
     initStoveNotOwnedStatusMock(invalidStoveId);
 
     // THEN

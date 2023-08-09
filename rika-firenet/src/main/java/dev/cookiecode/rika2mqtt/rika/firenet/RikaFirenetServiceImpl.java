@@ -250,7 +250,7 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
       final var href = link.attr("href");
       if (href.startsWith("/web/stove/")) {
         final var id = Long.parseLong(href.split("/")[3]);
-        results.add(new StoveId(id));
+        results.add(StoveId.of(id));
       }
     }
 
