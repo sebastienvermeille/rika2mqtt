@@ -24,7 +24,7 @@ import static org.mockito.Mockito.verify;
  * @author Sebastien Vermeille
  */
 @ExtendWith(MockitoExtension.class)
-public class MqttServiceImplTest {
+class MqttServiceImplTest {
 
     @Mock
     MqttConfiguration.MqttGateway mqttGateway;

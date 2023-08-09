@@ -10,7 +10,6 @@ package dev.cookiecode.rika2mqtt.rika.firenet.model;
 
 import dev.cookiecode.rika2mqtt.rika.firenet.RikaFirenetServiceImpl;
 import dev.cookiecode.rika2mqtt.rika.firenet.mapper.UpdatableControlsMapper;
-import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 

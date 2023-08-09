@@ -9,6 +9,7 @@
 package dev.cookiecode.rika2mqtt.rika.firenet;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -18,10 +19,15 @@ import static org.mockserver.model.MediaType.HTML_UTF_8;
 import dev.cookiecode.rika2mqtt.rika.firenet.api.RetrofitConfiguration;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.CouldNotAuthenticateToRikaFirenetException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.InvalidStoveIdException;
+import dev.cookiecode.rika2mqtt.rika.firenet.exception.OutdatedRevisionException;
 import dev.cookiecode.rika2mqtt.rika.firenet.mapper.UpdatableControlsMapper;
 import dev.cookiecode.rika2mqtt.rika.firenet.mapper.UpdatableControlsMapperImpl;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
+import dev.cookiecode.rika2mqtt.rika.firenet.model.UpdatableControls;
+import dev.cookiecode.rika2mqtt.rika.firenet.model.UpdatableControls.Fields;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.NonNull;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -415,6 +421,53 @@ class RikaFirenetServiceTest {
   }
 
   @Test
+  void updateControlsShouldThrowAnInvalidStoveIdExceptionGivenUserDoesntHavePermissionToControlThatStove() {
+    // GIVEN
+    final var invalidStoveId = StoveId.of(111111L);
+    initStoveNotOwnedControlsMock(invalidStoveId);
+    Map<String, String> diffs = new HashMap<>();
+    diffs.put(Fields.TARGET_TEMPERATURE, "19");
+
+    // THEN
+    assertThrows(InvalidStoveIdException.class, () -> {
+      // WHEN
+      this.rikaFirenetService.updateControls(invalidStoveId, diffs);
+    });
+  }
+
+  @Test
+  void updateControlsShouldShouldThrowAnExceptionGivenRevisionIsOutdatedToControlThatStove() {
+    // GIVEN
+    final var validStoveId = StoveId.of(4543L);
+    initStoveStatusMock(validStoveId);
+    initStoveOutdatedRevisionControlsMock(validStoveId);
+    Map<String, String> diffs = new HashMap<>();
+    diffs.put(Fields.TARGET_TEMPERATURE, "19");
+
+    // THEN
+    assertThrows(OutdatedRevisionException.class, () -> {
+      // WHEN
+      this.rikaFirenetService.updateControls(validStoveId, diffs);
+    });
+  }
+
+  @Test
+  void updateControlsShouldNotThrowAnyExceptionGivenValidStoveIdAndUpdatedControls(){
+    // GIVEN
+    final var validStoveId = StoveId.of(42L);
+    Map<String, String> diffs = new HashMap<>();
+    diffs.put(Fields.TARGET_TEMPERATURE, "19");
+    initStoveStatusMock(validStoveId);
+    initStoveOwnedControlsMock(validStoveId);
+
+    // THEN
+    assertDoesNotThrow(() -> {
+      // WHEN
+      this.rikaFirenetService.updateControls(validStoveId, diffs);
+    });
+  }
+
+  @Test
   void isAuthenticatedShouldReturnTrueGivenValidCredentials() {
     // GIVEN
     final var validEmail = "valid-test-user@gmail.com";
@@ -627,6 +680,57 @@ class RikaFirenetServiceTest {
                         stoveId.id()
                     )
                 )
+        );
+  }
+
+  private void initStoveNotOwnedControlsMock(final StoveId stoveId){
+    new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
+        .when(
+            request()
+                .withMethod("POST")
+                .withPath("/api/client/" + stoveId.id() + "/controls"),
+            Times.once()
+        )
+        .respond(
+            response()
+                .withStatusCode(404)
+                .withContentType(APPLICATION_JSON)
+                .withBody(
+                    String.format(
+                        "Stove %s is not registered for user XZY",
+                        stoveId.id()
+                    )
+                )
+        );
+  }
+
+  private void initStoveOutdatedRevisionControlsMock(final StoveId stoveId){
+    new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
+        .when(
+            request()
+                .withMethod("POST")
+                .withPath("/api/client/" + stoveId.id() + "/controls"),
+            Times.once()
+        )
+        .respond(
+            response()
+                .withStatusCode(404)
+                .withBody("Revision 123323131 is outdated!")
+        );
+  }
+
+  private void initStoveOwnedControlsMock(final StoveId stoveId){
+    new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
+        .when(
+            request()
+                .withMethod("POST")
+                .withPath("/api/client/" + stoveId.id() + "/controls"),
+            Times.once()
+        )
+        .respond(
+            response()
+                .withStatusCode(200)
+                .withBody("OK")
         );
   }
 
