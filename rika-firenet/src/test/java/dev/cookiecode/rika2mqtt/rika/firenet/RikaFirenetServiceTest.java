@@ -11,6 +11,11 @@ package dev.cookiecode.rika2mqtt.rika.firenet;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import static org.mockserver.model.MediaType.APPLICATION_JSON;
@@ -465,6 +470,20 @@ class RikaFirenetServiceTest {
       // WHEN
       this.rikaFirenetService.updateControls(validStoveId, diffs);
     });
+  }
+
+  @Test
+  void overrideRevisionShouldSetRevisionBasedOnFreshlyRetrievedStoveStatus(){
+    // GIVEN
+    Map<String, String> fields = new HashMap<>();
+    UpdatableControls freshStatus = mock(UpdatableControls.class);
+    when(freshStatus.getRevision()).thenReturn(12L);
+
+    // WHEN
+    this.rikaFirenetService.overrideRevision(fields, freshStatus);
+
+    // THEN
+    assertThat(fields.get(Fields.REVISION)).isEqualTo(freshStatus.getRevision().toString());
   }
 
   @Test
