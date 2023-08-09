@@ -8,24 +8,15 @@
 
 package dev.cookiecode.rika2mqtt.bridge;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
-
 import com.google.gson.Gson;
 import dev.cookiecode.rika2mqtt.rika.mqtt.MqttService;
 import dev.cookiecode.rika2mqtt.rika.mqtt.MqttServiceImpl;
 import dev.cookiecode.rika2mqtt.rika.mqtt.configuration.MqttConfigProperties;
 import dev.cookiecode.rika2mqtt.rika.mqtt.configuration.MqttConfiguration;
-import java.nio.charset.StandardCharsets;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
 import org.eclipse.paho.client.mqttv3.MqttException;
-import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,47 +44,62 @@ class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
   }
 
   @Test
-  void publishMqttMessageShouldNotGenerateAnyException()
-      throws MqttException {
-// TODO: refactore and provide convenient assert methods/framework kit for integrations tests
-    List<String> receivedAnswers = new ArrayList<>();
+  void publishMqttMessageFromBridgeShouldEffectivelyPublishAMessageToMqtt() {
+    String message = "some apples";
 
-    var subscriber = getRandomMqttClient();
-    subscriber.subscribe(mqttConfigProperties.getTelemetryReportTopicName(), (topic, msg) -> {
-      receivedAnswers.add(msg.toString());
-    });
-
-    final var validCommand = """
-        {
-          "stoveId": 42,
-          "targetTemperature": 20
-        }
-        """;
-
-    mqttService.publish(validCommand);
-
-    assertTimeout(Duration.ofSeconds(5), () -> {
-      assertFalse(receivedAnswers.isEmpty());
-      assertTrue(receivedAnswers.contains(validCommand));
-    });
+    // Here, another mqtt client connect to the telemetry topic
+    // after using the bridge mqttService to publish to mqtt,
+    // the MQTT test client (outside the rika2mqtt bridge) should be able to receive that message
+    getMqttTestClient().assertThatMessageWasPublishedToMqttTopic(
+        message,
+        mqttConfigProperties.getTelemetryReportTopicName(),
+        () -> mqttService.publish(message)
+    );
   }
 
-  @Test
-  void publishMqttCommandMessageShouldNotGenerateAnyException()
-      throws MqttException {
-// TODO: refactore and provide convenient assert methods/framework kit for integrations tests
-    List<String> receivedAnswers = new ArrayList<>();
+//  @Test
+//  void receiveMqttCommandMessageShouldNotGenerateAnyException()
+//      throws MqttException {
+//
+//// TODO: refactore and provide convenient assert methods/framework kit for integrations tests
+//    List<String> receivedAnswers = new ArrayList<>();
+//
+//    var subscriber = getRandomMqttClient();
+//    subscriber.subscribe(mqttConfigProperties.getCommandTopicName(), (topic, msg) -> {
+//      System.out.println("Received message ...");
+//      receivedAnswers.add(msg.toString());
+//    });
+//
+//    var message = """
+//        {
+//           "stoveId": 43,
+//           "targetTemperature": 12
+//        }
+//        """;
+//
+//    var mqttClient = getRandomMqttClient();
+//    MqttMessage msg = new MqttMessage();
+//    msg.setQos(1);
+//    msg.setPayload(message.getBytes(StandardCharsets.UTF_8));
+//    mqttClient.publish(mqttConfigProperties.getCommandTopicName(), msg);
+//
+////
+////    assertTimeout(Duration.ofSeconds(15), () -> {
+////      assertFalse(receivedAnswers.isEmpty());
+////      assertTrue(receivedAnswers.contains(message));
+////      subscriber.disconnectForcibly();
+////
+////    });
+//
+//  }
 
-    var mqttClient = getRandomMqttClient();
-    MqttMessage msg = new MqttMessage();
-    msg.setQos(1);
-    msg.setPayload("hello world".getBytes(StandardCharsets.UTF_8));
-    mqttClient.publish(mqttConfigProperties.getCommandTopicName(), msg);
-
-    assertTimeout(Duration.ofSeconds(15), () -> {
-
-    });
-
+  private MqttTestClient getMqttTestClient() {
+    try {
+      var client = getRandomMqttClient();
+      return new MqttTestClient(client);
+    } catch (MqttException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private MqttClient getRandomMqttClient() throws MqttException {
@@ -113,4 +119,6 @@ class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
 
     return client;
   }
+
+
 }

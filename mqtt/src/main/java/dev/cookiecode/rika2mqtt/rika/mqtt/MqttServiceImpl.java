@@ -11,6 +11,7 @@ package dev.cookiecode.rika2mqtt.rika.mqtt;
 import dev.cookiecode.rika2mqtt.rika.mqtt.configuration.MqttConfiguration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.flogger.Flogger;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 /**
@@ -21,13 +22,12 @@ import org.springframework.stereotype.Service;
 @Flogger
 public class MqttServiceImpl implements MqttService {
 
+  @Qualifier("mqttConfiguration.MqttGateway")
   private final MqttConfiguration.MqttGateway mqttGateway;
 
   @Override
   public void publish(final String message) {
-    log.atInfo().log("Publish %s to mqtt", message);
+    log.atInfo().log("Publish to mqtt:\n%s", message);
     mqttGateway.sendToMqtt(message);
   }
-
-
 }
