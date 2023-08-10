@@ -86,7 +86,7 @@ public abstract class AbstractBaseIntegrationTest {
     MQTT_SERVER.start();
 
     initSuccessLoginMock();
-    StoveId stoveId = new StoveId(12L);
+    StoveId stoveId = StoveId.of(12L);
     initStovesListMock(Set.of(stoveId));
     initStoveStatusMock(stoveId);
   }

@@ -8,28 +8,56 @@
 
 package dev.cookiecode.rika2mqtt.rika.firenet;
 
+import static dev.cookiecode.rika2mqtt.rika.firenet.RikaFirenetServiceImpl.*;
+import static java.lang.String.format;
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.awaitility.Awaitility.await;
+import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 import static org.mockserver.model.MediaType.APPLICATION_JSON;
 import static org.mockserver.model.MediaType.HTML_UTF_8;
+import static org.springframework.util.StringUtils.countOccurrencesOf;
 
 import dev.cookiecode.rika2mqtt.rika.firenet.api.RetrofitConfiguration;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.CouldNotAuthenticateToRikaFirenetException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.InvalidStoveIdException;
+import dev.cookiecode.rika2mqtt.rika.firenet.exception.OutdatedRevisionException;
+import dev.cookiecode.rika2mqtt.rika.firenet.mapper.UpdatableControlsMapper;
+import dev.cookiecode.rika2mqtt.rika.firenet.mapper.UpdatableControlsMapperImpl;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
+import dev.cookiecode.rika2mqtt.rika.firenet.model.UpdatableControls;
+import dev.cookiecode.rika2mqtt.rika.firenet.model.UpdatableControls.Fields;
+
+import java.time.Duration;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import lombok.NonNull;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Spy;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.matchers.Times;
 import org.mockserver.model.MediaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.system.CapturedOutput;
+import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.springframework.util.StringUtils;
 import org.testcontainers.containers.MockServerContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -41,10 +69,12 @@ import org.testcontainers.utility.DockerImageName;
  * @author Sebastien Vermeille
  */
 @SpringBootTest(classes = {
+    UpdatableControlsMapperImpl.class,
     RikaFirenetServiceImpl.class,
     RetrofitConfiguration.class
 })
 @Testcontainers
+@ExtendWith(OutputCaptureExtension.class)
 class RikaFirenetServiceTest {
 
   @Container
@@ -57,6 +87,47 @@ class RikaFirenetServiceTest {
   static void registerMockServerProperties(final DynamicPropertyRegistry registry) {
     registry.add("rika.url",
         () -> "http://" + mockServer.getHost() + ":" + mockServer.getServerPort());
+    registry.add("rika.keepAliveTimeout", () -> "PT5S");
+  }
+
+  @Test
+  void keepAliveShouldNotInvokeAuthenticateMoreThanOnceGivenMultipleInvocationInAShortAmountOfTime(CapturedOutput output) throws Exception {
+
+    // GIVEN
+    initSuccessLoginMock();
+    rikaFirenetService.authenticate();
+
+    rikaFirenetService.keepAlive();
+    rikaFirenetService.keepAlive();
+    rikaFirenetService.keepAlive();
+    rikaFirenetService.keepAlive();
+    rikaFirenetService.keepAlive();
+
+    // WHEN
+    final var actualAmountOfAuthenticateCalls = countOccurrencesOf(output.getAll(), AUTHENTICATED_SUCCESSFULLY);
+
+    // THEN
+    assertThat(actualAmountOfAuthenticateCalls).isEqualTo(1);
+  }
+
+  /**
+   * @implNote This test work because this class artificially change the value of rika.keepAliveTimeout (See class header)
+   */
+  @Test
+  void keepAliveShouldInvokeAuthenticateMoreThanOnceGivenMultipleInvocationInABigEnoughAmountOfTime(CapturedOutput output) throws Exception {
+    // GIVEN
+    initSuccessLoginMock();
+    rikaFirenetService.authenticate();
+    Thread.sleep(Duration.ofSeconds(7).toMillis());
+
+    initSuccessLoginMock();
+    rikaFirenetService.keepAlive();
+
+    // WHEN
+    final var actualAmountOfAuthenticateCalls = countOccurrencesOf(output.getAll(), AUTHENTICATED_SUCCESSFULLY);
+
+    // THEN
+    assertThat(actualAmountOfAuthenticateCalls).isGreaterThan(1);
   }
 
   @Test
@@ -263,8 +334,8 @@ class RikaFirenetServiceTest {
   void getStovesShouldRetrieveTwoStovesDeclaredInSummaryPageGivenTwoStovesAreMocked() {
 
     // GIVEN
-    final var mainStoveId = new StoveId(111111L);
-    final var studioStoveId = new StoveId(222222L);
+    final var mainStoveId = StoveId.of(111111L);
+    final var studioStoveId = StoveId.of(222222L);
     final var stoveIds = List.of(mainStoveId, studioStoveId);
     initSummaryPageMock(stoveIds);
 
@@ -387,7 +458,7 @@ class RikaFirenetServiceTest {
   @Test
   void getStatusShouldRetrieveStatusGivenStoveIdExists() throws Exception {
     // GIVEN
-    final var mainStoveId = new StoveId(111111L);
+    final var mainStoveId = StoveId.of(111111L);
     initStoveStatusMock(mainStoveId);
 
     // WHEN
@@ -399,9 +470,9 @@ class RikaFirenetServiceTest {
   }
 
   @Test
-  void getStatusShouldRetrieveStatusGivenUserDoesntHavePermissionToSeeThatStove() {
+  void getStatusShouldThrowInvalidStoveIdExceptionGivenUserDoesntHavePermissionToSeeThatStove() {
     // GIVEN
-    final var invalidStoveId = new StoveId(111111L);
+    final var invalidStoveId = StoveId.of(111111L);
     initStoveNotOwnedStatusMock(invalidStoveId);
 
     // THEN
@@ -409,6 +480,99 @@ class RikaFirenetServiceTest {
       // WHEN
       this.rikaFirenetService.getStatus(invalidStoveId);
     });
+  }
+
+  @Test
+  void getStatusShouldThrowCouldNotAuthenticateToRikaFirenetExceptionGivenUserGaveInvalidCredentials() {
+    // GIVEN
+    final var stoveId = StoveId.of(111111L);
+    initGetStoveNotAuthenticatedMock(stoveId);
+
+    // THEN
+    assertThrows(CouldNotAuthenticateToRikaFirenetException.class, () -> {
+      // WHEN
+      this.rikaFirenetService.getStatus(stoveId);
+    });
+  }
+
+  @Test
+  void updateControlsShouldThrowAnInvalidStoveIdExceptionGivenUserDoesntHavePermissionToControlThatStove() {
+    // GIVEN
+    final var invalidStoveId = StoveId.of(111111L);
+    initStoveNotOwnedControlsMock(invalidStoveId);
+    Map<String, String> diffs = new HashMap<>();
+    diffs.put(Fields.TARGET_TEMPERATURE, "19");
+
+    // THEN
+    assertThrows(InvalidStoveIdException.class, () -> {
+      // WHEN
+      this.rikaFirenetService.updateControls(invalidStoveId, diffs);
+    });
+  }
+
+  @Test
+  void updateControlsShouldShouldThrowAnExceptionGivenRevisionIsOutdatedToControlThatStove() {
+    // GIVEN
+    final var validStoveId = StoveId.of(4543L);
+    initStoveStatusMock(validStoveId);
+    initStoveOutdatedRevisionControlsMock(validStoveId);
+    Map<String, String> diffs = new HashMap<>();
+    diffs.put(Fields.TARGET_TEMPERATURE, "19");
+
+    // THEN
+    assertThrows(OutdatedRevisionException.class, () -> {
+      // WHEN
+      this.rikaFirenetService.updateControls(validStoveId, diffs);
+    });
+  }
+
+  @Test
+  void updateControlsShouldNotThrowAnyExceptionGivenValidStoveIdAndUpdatedControls(){
+    // GIVEN
+    final var validStoveId = StoveId.of(42L);
+    Map<String, String> diffs = new HashMap<>();
+    diffs.put(Fields.TARGET_TEMPERATURE, "19");
+    initStoveStatusMock(validStoveId);
+    initStoveOwnedControlsMock(validStoveId);
+
+    // THEN
+    assertDoesNotThrow(() -> {
+      // WHEN
+      this.rikaFirenetService.updateControls(validStoveId, diffs);
+    });
+  }
+
+  @Test
+  void overrideRevisionShouldSetRevisionBasedOnFreshlyRetrievedStoveStatus(){
+    // GIVEN
+    Map<String, String> fields = new HashMap<>();
+    UpdatableControls freshStatus = mock(UpdatableControls.class);
+    when(freshStatus.getRevision()).thenReturn(12L);
+
+    // WHEN
+    this.rikaFirenetService.overrideRevision(fields, freshStatus);
+
+    // THEN
+    assertThat(fields.get(Fields.REVISION)).isEqualTo(freshStatus.getRevision().toString());
+  }
+
+  @Test
+  void overrideRevisionShouldLogGivenRevisionIsProvided(CapturedOutput output) {
+    // GIVEN
+    final var someRevision = "42";
+    Map<String, String> fields = new HashMap<>();
+    fields.put(Fields.REVISION, someRevision);
+
+    UpdatableControls freshStatus = mock(UpdatableControls.class);
+    when(freshStatus.getRevision()).thenReturn(12L);
+
+    // WHEN
+    this.rikaFirenetService.overrideRevision(fields, freshStatus);
+
+    // THEN
+    await()
+            .atMost(5, SECONDS)
+            .untilAsserted(() -> assertTrue(output.getAll().contains(format(IGNORE_RECEIVED_PROPERTY_S_THIS_PROPERTY_IS_ALREADY_MANAGED, Fields.REVISION))));
   }
 
   @Test
@@ -624,6 +788,73 @@ class RikaFirenetServiceTest {
                         stoveId.id()
                     )
                 )
+        );
+  }
+
+  private void initGetStoveNotAuthenticatedMock(final StoveId stoveId) {
+    new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
+            .when(
+                    request()
+                            .withMethod("GET")
+                            .withPath("/api/client/" + stoveId.id() + "/status"),
+                    Times.once()
+            )
+            .respond(
+                    response()
+                            .withStatusCode(401)
+                            .withContentType(APPLICATION_JSON)
+            );
+  }
+
+
+  private void initStoveNotOwnedControlsMock(final StoveId stoveId){
+    new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
+        .when(
+            request()
+                .withMethod("POST")
+                .withPath("/api/client/" + stoveId.id() + "/controls"),
+            Times.once()
+        )
+        .respond(
+            response()
+                .withStatusCode(404)
+                .withContentType(APPLICATION_JSON)
+                .withBody(
+                    String.format(
+                        "Stove %s is not registered for user XZY",
+                        stoveId.id()
+                    )
+                )
+        );
+  }
+
+  private void initStoveOutdatedRevisionControlsMock(final StoveId stoveId){
+    new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
+        .when(
+            request()
+                .withMethod("POST")
+                .withPath("/api/client/" + stoveId.id() + "/controls"),
+            Times.once()
+        )
+        .respond(
+            response()
+                .withStatusCode(404)
+                .withBody("Revision 123323131 is outdated!")
+        );
+  }
+
+  private void initStoveOwnedControlsMock(final StoveId stoveId){
+    new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
+        .when(
+            request()
+                .withMethod("POST")
+                .withPath("/api/client/" + stoveId.id() + "/controls"),
+            Times.once()
+        )
+        .respond(
+            response()
+                .withStatusCode(200)
+                .withBody("OK")
         );
   }
 

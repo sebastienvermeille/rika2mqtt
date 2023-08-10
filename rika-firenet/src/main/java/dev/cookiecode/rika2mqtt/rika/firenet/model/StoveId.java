@@ -13,4 +13,7 @@ package dev.cookiecode.rika2mqtt.rika.firenet.model;
  */
 public record StoveId(Long id) {
 
+    public static StoveId of(Long id){
+        return new StoveId(id);
+    }
 }

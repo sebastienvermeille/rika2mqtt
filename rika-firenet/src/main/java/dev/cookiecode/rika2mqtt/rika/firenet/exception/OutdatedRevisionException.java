@@ -6,15 +6,14 @@
  * https://opensource.org/licenses/MIT.
  */
 
-package dev.cookiecode.rika2mqtt.rika.mqtt;
+package dev.cookiecode.rika2mqtt.rika.firenet.exception;
 
 /**
- * Test class
- *
  * @author Sebastien Vermeille
  */
-public class MqttServiceTest {
+public class OutdatedRevisionException extends RikaFirenetException {
 
-// TODO: write some tests
-
+  public OutdatedRevisionException(final String message) {
+    super(message);
+  }
 }

@@ -8,17 +8,11 @@
 
 package dev.cookiecode.rika2mqtt.bridge;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertTimeout;
-
+import com.google.gson.Gson;
 import dev.cookiecode.rika2mqtt.rika.mqtt.MqttService;
 import dev.cookiecode.rika2mqtt.rika.mqtt.MqttServiceImpl;
 import dev.cookiecode.rika2mqtt.rika.mqtt.configuration.MqttConfigProperties;
 import dev.cookiecode.rika2mqtt.rika.mqtt.configuration.MqttConfiguration;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import org.eclipse.paho.client.mqttv3.MqttClient;
 import org.eclipse.paho.client.mqttv3.MqttConnectOptions;
@@ -34,7 +28,7 @@ import org.springframework.test.context.ActiveProfiles;
  *
  * @author Sebastien Vermeille
  */
-@SpringBootTest(classes = {MqttServiceImpl.class, MqttConfiguration.class})
+@SpringBootTest(classes = {MqttServiceImpl.class, MqttConfiguration.class, Gson.class})
 @ActiveProfiles("test")
 class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
 
@@ -50,22 +44,26 @@ class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
   }
 
   @Test
-  void publishMqttMessageShouldNotGenerateAnyException()
-      throws MqttException {
-// TODO: refactore and provide convenient assert methods/framework kit for integrations tests
-    List<String> receivedAnswers = new ArrayList<>();
+  void publishMqttMessageFromBridgeShouldEffectivelyPublishAMessageToMqtt() {
+    String message = "some apples";
 
-    var subscriber = getRandomMqttClient();
-    subscriber.subscribe(mqttConfigProperties.getTelemetryReportTopicName(), (topic, msg) -> {
-      receivedAnswers.add(msg.toString());
-    });
+    // Here, another mqtt client connect to the telemetry topic
+    // after using the bridge mqttService to publish to mqtt,
+    // the MQTT test client (outside the rika2mqtt bridge) should be able to receive that message
+    getMqttTestClient().assertThatMessageWasPublishedToMqttTopic(
+        message,
+        mqttConfigProperties.getTelemetryReportTopicName(),
+        () -> mqttService.publish(message)
+    );
+  }
 
-    mqttService.publish("test");
-
-    assertTimeout(Duration.ofSeconds(5), () -> {
-      assertFalse(receivedAnswers.isEmpty());
-      assertTrue(receivedAnswers.contains("test"));
-    });
+  private MqttTestClient getMqttTestClient() {
+    try {
+      var client = getRandomMqttClient();
+      return new MqttTestClient(client);
+    } catch (MqttException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private MqttClient getRandomMqttClient() throws MqttException {
@@ -85,4 +83,6 @@ class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
 
     return client;
   }
+
+
 }
