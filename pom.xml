@@ -24,7 +24,7 @@
         <!-- dependencies version-->
         <lombok.version>1.18.28</lombok.version>
         <flogger.version>0.7.4</flogger.version>
-        <hibernate.validator.version>8.0.0.Final</hibernate.validator.version>
+        <hibernate.validator.version>8.0.1.Final</hibernate.validator.version>
 
         <!-- test dependencies version -->
         <testcontainers.version>1.18.3</testcontainers.version>
@@ -48,7 +48,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.0</version>
+        <version>3.1.2</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
