@@ -57,42 +57,6 @@ class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
     );
   }
 
-//  @Test
-//  void receiveMqttCommandMessageShouldNotGenerateAnyException()
-//      throws MqttException {
-//
-//// TODO: refactore and provide convenient assert methods/framework kit for integrations tests
-//    List<String> receivedAnswers = new ArrayList<>();
-//
-//    var subscriber = getRandomMqttClient();
-//    subscriber.subscribe(mqttConfigProperties.getCommandTopicName(), (topic, msg) -> {
-//      System.out.println("Received message ...");
-//      receivedAnswers.add(msg.toString());
-//    });
-//
-//    var message = """
-//        {
-//           "stoveId": 43,
-//           "targetTemperature": 12
-//        }
-//        """;
-//
-//    var mqttClient = getRandomMqttClient();
-//    MqttMessage msg = new MqttMessage();
-//    msg.setQos(1);
-//    msg.setPayload(message.getBytes(StandardCharsets.UTF_8));
-//    mqttClient.publish(mqttConfigProperties.getCommandTopicName(), msg);
-//
-////
-////    assertTimeout(Duration.ofSeconds(15), () -> {
-////      assertFalse(receivedAnswers.isEmpty());
-////      assertTrue(receivedAnswers.contains(message));
-////      subscriber.disconnectForcibly();
-////
-////    });
-//
-//  }
-
   private MqttTestClient getMqttTestClient() {
     try {
       var client = getRandomMqttClient();
