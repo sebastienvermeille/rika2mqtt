@@ -53,6 +53,9 @@ import retrofit2.Response;
 @Flogger
 public class RikaFirenetServiceImpl implements RikaFirenetService {
 
+  static final String IGNORE_RECEIVED_PROPERTY_S_THIS_PROPERTY_IS_ALREADY_MANAGED = "Ignore received property '%s'. This property is already managed by rika2mqtt.";
+  public static final String KEEP_ALIVE_NOTIFICATION = "[KeepAlive] Authenticated to rika-firenet as the bridge had no activity since more than %s";
+  static final String AUTHENTICATED_SUCCESSFULLY = "Authenticated successfully to RIKA Firenet";
   private final RikaFirenetApi firenetApi;
 
   private final UpdatableControlsMapper updatableControlsMapper;
@@ -90,7 +93,7 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
         authenticate();
         log.atFinest()
             .log(
-                "[KeepAlive] Authenticated to rika-firenet as the bridge had no activity since more than %s",
+                    KEEP_ALIVE_NOTIFICATION,
                 this.rikaFirenetKeepAliveTimeout);
       } catch (final CouldNotAuthenticateToRikaFirenetException e) {
         log.atSevere().log(e.getMessage());
@@ -113,7 +116,7 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
         // it does a redirect when successfully authenticated
         this.connected = true;
         this.lastConnectivity = Instant.now(Clock.systemUTC());
-        log.atInfo().log("Authenticated successfully to RIKA Firenet");
+        log.atInfo().log(AUTHENTICATED_SUCCESSFULLY);
       } else {
         this.connected = false;
         throw new CouldNotAuthenticateToRikaFirenetException(
@@ -145,7 +148,7 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
   /**
    * @implNote This method use another HttpClient which is closable. This was required, as we need a
    * standalone web context (session, cookies) not related at all with the retrofit ones (okhttp)
-   * Otherwise, after a successfull login, even if you try with a wrong username:password -> it will
+   * Otherwise, after a successful login, even if you try with a wrong username:password -> it will
    * succeed. Which is not good as this method is used to test changes in the configuration
    */
   @Override
@@ -192,7 +195,7 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
             throw new InvalidStoveIdException(
                 String.format("Could not control stove %s. %n cause reported by RIKA: %s",
                     stoveId,
-                    response.errorBody().string()
+                    errorContent
                 )
             );
           }
@@ -212,7 +215,7 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
           throw new UnableToControlRikaFirenetException(String.format("Could not update settings of stove %s: Unknown reason.", stoveId));
         }
       }
-    } catch (IOException e) {
+    } catch (IOException | CouldNotAuthenticateToRikaFirenetException | UnableToRetrieveRikaFirenetDataException e) {
       throw new UnableToControlRikaFirenetException(
           String.format(
               "Could not take control of stove %s. An error occurred.",
@@ -220,10 +223,6 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
           ),
           e
       );
-    } catch (CouldNotAuthenticateToRikaFirenetException e) {
-      throw new RuntimeException(e);
-    } catch (UnableToRetrieveRikaFirenetDataException e) {
-      throw new RuntimeException(e);
     }
   }
 
@@ -237,16 +236,10 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
   void overrideRevision(Map<String, String> fields, UpdatableControls currentControls) {
     if(fields.containsKey(Fields.REVISION)){
       log.atWarning()
-          .log("Ignore received property '%s'. This property is already managed by rika2mqtt.", Fields.REVISION);
+          .log(IGNORE_RECEIVED_PROPERTY_S_THIS_PROPERTY_IS_ALREADY_MANAGED, Fields.REVISION);
       fields.remove(Fields.REVISION); // this property is anyway override later
     }
     fields.put(UpdatableControls.Fields.REVISION, String.valueOf(currentControls.getRevision()));
-  }
-
-  @Override
-  public void updateHeatingTimes(@NonNull StoveId stoveId, Map<String, String> fields)
-      throws UnableToControlRikaFirenetException {
-    throw new RuntimeException("This feature is not yet implemented.");
   }
 
   @Override
@@ -300,8 +293,7 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
         } else if (response.code() == 401) {
           log.atWarning().log(
               "Tried to get status of stove %s, but the bridge was no longer authorized. Please check rika.keepAlive "
-                  +
-                  "property.", stoveId);
+                  + "property.", stoveId);
           throw new CouldNotAuthenticateToRikaFirenetException(
               String.format("Could not retrieve stove %s status. %n cause: %s", stoveId,
                   response.errorBody().string()));

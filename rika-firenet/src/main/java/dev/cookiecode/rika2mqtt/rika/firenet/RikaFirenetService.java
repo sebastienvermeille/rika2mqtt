@@ -70,10 +70,4 @@ public interface RikaFirenetService {
    */
   void updateControls(@NonNull final StoveId stoveId, Map<String, String> fields)
       throws UnableToControlRikaFirenetException, InvalidStoveIdException, OutdatedRevisionException;
-
-  /**
-   * Update stove heating times
-   */
-  void updateHeatingTimes(@NonNull final StoveId stoveId, Map<String, String> fields)
-      throws UnableToControlRikaFirenetException;
 }
