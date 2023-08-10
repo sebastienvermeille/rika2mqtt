@@ -10,6 +10,7 @@ package dev.cookiecode.rika2mqtt.rika.firenet.model;
 
 import dev.cookiecode.rika2mqtt.rika.firenet.RikaFirenetServiceImpl;
 import dev.cookiecode.rika2mqtt.rika.firenet.mapper.UpdatableControlsMapper;
+import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldNameConstants;
 
@@ -20,7 +21,7 @@ import java.util.Map;
  * @implNote Each change in this field impacts directly {@link UpdatableControlsMapper}.
  */
 @Data
-@FieldNameConstants
+@FieldNameConstants(level = AccessLevel.PUBLIC)
 public class UpdatableControls {
   /**
    * revision field is managed by rika2mqtt {@link RikaFirenetServiceImpl#overrideRevision(Map, UpdatableControls)}
