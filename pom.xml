@@ -13,7 +13,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>dev.cookiecode</groupId>
   <artifactId>rika2mqtt-parent</artifactId>
-  <version>0.0.1</version>
+  <version>1.1.0</version>
   <name>rika2mqtt</name>
   <description>Bridge to control a Rka firenet stove through MQTT</description>
   <packaging>pom</packaging>
