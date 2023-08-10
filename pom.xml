@@ -289,12 +289,8 @@
 
   <repositories>
     <repository>
-      <id>spring-releases</id>
-      <name>Spring Releases</name>
-      <url>https://repo.spring.io/release</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
+      <id>central</id>
+      <url>https://repo1.maven.org/maven2</url>
     </repository>
   </repositories>
   <pluginRepositories>
@@ -302,14 +298,6 @@
       <id>mavencentral</id>
       <name>Maven central</name>
       <url>https://repo.maven.apache.org/maven2</url>
-    </pluginRepository>
-    <pluginRepository>
-      <id>spring-releases</id>
-      <name>Spring Releases</name>
-      <url>https://repo.spring.io/release</url>
-      <snapshots>
-        <enabled>false</enabled>
-      </snapshots>
     </pluginRepository>
   </pluginRepositories>
 
