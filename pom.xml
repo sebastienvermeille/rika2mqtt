@@ -33,6 +33,7 @@
     <!--plugins version -->
     <jacoco.maven.plugin.version>0.8.10</jacoco.maven.plugin.version>
     <sonar.maven.plugin.version>3.9.1.2184</sonar.maven.plugin.version>
+    <plugin.maven.gpg.version>3.1.0</plugin.maven.gpg.version>
 
     <!-- sonar analysis -->
     <sonar.organization>sebastienvermeille</sonar.organization>
@@ -148,7 +149,7 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>3.1.0</version>
+            <version>${plugin.maven.gpg.version}</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
@@ -275,6 +276,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-gpg-plugin</artifactId>
+        <version>${plugin.maven.gpg.version}</version>
       </plugin>
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
