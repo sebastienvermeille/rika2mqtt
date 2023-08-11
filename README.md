@@ -47,6 +47,14 @@ The user to use to connect to MQTT (optional depends on your mqtt config)
 The password associated to the user defined previously in MQTT_USER (optional depends on your mqtt
 config)
 
+## MQTT_COMMAND_TOPIC_NAME (Optional)
+The MQTT topic used to send command to RIKA2MQTT
+Default: `cmnd/rika2mqtt`
+
+## MQTT_TELEMETRY_REPORT_TOPIC_NAME (Optional)
+The MQTT topic used by RIKA2MQTT to publish RIKA status
+Default: `tele/rika2mqtt`
+
 
 # Other docs:
 * [FAQ](./FAQ.md)
