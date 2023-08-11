@@ -42,3 +42,10 @@ jobs:
           context: .
           push: true
           tags: cookiecodedev/rika2mqtt:latest, cookiecodedev/rika2mqtt:${{ github.event.release.name }}
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+          DISCORD_AVATAR: "https://github.com/sebastienvermeille/rika2mqtt/blob/master/assets/rika2mqtt.png"
+        uses: Ilshidur/action-discord@master
+        with:
+          args: '{{ EVENT_PAYLOAD.repository.full_name }} version {{ EVENT_PAYLOAD.release.name }} is out!'
