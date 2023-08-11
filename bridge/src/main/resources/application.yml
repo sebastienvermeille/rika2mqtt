@@ -3,10 +3,12 @@ rika:
   password: ${RIKA_PASSWORD}
   keepAliveTimeout: PT60S
 mqtt:
+  uri-scheme: ${MQTT_URI_SCHEME:tcp://}
   host: ${MQTT_HOST}
-  username: ${MQTT_USERNAME}
-  password: ${MQTT_PASSWORD}
-  telemetry-report-topic-name: ${MQTT_TELEMETRY_REPORT_TOPIC_NAME}
-  command-topic-name: ${MQTT_COMMAND_TOPIC_NAME}
+  port: ${MQTT_PORT:1883}
+  username: ${MQTT_USERNAME:""}
+  password: ${MQTT_PASSWORD:""}
+  telemetry-report-topic-name: ${MQTT_TELEMETRY_REPORT_TOPIC_NAME:tele/rika2mqtt}
+  command-topic-name: ${MQTT_COMMAND_TOPIC_NAME:cmnd/rika2mqtt}
 bridge:
   reportInterval: PT60S

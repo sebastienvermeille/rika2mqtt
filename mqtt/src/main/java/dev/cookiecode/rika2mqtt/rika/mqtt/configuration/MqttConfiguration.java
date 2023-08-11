@@ -69,7 +69,10 @@ public class MqttConfiguration {
     MqttConnectOptions options = new MqttConnectOptions();
     options.setServerURIs(
         new String[] {
-          "tcp://" + mqttConfigProperties.getHost() + ":" + mqttConfigProperties.getPort()
+          mqttConfigProperties.getUriScheme()
+              + mqttConfigProperties.getHost()
+              + ":"
+              + mqttConfigProperties.getPort()
         });
     options.setUserName(mqttConfigProperties.getUsername());
     options.setPassword(mqttConfigProperties.getPassword().toCharArray());
