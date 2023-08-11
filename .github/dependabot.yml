@@ -12,6 +12,9 @@ updates:
       - "sebastienvermeille"
     commit-message:
       prefix: "[maven] "
+    labels:
+      - "java"
+      - "dependencies"
 
   # Enable version updates for Docker
   - package-ecosystem: "docker"
@@ -26,3 +29,6 @@ updates:
       - "sebastienvermeille"
     commit-message:
       prefix: "[docker] "
+    labels:
+      - "docker"
+      - "dependencies"
