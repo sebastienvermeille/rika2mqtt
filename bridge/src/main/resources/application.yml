@@ -6,5 +6,7 @@ mqtt:
   host: ${MQTT_HOST}
   username: ${MQTT_USERNAME}
   password: ${MQTT_PASSWORD}
+  telemetry-report-topic-name: ${MQTT_TELEMETRY_REPORT_TOPIC_NAME}
+  command-topic-name: ${MQTT_COMMAND_TOPIC_NAME}
 bridge:
   reportInterval: PT60S

@@ -23,6 +23,10 @@ services:
 #      - MQTT_PASSWORD=secret
 #      - RIKA_EMAIL=<your email>
 #      - RIKA_PASSWORD=<your password>
+#optional properties
+#      - MQTT_COMMAND_TOPIC_NAME=cmnd/rika2mqtt
+#      - MQTT_TELEMETRY_REPORT_TOPIC_NAME=tele/rika2mqtt
+
 
 volumes:
   data:
