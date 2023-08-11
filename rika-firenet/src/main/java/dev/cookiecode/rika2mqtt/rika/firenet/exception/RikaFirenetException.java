@@ -8,16 +8,12 @@
 
 package dev.cookiecode.rika2mqtt.rika.firenet.exception;
 
+import lombok.experimental.StandardException;
+
 /**
  * @author Sebastien Vermeille
  */
+@StandardException
 public class RikaFirenetException extends Exception {
 
-  RikaFirenetException(String message) {
-    super(message);
-  }
-
-  RikaFirenetException(String message, Throwable cause) {
-    super(message, cause);
-  }
 }
