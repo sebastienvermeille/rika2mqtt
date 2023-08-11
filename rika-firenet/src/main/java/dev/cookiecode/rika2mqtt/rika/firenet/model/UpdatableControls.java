@@ -11,7 +11,6 @@ package dev.cookiecode.rika2mqtt.rika.firenet.model;
 import dev.cookiecode.rika2mqtt.rika.firenet.RikaFirenetServiceImpl;
 import dev.cookiecode.rika2mqtt.rika.firenet.mapper.UpdatableControlsMapper;
 import lombok.Data;
-import lombok.experimental.FieldNameConstants;
 
 import java.util.Map;
 
@@ -20,7 +19,6 @@ import java.util.Map;
  * @implNote Each change in this field impacts directly {@link UpdatableControlsMapper}.
  */
 @Data
-@FieldNameConstants
 public class UpdatableControls {
   /**
    * revision field is managed by rika2mqtt {@link RikaFirenetServiceImpl#overrideRevision(Map, UpdatableControls)}
@@ -44,4 +42,25 @@ public class UpdatableControls {
   private Boolean frostProtectionActive;
   private Integer frostProtectionTemperature;
   private Boolean onOff;
+
+  // @FieldNameConstants lombok annotation would generate this. Unfortunately at the moment it generates issues to generate
+  // javadoc: error: cannot find symbol
+  public static final class Fields {
+    public static final String REVISION = "revision";
+    public static final String OPERATING_MODE = "operatingMode";
+    public static final String HEATING_POWER = "heatingPower";
+    public static final String TARGET_TEMPERATURE = "targetTemperature";
+    public static final String BAKE_TEMPERATURE = "bakeTemperature";
+    public static final String HEATING_TIMES_ACTIVE_FOR_COMFORT = "heatingTimesActiveForComfort";
+    public static final String SET_BACK_TEMPERATURE = "setBackTemperature";
+    public static final String CONVECTION_FAN1_ACTIVE = "convectionFan1Active";
+    public static final String CONVECTION_FAN1_LEVEL = "convectionFan1Level";
+    public static final String CONVECTION_FAN1_AREA = "convectionFan1Area";
+    public static final String CONVECTION_FAN2_ACTIVE = "convectionFan2Active";
+    public static final String CONVECTION_FAN2_LEVEL = "convectionFan2Level";
+    public static final String CONVECTION_FAN2_AREA = "convectionFan2Area";
+    public static final String FROST_PROTECTION_ACTIVE = "frostProtectionActive";
+    public static final String FROST_PROTECTION_TEMPERATURE = "frostProtectionTemperature";
+    public static final String ON_OFF = "onOff";
+  }
 }
