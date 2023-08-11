@@ -19,7 +19,7 @@ public class StoveStatus {
 
   private String name;
 
-  @SerializedName("stoveID")  // for coherence (the rest of the api is using camelCase)
+  @SerializedName(value = "stoveId", alternate = {"stoveID"})  // for coherence (the rest of the api is using camelCase)
   private Long stoveId;
 
   private Long lastSeenMinutes;
