@@ -193,7 +193,7 @@ class BridgeTest {
   }
 
   @Test
-  public void testLogMessage(CapturedOutput output) {
+  public void onReceiveMqttCommandShouldPrintALogMessageWhenItReceivesACommand(CapturedOutput output) {
 
     // GIVEN
     final var stoveId = 42L;
@@ -206,6 +206,8 @@ class BridgeTest {
     bridge.onReceiveMqttCommand(event);
 
     // THEN
-    assertTrue(output.getOut().contains(format(RECEIVED_MQTT_COMMAND_FOR_STOVE_S, stoveId)));
+    await()
+            .atMost(5, SECONDS)
+            .untilAsserted(() -> assertTrue(output.getAll().contains(format(RECEIVED_MQTT_COMMAND_FOR_STOVE_S, stoveId))));
   }
 }
