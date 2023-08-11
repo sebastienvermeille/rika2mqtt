@@ -193,7 +193,7 @@ class BridgeTest {
   }
 
   @Test
-  public void onReceiveMqttCommandShouldPrintALogMessageWhenItReceivesACommand(CapturedOutput output) {
+  void onReceiveMqttCommandShouldPrintALogMessageWhenItReceivesACommand(CapturedOutput output) {
 
     // GIVEN
     final var stoveId = 42L;

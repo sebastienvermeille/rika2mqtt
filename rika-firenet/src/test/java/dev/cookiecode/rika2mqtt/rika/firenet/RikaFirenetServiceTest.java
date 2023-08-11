@@ -114,6 +114,7 @@ class RikaFirenetServiceTest {
    * @implNote This test work because this class artificially change the value of rika.keepAliveTimeout (See class header)
    */
   @Test
+  @SuppressWarnings({"java:S2925"}) // Sonar is right about Thread.sleep. As this is happening in context of an integration test, it can be ignored.
   void keepAliveShouldInvokeAuthenticateMoreThanOnceGivenMultipleInvocationInABigEnoughAmountOfTime(CapturedOutput output) throws Exception {
     // GIVEN
     initSuccessLoginMock();
@@ -553,7 +554,7 @@ class RikaFirenetServiceTest {
     this.rikaFirenetService.overrideRevision(fields, freshStatus);
 
     // THEN
-    assertThat(fields.get(Fields.REVISION)).isEqualTo(freshStatus.getRevision().toString());
+    assertThat(fields).containsEntry(Fields.REVISION, freshStatus.getRevision().toString());
   }
 
   @Test

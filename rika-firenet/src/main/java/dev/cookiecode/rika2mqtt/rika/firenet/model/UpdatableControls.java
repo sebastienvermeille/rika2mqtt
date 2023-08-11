@@ -8,11 +8,15 @@
 
 package dev.cookiecode.rika2mqtt.rika.firenet.model;
 
+import static lombok.AccessLevel.NONE;
+
 import dev.cookiecode.rika2mqtt.rika.firenet.RikaFirenetServiceImpl;
 import dev.cookiecode.rika2mqtt.rika.firenet.mapper.UpdatableControlsMapper;
+import lombok.AccessLevel;
 import lombok.Data;
 
 import java.util.Map;
+import lombok.NoArgsConstructor;
 
 /**
  * @author Sebastien Vermeille
@@ -45,6 +49,7 @@ public class UpdatableControls {
 
   // @FieldNameConstants lombok annotation would generate this. Unfortunately at the moment it generates issues to generate
   // javadoc: error: cannot find symbol
+  @NoArgsConstructor(access = NONE)
   public static final class Fields {
     public static final String REVISION = "revision";
     public static final String OPERATING_MODE = "operatingMode";
