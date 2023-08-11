@@ -1,7 +1,33 @@
 {
-    "name": "docs.page",
+    "name": "Rika2Mqtt",
+    "description": "Connect your RIKA stove to MQTT and gain control the way you want!",
+    "logo": "https://github.com/sebastienvermeille/rika2mqtt/blob/master/assets/rika2mqtt.png?raw=true",
     "theme": "#36B9B9",
+    "anchors": [
+      { "title": "Homepage", "icon": "house", "link": "https://rika2mqtt.cookiecode.dev/" },
+      { "title": "Discord", "icon": "discord", "link": "https://discord.gg/2dUzYpTA" }
+    ],
     "sidebar": [
-      ["Home", "/"],
-    ]
-  }
+      ["Getting Started", [
+        ["Overview", "/"],
+        ["Getting Started", "/getting-started"],
+        ["Configuration", "/configuration"]
+      ]],
+      ["Examples", [
+        ["Publish stove status to MQTT", "/example-telemetry-mqtt"],
+        ["Control RIKA stove via MQTT", "/example-command-mqtt"]
+      ]],
+      ["Misc.", [
+        ["Contributing", "/contributing"]
+      ]]
+    ],
+    "variables": {
+      "versions": {
+        "stable": "1.1.0"
+      },
+      "config": {
+        "defaultTelemetryReportTopicName": "tele/rika2mqtt",
+        "defaultCommandTopicName": "cmnd/rika2mqtt"
+      }
+    }
+}
