@@ -16,6 +16,20 @@
   <version>1.1.0</version>
   <name>rika2mqtt</name>
   <description>Bridge to control a Rka firenet stove through MQTT</description>
+  <inceptionYear>2022</inceptionYear>
+  <organization>
+    <name>CookieCode.dev</name>
+    <url>https://cookiecode.dev</url>
+  </organization>
+  <contributors>
+    <contributor>
+      <name>sebastienvermeille</name>
+      <email>sebastien.vermeille@gmail.com</email>
+      <roles>
+        <role>maintainer</role>
+      </roles>
+    </contributor>
+  </contributors>
   <packaging>pom</packaging>
 
   <properties>
@@ -302,6 +316,30 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>4.1</version>
+        <configuration>
+          <properties>
+            <owner>Sebastien Vermeille</owner>
+            <email>sebastien.vermeille@gmail.com</email>
+            <mapping>
+              <java>JAVAPKG_STYLE</java>
+            </mapping>
+          </properties>
+          <licenseSets>
+            <licenseSet>
+              <header>com/mycila/maven/plugin/license/templates/MIT.txt</header>
+              <excludes>
+                <exclude>**/*.md</exclude>
+                <exclude>src/test/resources/**</exclude>
+                <exclude>src/main/resources/**</exclude>
+              </excludes>
+            </licenseSet>
+          </licenseSets>
+        </configuration>
       </plugin>
     </plugins>
   </build>
