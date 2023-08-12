@@ -8,47 +8,48 @@
 
 package dev.cookiecode.rika2mqtt.rika.firenet.model;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import com.google.gson.Gson;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 /**
  * Test class
  *
  * @author Sebastien Vermeille
  */
-@SpringBootTest(classes = {
-        Gson.class,
-})
+@SpringBootTest(
+    classes = {
+      Gson.class,
+    })
 class StoveStatusSerdeTest {
 
-    static final String UNDESIRED_STOVE_ID_NAMING = "stoveID";
-    static final String DESIRED_STOVE_ID_NAMING = "stoveId";
-    @Autowired Gson gson;
+  static final String UNDESIRED_STOVE_ID_NAMING = "stoveID";
+  static final String DESIRED_STOVE_ID_NAMING = "stoveId";
+  @Autowired Gson gson;
 
-    @Test
-    void serializationOfStoveStatusToJsonShouldNotPropagateUppercaseId(){
-        // GIVEN
-        var status = new StoveStatus();
-        status.setStoveId(12L);
+  @Test
+  void serializationOfStoveStatusToJsonShouldNotPropagateUppercaseId() {
+    // GIVEN
+    var status = new StoveStatus();
+    status.setStoveId(12L);
 
-        // WHEN
-        var jsonResult = gson.toJson(status);
+    // WHEN
+    var jsonResult = gson.toJson(status);
 
-        // THEN
-        assertThat(jsonResult).doesNotContain(UNDESIRED_STOVE_ID_NAMING);
-        assertThat(jsonResult).contains(DESIRED_STOVE_ID_NAMING);
-    }
+    // THEN
+    assertThat(jsonResult).doesNotContain(UNDESIRED_STOVE_ID_NAMING);
+    assertThat(jsonResult).contains(DESIRED_STOVE_ID_NAMING);
+  }
 
-    @Test
-    void serializationOfRikaFirenetResponseToJsonShouldNotPropagateUppercaseId(){
-        // GIVEN
-        // note: contains stoveID <-- ID not Id which violates camel case
-        String rikaFirenetResponse = """
+  @Test
+  void serializationOfRikaFirenetResponseToJsonShouldNotPropagateUppercaseId() {
+    // GIVEN
+    // note: contains stoveID <-- ID not Id which violates camel case
+    String rikaFirenetResponse =
+        """
                 {
                   "name": "My great stove",
                   "stoveID": 42,
@@ -189,14 +190,13 @@ class StoveStatusSerdeTest {
                 }
          """;
 
-        var deserializedStatus = gson.fromJson(rikaFirenetResponse, StoveStatus.class);
+    var deserializedStatus = gson.fromJson(rikaFirenetResponse, StoveStatus.class);
 
-        // WHEN
-        var serializedStatus = gson.toJson(deserializedStatus);
+    // WHEN
+    var serializedStatus = gson.toJson(deserializedStatus);
 
-        // THEN
-        assertThat(serializedStatus).doesNotContain(UNDESIRED_STOVE_ID_NAMING);
-        assertThat(serializedStatus).contains(DESIRED_STOVE_ID_NAMING);
-    }
-
+    // THEN
+    assertThat(serializedStatus).doesNotContain(UNDESIRED_STOVE_ID_NAMING);
+    assertThat(serializedStatus).contains(DESIRED_STOVE_ID_NAMING);
+  }
 }

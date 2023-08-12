@@ -39,14 +39,15 @@ public abstract class AbstractBaseIntegrationTest {
   public static final String DOCKER_IMAGE_NAME = "eclipse-mosquitto:2.0.14";
   static final String MOSQUITTO_BROKER_CONFIG = "src/test/resources/mosquitto/mosquitto.conf";
   static final String MOSQUITTO_BROKER_CONFIG_CONTAINER_PATH = "/mosquitto/config/mosquitto.conf";
-  static final String MOSQUITTO_BROKER_PASSWORD_FILE = "src/test/resources/mosquitto/mosquitto_passwordfile"; // testuser:secret
+  static final String MOSQUITTO_BROKER_PASSWORD_FILE =
+      "src/test/resources/mosquitto/mosquitto_passwordfile"; // testuser:secret
   static final String MOSQUITTO_BROKER_PASSWORDFILE_CONTAINER_PATH =
       "/mosquitto/config/mosquitto_passwordfile";
   static GenericContainer<?> MQTT_SERVER;
 
   @Container
-  static MockServerContainer rikaMockServer = new MockServerContainer(
-      DockerImageName.parse("mockserver/mockserver:5.15.0"));
+  static MockServerContainer rikaMockServer =
+      new MockServerContainer(DockerImageName.parse("mockserver/mockserver:5.15.0"));
 
   @AfterAll
   public static void stopMqttBrokerTestContainer() {
@@ -55,7 +56,7 @@ public abstract class AbstractBaseIntegrationTest {
 
   /**
    * @implNote The DynamicPropertyRegistry overides application-test.properties in the resource
-   * folder, with value in the container static methods.
+   *     folder, with value in the container static methods.
    */
   @DynamicPropertySource
   static void overrideTestProperties(DynamicPropertyRegistry registry) {
@@ -65,24 +66,21 @@ public abstract class AbstractBaseIntegrationTest {
 
   @DynamicPropertySource
   static void registerMockServerProperties(final DynamicPropertyRegistry registry) {
-    registry.add("rika.url",
+    registry.add(
+        "rika.url",
         () -> "http://" + rikaMockServer.getHost() + ":" + rikaMockServer.getServerPort());
   }
 
   @BeforeAll
   public static void start() {
     // inspired from https://www.ivankrizsan.se/2022/02/20/mqtt-broker-client/
-    MQTT_SERVER = new GenericContainer<>(DOCKER_IMAGE_NAME)
-        .withExposedPorts(1883, 9001)
-        .withFileSystemBind(
-            MOSQUITTO_BROKER_CONFIG,
-            MOSQUITTO_BROKER_CONFIG_CONTAINER_PATH
-        )
-        .withFileSystemBind(
-            MOSQUITTO_BROKER_PASSWORD_FILE,
-            MOSQUITTO_BROKER_PASSWORDFILE_CONTAINER_PATH
-        )
-        .waitingFor(forLogMessage(".*mosquitto.*", 1));
+    MQTT_SERVER =
+        new GenericContainer<>(DOCKER_IMAGE_NAME)
+            .withExposedPorts(1883, 9001)
+            .withFileSystemBind(MOSQUITTO_BROKER_CONFIG, MOSQUITTO_BROKER_CONFIG_CONTAINER_PATH)
+            .withFileSystemBind(
+                MOSQUITTO_BROKER_PASSWORD_FILE, MOSQUITTO_BROKER_PASSWORDFILE_CONTAINER_PATH)
+            .waitingFor(forLogMessage(".*mosquitto.*", 1));
     MQTT_SERVER.start();
 
     initSuccessLoginMock();
@@ -93,12 +91,7 @@ public abstract class AbstractBaseIntegrationTest {
 
   public static void initSuccessLoginMock() {
     new MockServerClient(rikaMockServer.getHost(), rikaMockServer.getServerPort())
-        .when(
-            request()
-                .withMethod("POST")
-                .withPath("/web/login"),
-            Times.unlimited()
-        )
+        .when(request().withMethod("POST").withPath("/web/login"), Times.unlimited())
         .respond(
             response()
                 .withStatusCode(200)
@@ -182,27 +175,24 @@ public abstract class AbstractBaseIntegrationTest {
                                         </div>
                                     </div>
                                 </body>
-                            </html>               
-                        """
-                )
-        );
+                            </html>
+                        """));
   }
 
   public static void initStovesListMock(final Set<StoveId> stoves) {
     // TODO: support list
     new MockServerClient(rikaMockServer.getHost(), rikaMockServer.getServerPort())
         .when(
-            request()
-                .withMethod("GET")
-                .withPath("/web/summary"),
-//            Times.once() // TODO: redo
-            Times.unlimited()
-        )
+            request().withMethod("GET").withPath("/web/summary"),
+            //            Times.once() // TODO: redo
+            Times.unlimited())
         .respond(
             response()
                 .withStatusCode(200)
                 .withContentType(HTML_UTF_8)
-                .withBody(String.format("""
+                .withBody(
+                    String.format(
+                        """
                     <!DOCTYPE html>
                         <html lang="en" dir="ltr">
                             <head>
@@ -211,25 +201,23 @@ public abstract class AbstractBaseIntegrationTest {
                               <a href="/web/stove/%s">Some stove</a>
                             </body>
                         </html>
-                    """, stoves.stream().findFirst().map(StoveId::id).orElse(0L)) // TODO: cleanup
-                )
-        );
+                    """,
+                        stoves.stream().findFirst().map(StoveId::id).orElse(0L)) // TODO: cleanup
+                    ));
   }
 
   public static void initStoveStatusMock(final StoveId stoveId) {
     new MockServerClient(rikaMockServer.getHost(), rikaMockServer.getServerPort())
         .when(
-            request()
-                .withMethod("GET")
-                .withPath("/api/client/" + stoveId.id() + "/status"),
-            Times.unlimited()
-        )
+            request().withMethod("GET").withPath("/api/client/" + stoveId.id() + "/status"),
+            Times.unlimited())
         .respond(
             response()
                 .withStatusCode(200)
                 .withContentType(APPLICATION_JSON)
-                .withBody(String.format(
-                    """
+                .withBody(
+                    String.format(
+                        """
                             {
                               "name": "Stove name",
                               "stoveID": "%s",
@@ -375,20 +363,14 @@ public abstract class AbstractBaseIntegrationTest {
                                 "bakeMode": false
                               },
                               "oem": "RIKA"
-                            }                  
-                        """, stoveId.id())
-                )
-        );
+                            }
+                        """,
+                        stoveId.id())));
   }
 
   public void initFailureLoginMock() {
     new MockServerClient(rikaMockServer.getHost(), rikaMockServer.getServerPort())
-        .when(
-            request()
-                .withMethod("POST")
-                .withPath("/web/login"),
-            Times.once()
-        )
+        .when(request().withMethod("POST").withPath("/web/login"), Times.once())
         .respond(
             response()
                 .withStatusCode(200)
@@ -454,8 +436,6 @@ public abstract class AbstractBaseIntegrationTest {
                                 </div>
                             </body>
                         </html>
-                        """
-                )
-        );
+                        """));
   }
 }

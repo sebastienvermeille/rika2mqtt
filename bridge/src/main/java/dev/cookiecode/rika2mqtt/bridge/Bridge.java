@@ -25,7 +25,6 @@ import jakarta.annotation.PostConstruct;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
-
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.flogger.Flogger;
@@ -44,9 +43,14 @@ public class Bridge {
 
   static final String INITIALIZING_BRIDGE = "Initializing Rika2Mqtt bridge :";
   static final String RECEIVED_MQTT_COMMAND_FOR_STOVE_S = "Received mqtt command for stove: %s";
-  static final String COULD_NOT_PROCESS_THE_RECEIVED_MQTT_COMMAND_S = "Could not process the received mqtt command: %s";
-  static final String COULD_NOT_RETRIEVE_ANY_STOVE_LINKED_WITH_ACCOUNT_S_PLEASE_DOUBLE_CHECK_YOUR_CONFIGURATION = "Could not retrieve any stove linked with account %s. Please double-check your configuration.";
-  static final String WILL_NOW_RETRIEVE_STATUS_FOR_EACH_DECLARED_STOVES_AT_INTERVAL_OF_S_AND_PUBLISH_IT_BACK_TO_MQTT = "Will now retrieve status for each declared stove(s) at interval of %s and publish it back to mqtt.";
+  static final String COULD_NOT_PROCESS_THE_RECEIVED_MQTT_COMMAND_S =
+      "Could not process the received mqtt command: %s";
+  static final String
+      COULD_NOT_RETRIEVE_ANY_STOVE_LINKED_WITH_ACCOUNT_S_PLEASE_DOUBLE_CHECK_YOUR_CONFIGURATION =
+          "Could not retrieve any stove linked with account %s. Please double-check your configuration.";
+  static final String
+      WILL_NOW_RETRIEVE_STATUS_FOR_EACH_DECLARED_STOVES_AT_INTERVAL_OF_S_AND_PUBLISH_IT_BACK_TO_MQTT =
+          "Will now retrieve status for each declared stove(s) at interval of %s and publish it back to mqtt.";
   private final RikaFirenetService rikaFirenetService;
   private final MqttService mqttService;
 
@@ -71,8 +75,8 @@ public class Bridge {
   }
 
   /**
-   * @implNote should not log messages ideally.
-   * reason: {@link Bridge#printStartupMessages()} will print the supposed first message
+   * @implNote should not log messages ideally. reason: {@link Bridge#printStartupMessages()} will
+   *     print the supposed first message
    */
   @VisibleForTesting
   void initStoves(List<StoveId> stoveIds) {
@@ -81,64 +85,61 @@ public class Bridge {
   }
 
   @VisibleForTesting
-  void printStartupMessages(){
+  void printStartupMessages() {
     var maskedEmailAccount = emailObfuscator.maskEmailAddress(rikaEmailAccount);
     if (stoveIds.isEmpty()) {
       log.atSevere().log(
-              COULD_NOT_RETRIEVE_ANY_STOVE_LINKED_WITH_ACCOUNT_S_PLEASE_DOUBLE_CHECK_YOUR_CONFIGURATION,
-              maskedEmailAccount);
+          COULD_NOT_RETRIEVE_ANY_STOVE_LINKED_WITH_ACCOUNT_S_PLEASE_DOUBLE_CHECK_YOUR_CONFIGURATION,
+          maskedEmailAccount);
     } else {
-      log.atInfo()
-              .log("Found %s stoves linked with account %s.", stoveIds.size(), maskedEmailAccount);
       log.atInfo().log(
-              WILL_NOW_RETRIEVE_STATUS_FOR_EACH_DECLARED_STOVES_AT_INTERVAL_OF_S_AND_PUBLISH_IT_BACK_TO_MQTT,
-              bridgeReportInterval);
+          "Found %s stoves linked with account %s.", stoveIds.size(), maskedEmailAccount);
+      log.atInfo().log(
+          WILL_NOW_RETRIEVE_STATUS_FOR_EACH_DECLARED_STOVES_AT_INTERVAL_OF_S_AND_PUBLISH_IT_BACK_TO_MQTT,
+          bridgeReportInterval);
     }
   }
-  /**
-   * Poll rika-firenet stove status regularly and publish to MQTT
-   */
+  /** Poll rika-firenet stove status regularly and publish to MQTT */
   @Scheduled(fixedDelayString = "${bridge.reportInterval}")
   void publishToMqtt() {
-    stoveIds.forEach(stoveId -> {
-      final StoveStatus status;
+    stoveIds.forEach(
+        stoveId -> {
+          final StoveStatus status;
 
-      try {
-        status = rikaFirenetService.getStatus(stoveId);
-        mqttService.publish(gson.toJson(status));
-      } catch (InvalidStoveIdException e) {
-        // TODO: could occurs if a stove is added later (after deployment of this rika2mqtt instance, might be valuable to perform a reload of stoves "periodically") -> should be evaluated
-        this.stoveIds.remove(stoveId);
-        log.atSevere().log(e.getMessage(), e);
-      } catch (CouldNotAuthenticateToRikaFirenetException e) {
-        log.atSevere()
-            .withCause(e)
-            .log(e.getMessage()); // TODO: implement a strategy (goal: avoid ban if each minutes we try to auth with wrong credentials...)
-        // That could happens if for some reason as user you change your password but forget about your rika2mqtt instance.
-      } catch (UnableToRetrieveRikaFirenetDataException e) {
-        log.atSevere().log(e.getMessage(), e);
-      }
-    });
+          try {
+            status = rikaFirenetService.getStatus(stoveId);
+            mqttService.publish(gson.toJson(status));
+          } catch (InvalidStoveIdException e) {
+            // TODO: could occurs if a stove is added later (after deployment of this rika2mqtt
+            // instance, might be valuable to perform a reload of stoves "periodically") -> should
+            // be evaluated
+            this.stoveIds.remove(stoveId);
+            log.atSevere().log(e.getMessage(), e);
+          } catch (CouldNotAuthenticateToRikaFirenetException e) {
+            log.atSevere().withCause(e).log(
+                e.getMessage()); // TODO: implement a strategy (goal: avoid ban if each minutes
+            // we try to auth with wrong credentials...)
+            // That could happens if for some reason as user you change your password but forget
+            // about your rika2mqtt instance.
+          } catch (UnableToRetrieveRikaFirenetDataException e) {
+            log.atSevere().log(e.getMessage(), e);
+          }
+        });
   }
 
-  /**
-   * Forward MQTT commands to rika-firenet
-   */
+  /** Forward MQTT commands to rika-firenet */
   @EventListener(MqttCommandEvent.class)
   public void onReceiveMqttCommand(@NonNull MqttCommandEvent event) {
     try {
-      log.atInfo()
-          .log(RECEIVED_MQTT_COMMAND_FOR_STOVE_S, event.getStoveId().toString());
+      log.atInfo().log(RECEIVED_MQTT_COMMAND_FOR_STOVE_S, event.getStoveId().toString());
 
       rikaFirenetService.updateControls(StoveId.of(event.getStoveId()), event.getProps());
     } catch (UnableToControlRikaFirenetException | InvalidStoveIdException ex) {
-      log.atSevere()
-          .withCause(ex)
-          .log(COULD_NOT_PROCESS_THE_RECEIVED_MQTT_COMMAND_S, ex.getMessage());
+      log.atSevere().withCause(ex).log(
+          COULD_NOT_PROCESS_THE_RECEIVED_MQTT_COMMAND_S, ex.getMessage());
     } catch (OutdatedRevisionException ex) {
-      log.atWarning()
-          .withCause(ex)
-          .log(COULD_NOT_PROCESS_THE_RECEIVED_MQTT_COMMAND_S, ex.getMessage());
+      log.atWarning().withCause(ex).log(
+          COULD_NOT_PROCESS_THE_RECEIVED_MQTT_COMMAND_S, ex.getMessage());
       // TODO: implement a retry policy (once at least)
     }
   }

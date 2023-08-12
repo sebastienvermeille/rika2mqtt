@@ -27,11 +27,12 @@ public class Sensors {
   private Integer outputDischargeMotor;
   private Integer outputDischargeCurrent;
 
-  @SerializedName("outputIDFan")  // for coherence (the rest of the api is using camelCase)
+  @SerializedName("outputIDFan") // for coherence (the rest of the api is using camelCase)
   private Integer outputIdFan;
 
-  @SerializedName("outputIDFanTarget")  // for coherence (the rest of the api is using camelCase)
+  @SerializedName("outputIDFanTarget") // for coherence (the rest of the api is using camelCase)
   private Integer outputIdFanTarget;
+
   private Integer outputInsertionMotor;
   private Integer outputInsertionCurrent;
   private Integer outputAirFlaps;
@@ -51,11 +52,12 @@ public class Sensors {
   private Double inputBoardTemperature;
   private Integer inputCurrentStage;
 
-  @SerializedName("inputTargetStagePID")  // for coherence (the rest of the api is using camelCase)
+  @SerializedName("inputTargetStagePID") // for coherence (the rest of the api is using camelCase)
   private Integer inputTargetStagePid;
 
-  @SerializedName("inputCurrentStagePID")  // for coherence (the rest of the api is using camelCase)
+  @SerializedName("inputCurrentStagePID") // for coherence (the rest of the api is using camelCase)
   private Integer inputCurrentStagePid;
+
   private Integer statusMainState;
   private Integer statusSubState;
   private Integer statusWifiStrength;
@@ -65,11 +67,12 @@ public class Sensors {
   private Integer parameterLanguageNumber;
   private Integer parameterVersionMainBoard;
 
-  @SerializedName("parameterVersionTFT")  // for coherence (the rest of the api is using camelCase)
+  @SerializedName("parameterVersionTFT") // for coherence (the rest of the api is using camelCase)
   private Integer parameterVersionTft;
 
-  @SerializedName("parameterVersionWiFi")  // for coherence (the rest of the api use Wifi not WiFi)
+  @SerializedName("parameterVersionWiFi") // for coherence (the rest of the api use Wifi not WiFi)
   private Integer parameterVersionWifi;
+
   private Integer parameterVersionMainBoardBootLoader;
 
   @SerializedName("parameterVersionTFTBootLoader")
@@ -79,6 +82,7 @@ public class Sensors {
   @SerializedName("parameterVersionWiFiBootLoader")
   // for coherence (the rest of the api is using camelCase)
   private Integer parameterVersionWifiBootLoader;
+
   private Integer parameterVersionMainBoardSub;
 
   @SerializedName("parameterVersionTFTSub")
@@ -88,6 +92,7 @@ public class Sensors {
   @SerializedName("parameterVersionWiFiSub")
   // for coherence (the rest of the api use Wifi not WiFi)
   private Integer parameterVersionWifiSub;
+
   private Integer parameterRuntimePellets;
   private Integer parameterRuntimeLogs;
   private Integer parameterFeedRateTotal;
@@ -122,8 +127,9 @@ public class Sensors {
   private Boolean statusFrostStarted;
   private Integer parameterSpiralMotorsTuning;
 
-  @SerializedName("parameterIDFanTuning")  // for coherence (the rest of the api is using camelCase)
+  @SerializedName("parameterIDFanTuning") // for coherence (the rest of the api is using camelCase)
   private Integer parameterIdFanTuning;
+
   private Integer parameterCleanIntervalBig;
   private Integer parameterKgTillCleaning;
   private Integer parameterDebug0;

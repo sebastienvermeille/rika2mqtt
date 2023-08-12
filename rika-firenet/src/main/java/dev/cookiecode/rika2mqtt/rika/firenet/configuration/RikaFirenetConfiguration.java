@@ -18,6 +18,4 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 @Configuration
 @EnableScheduling
 @EnableConfigurationProperties(RikaFirenetConfigProperties.class)
-public class RikaFirenetConfiguration
-{
-}
+public class RikaFirenetConfiguration {}

@@ -26,12 +26,9 @@ import dev.cookiecode.rika2mqtt.rika.firenet.RikaFirenetService;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
 import dev.cookiecode.rika2mqtt.rika.mqtt.MqttService;
 import dev.cookiecode.rika2mqtt.rika.mqtt.event.MqttCommandEvent;
-
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -51,25 +48,19 @@ import org.springframework.boot.test.system.OutputCaptureExtension;
 @ExtendWith(OutputCaptureExtension.class)
 class BridgeTest {
 
-  @Mock
-  RikaFirenetService rikaFirenetService;
-  @Mock
-  MqttService mqttService;
-  @Mock
-  EmailObfuscator emailObfuscator;
-  @Mock
-  Gson gson;
-  @InjectMocks
-  @Spy
-  Bridge bridge;
+  @Mock RikaFirenetService rikaFirenetService;
+  @Mock MqttService mqttService;
+  @Mock EmailObfuscator emailObfuscator;
+  @Mock Gson gson;
+  @InjectMocks @Spy Bridge bridge;
 
   @BeforeEach
-  void setUp(){
+  void setUp() {
     bridge.initStoves(emptyList()); // reset list
   }
 
   @Test
-  void initShouldInitStovesWithRetrieveStovesFromRikaFirenet(){
+  void initShouldInitStovesWithRetrieveStovesFromRikaFirenet() {
     // GIVEN
     List<StoveId> stoveIds = List.of(StoveId.of(15L));
     when(rikaFirenetService.getStoves()).thenReturn(stoveIds);
@@ -83,7 +74,7 @@ class BridgeTest {
   }
 
   @Test
-  void initShouldInvokePrintStartupMessages(){
+  void initShouldInvokePrintStartupMessages() {
     // GIVEN
     when(rikaFirenetService.getStoves()).thenReturn(List.of(StoveId.of(15L)));
 
@@ -95,7 +86,7 @@ class BridgeTest {
   }
 
   @Test
-  void printStartupMessagesShouldObfuscateEmail(){
+  void printStartupMessagesShouldObfuscateEmail() {
     // GIVEN
     // nothing special
 
@@ -107,7 +98,8 @@ class BridgeTest {
   }
 
   @Test
-  void printStartupMessagesShouldPrintLogMessageWhenNoStovesAreLinkedToTheAccount(CapturedOutput output){
+  void printStartupMessagesShouldPrintLogMessageWhenNoStovesAreLinkedToTheAccount(
+      CapturedOutput output) {
     // GIVEN
     bridge.initStoves(emptyList());
 
@@ -116,12 +108,21 @@ class BridgeTest {
 
     // THEN
     await()
-      .atMost(5, SECONDS)
-      .untilAsserted(() -> assertTrue(output.getAll().contains(format(COULD_NOT_RETRIEVE_ANY_STOVE_LINKED_WITH_ACCOUNT_S_PLEASE_DOUBLE_CHECK_YOUR_CONFIGURATION, (String) null))));
+        .atMost(5, SECONDS)
+        .untilAsserted(
+            () ->
+                assertTrue(
+                    output
+                        .getAll()
+                        .contains(
+                            format(
+                                COULD_NOT_RETRIEVE_ANY_STOVE_LINKED_WITH_ACCOUNT_S_PLEASE_DOUBLE_CHECK_YOUR_CONFIGURATION,
+                                (String) null))));
   }
 
   @Test
-  void printStartupMessagesShouldPrintLogMessageWhenStovesAreLinkedToTheAccount(CapturedOutput output){
+  void printStartupMessagesShouldPrintLogMessageWhenStovesAreLinkedToTheAccount(
+      CapturedOutput output) {
     // GIVEN
     List<StoveId> stoveIds = List.of(StoveId.of(15L));
     bridge.initStoves(stoveIds);
@@ -132,18 +133,22 @@ class BridgeTest {
 
     // THEN
     await()
-      .atMost(5, SECONDS)
-      .untilAsserted(() -> assertTrue(output.getAll().contains(format(WILL_NOW_RETRIEVE_STATUS_FOR_EACH_DECLARED_STOVES_AT_INTERVAL_OF_S_AND_PUBLISH_IT_BACK_TO_MQTT, (Duration) null))));
+        .atMost(5, SECONDS)
+        .untilAsserted(
+            () ->
+                assertTrue(
+                    output
+                        .getAll()
+                        .contains(
+                            format(
+                                WILL_NOW_RETRIEVE_STATUS_FOR_EACH_DECLARED_STOVES_AT_INTERVAL_OF_S_AND_PUBLISH_IT_BACK_TO_MQTT,
+                                (Duration) null))));
   }
 
   @Test
   void publishToMqttShouldInvokeMqttServicePublishForEachStove() {
     // GIVEN
-    final var stoves = List.of(
-        StoveId.of(1L),
-        StoveId.of(2L),
-        StoveId.of(3L)
-    );
+    final var stoves = List.of(StoveId.of(1L), StoveId.of(2L), StoveId.of(3L));
     bridge.initStoves(stoves);
 
     // WHEN
@@ -159,11 +164,7 @@ class BridgeTest {
     final var firstStove = StoveId.of(1L);
     final var secondStove = StoveId.of(2L);
     final var thirdStove = StoveId.of(3L);
-    final var stoves = List.of(
-      firstStove,
-      secondStove,
-      thirdStove
-    );
+    final var stoves = List.of(firstStove, secondStove, thirdStove);
     bridge.initStoves(stoves);
 
     // WHEN
@@ -207,7 +208,10 @@ class BridgeTest {
 
     // THEN
     await()
-            .atMost(5, SECONDS)
-            .untilAsserted(() -> assertTrue(output.getAll().contains(format(RECEIVED_MQTT_COMMAND_FOR_STOVE_S, stoveId))));
+        .atMost(5, SECONDS)
+        .untilAsserted(
+            () ->
+                assertTrue(
+                    output.getAll().contains(format(RECEIVED_MQTT_COMMAND_FOR_STOVE_S, stoveId))));
   }
 }

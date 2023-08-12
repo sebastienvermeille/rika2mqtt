@@ -53,20 +53,21 @@ public class MqttConfiguration {
   public MqttPahoClientFactory mqttClientFactory() {
     DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
     MqttConnectOptions options = new MqttConnectOptions();
-    options.setServerURIs(new String[]{
-        "tcp://" + mqttConfigProperties.getHost() + ":" + mqttConfigProperties.getPort()});
+    options.setServerURIs(
+        new String[] {
+          "tcp://" + mqttConfigProperties.getHost() + ":" + mqttConfigProperties.getPort()
+        });
     options.setUserName(mqttConfigProperties.getUsername());
     options.setPassword(mqttConfigProperties.getPassword().toCharArray());
     factory.setConnectionOptions(options);
     return factory;
   }
 
-
   @Bean
   @ServiceActivator(inputChannel = "mqttOutboundChannel", autoStartup = "true")
   public MessageHandler mqttOutbound() {
-    var messageHandler = new MqttPahoMessageHandler(mqttConfigProperties.getClientName(),
-        mqttClientFactory());
+    var messageHandler =
+        new MqttPahoMessageHandler(mqttConfigProperties.getClientName(), mqttClientFactory());
     messageHandler.setAsync(true);
     messageHandler.setDefaultTopic(mqttConfigProperties.getTelemetryReportTopicName());
     return messageHandler;
@@ -74,8 +75,8 @@ public class MqttConfiguration {
 
   /**
    * @implNote this is using a workaround found <a
-   * href="https://stackoverflow.com/a/41241824">here</a> the doc simply mention to do: `return new
-   * DirectChannel();`
+   *     href="https://stackoverflow.com/a/41241824">here</a> the doc simply mention to do: `return
+   *     new DirectChannel();`
    */
   @Bean
   public MessageChannel mqttOutboundChannel() {
@@ -83,7 +84,6 @@ public class MqttConfiguration {
     dc.subscribe(mqttOutbound());
     return dc;
   }
-
 
   @MessagingGateway(defaultRequestChannel = "mqttOutboundChannel")
   public interface MqttGateway {
@@ -98,11 +98,11 @@ public class MqttConfiguration {
 
   @Bean
   public MessageProducer inbound() {
-    final var adapter = new MqttPahoMessageDrivenChannelAdapter(
-        mqttConfigProperties.getClientName() + "_writer",
-        mqttClientFactory(),
-        mqttConfigProperties.getCommandTopicName()
-    );
+    final var adapter =
+        new MqttPahoMessageDrivenChannelAdapter(
+            mqttConfigProperties.getClientName() + "_writer",
+            mqttClientFactory(),
+            mqttConfigProperties.getCommandTopicName());
     adapter.setCompletionTimeout(5000);
     adapter.setConverter(new DefaultPahoMessageConverter());
     adapter.setQos(1);
@@ -117,23 +117,18 @@ public class MqttConfiguration {
     return message -> {
       var payload = (String) message.getPayload();
       try {
-        final var type = new TypeToken<Map<String, String>>() {
-        }.getType();
+        final var type = new TypeToken<Map<String, String>>() {}.getType();
         final Map<String, String> props = gson.fromJson(payload, type);
         final var stoveId = Long.parseUnsignedLong(props.get("stoveId"));
 
         // remove stoveId props as it has its own property in the wrapping object
         props.remove("stoveId");
 
-        applicationEventPublisher.publishEvent(
-            new MqttCommandEvent(stoveId, props)
-        );
+        applicationEventPublisher.publishEvent(new MqttCommandEvent(stoveId, props));
       } catch (JsonSyntaxException ex) {
-        log.atWarning()
-            .log(
-                "Received an invalid json payload via MQTT. Please ensure it follows the format defined in the doc.");
+        log.atWarning().log(
+            "Received an invalid json payload via MQTT. Please ensure it follows the format defined in the doc.");
       }
-
     };
   }
 }

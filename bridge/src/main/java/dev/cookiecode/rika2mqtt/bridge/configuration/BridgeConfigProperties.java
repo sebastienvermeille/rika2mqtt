@@ -24,6 +24,5 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class BridgeConfigProperties {
 
-  @NonNull
-  private Duration reportInterval = Duration.ofSeconds(30);
+  @NonNull private Duration reportInterval = Duration.ofSeconds(30);
 }

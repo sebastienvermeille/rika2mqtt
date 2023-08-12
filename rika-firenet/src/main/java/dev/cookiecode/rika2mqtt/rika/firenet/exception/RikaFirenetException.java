@@ -14,6 +14,4 @@ import lombok.experimental.StandardException;
  * @author Sebastien Vermeille
  */
 @StandardException
-public class RikaFirenetException extends Exception {
-
-}
+public class RikaFirenetException extends Exception {}

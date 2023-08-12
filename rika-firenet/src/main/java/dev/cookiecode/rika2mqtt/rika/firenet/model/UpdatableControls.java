@@ -12,10 +12,8 @@ import static lombok.AccessLevel.NONE;
 
 import dev.cookiecode.rika2mqtt.rika.firenet.RikaFirenetServiceImpl;
 import dev.cookiecode.rika2mqtt.rika.firenet.mapper.UpdatableControlsMapper;
-import lombok.AccessLevel;
-import lombok.Data;
-
 import java.util.Map;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
@@ -25,13 +23,13 @@ import lombok.NoArgsConstructor;
 @Data
 public class UpdatableControls {
   /**
-   * revision field is managed by rika2mqtt {@link RikaFirenetServiceImpl#overrideRevision(Map, UpdatableControls)}
+   * revision field is managed by rika2mqtt {@link RikaFirenetServiceImpl#overrideRevision(Map,
+   * UpdatableControls)}
    */
   private Long revision;
-  /**
-   * Fields below (some, or all) can be sent using MQTT command to pilot RIKA.
-   */
+  /** Fields below (some, or all) can be sent using MQTT command to pilot RIKA. */
   private Integer operatingMode;
+
   private Integer heatingPower;
   private Integer targetTemperature;
   private Integer bakeTemperature;
@@ -47,7 +45,8 @@ public class UpdatableControls {
   private Integer frostProtectionTemperature;
   private Boolean onOff;
 
-  // @FieldNameConstants lombok annotation would generate this. Unfortunately at the moment it generates issues to generate
+  // @FieldNameConstants lombok annotation would generate this. Unfortunately at the moment it
+  // generates issues to generate
   // javadoc: error: cannot find symbol
   @NoArgsConstructor(access = NONE)
   public static final class Fields {

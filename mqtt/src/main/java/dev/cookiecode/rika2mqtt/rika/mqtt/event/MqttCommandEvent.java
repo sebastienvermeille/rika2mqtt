@@ -23,6 +23,5 @@ public class MqttCommandEvent {
 
   private final Long stoveId;
 
-  @Getter
-  private final Map<String, String> props;
+  @Getter private final Map<String, String> props;
 }

@@ -38,12 +38,13 @@ public interface RikaFirenetService {
    *
    * @param stoveId the id of the stove
    * @return the complete status of a stove
-   * @throws InvalidStoveIdException                    when the given stoveId is not valid
+   * @throws InvalidStoveIdException when the given stoveId is not valid
    * @throws CouldNotAuthenticateToRikaFirenetException when could not auth to rika firenet
    * @throws UnableToRetrieveRikaFirenetDataException
    */
   StoveStatus getStatus(@NonNull final StoveId stoveId)
-      throws InvalidStoveIdException, CouldNotAuthenticateToRikaFirenetException, UnableToRetrieveRikaFirenetDataException;
+      throws InvalidStoveIdException, CouldNotAuthenticateToRikaFirenetException,
+          UnableToRetrieveRikaFirenetDataException;
 
   /**
    * Indicate if the auth with rika-firenet is done or not.
@@ -55,7 +56,7 @@ public interface RikaFirenetService {
   /**
    * Attempt to perform a login to rika-firenet using given credentials.
    *
-   * @param email    rika account email (username)
+   * @param email rika account email (username)
    * @param password rika account password
    * @return true when the given credentials are valid.
    */
@@ -65,9 +66,11 @@ public interface RikaFirenetService {
    * Update stove controls (such as target temperature, on/off, heating mode, multiair, etc.)
    *
    * @param stoveId Id of the stove to perform update on
-   * @param fields  You can provide any of these {@link Fields} and rika2mqtt will manage to do the rest.
+   * @param fields You can provide any of these {@link Fields} and rika2mqtt will manage to do the
+   *     rest.
    * @throws UnableToControlRikaFirenetException
    */
   void updateControls(@NonNull final StoveId stoveId, Map<String, String> fields)
-      throws UnableToControlRikaFirenetException, InvalidStoveIdException, OutdatedRevisionException;
+      throws UnableToControlRikaFirenetException, InvalidStoveIdException,
+          OutdatedRevisionException;
 }

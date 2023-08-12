@@ -32,16 +32,12 @@ import org.springframework.test.context.ActiveProfiles;
 @ActiveProfiles("test")
 class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
 
+  @Autowired private MqttService mqttService;
 
-  @Autowired
-  private MqttService mqttService;
-
-  @Autowired
-  private MqttConfigProperties mqttConfigProperties;
+  @Autowired private MqttConfigProperties mqttConfigProperties;
 
   @BeforeEach
-  void setup() {
-  }
+  void setup() {}
 
   @Test
   void publishMqttMessageFromBridgeShouldEffectivelyPublishAMessageToMqtt() {
@@ -50,11 +46,11 @@ class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
     // Here, another mqtt client connect to the telemetry topic
     // after using the bridge mqttService to publish to mqtt,
     // the MQTT test client (outside the rika2mqtt bridge) should be able to receive that message
-    getMqttTestClient().assertThatMessageWasPublishedToMqttTopic(
-        message,
-        mqttConfigProperties.getTelemetryReportTopicName(),
-        () -> mqttService.publish(message)
-    );
+    getMqttTestClient()
+        .assertThatMessageWasPublishedToMqttTopic(
+            message,
+            mqttConfigProperties.getTelemetryReportTopicName(),
+            () -> mqttService.publish(message));
   }
 
   private MqttTestClient getMqttTestClient() {
@@ -69,9 +65,10 @@ class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
   private MqttClient getRandomMqttClient() throws MqttException {
     String subscriberId = UUID.randomUUID().toString();
 
-    final var client = new MqttClient(
-        "tcp://" + mqttConfigProperties.getHost() + ":" + mqttConfigProperties.getPort(),
-        subscriberId);
+    final var client =
+        new MqttClient(
+            "tcp://" + mqttConfigProperties.getHost() + ":" + mqttConfigProperties.getPort(),
+            subscriberId);
 
     MqttConnectOptions options = new MqttConnectOptions();
     options.setAutomaticReconnect(true);
@@ -83,6 +80,4 @@ class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
 
     return client;
   }
-
-
 }

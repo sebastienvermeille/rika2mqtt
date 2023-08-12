@@ -8,15 +8,15 @@
 
 package dev.cookiecode.rika2mqtt.rika.mqtt;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import dev.cookiecode.rika2mqtt.rika.mqtt.configuration.MqttConfiguration;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 /**
  * Test class
@@ -26,21 +26,19 @@ import static org.mockito.Mockito.verify;
 @ExtendWith(MockitoExtension.class)
 class MqttServiceImplTest {
 
-    @Mock
-    MqttConfiguration.MqttGateway mqttGateway;
+  @Mock MqttConfiguration.MqttGateway mqttGateway;
 
-    @InjectMocks
-    MqttServiceImpl mqttService;
+  @InjectMocks MqttServiceImpl mqttService;
 
-    @Test
-    void publishShouldForwardMessageToMqttGateway(){
-        // GIVEN
-        final var message = "some data";
+  @Test
+  void publishShouldForwardMessageToMqttGateway() {
+    // GIVEN
+    final var message = "some data";
 
-        // WHEN
-        mqttService.publish(message);
+    // WHEN
+    mqttService.publish(message);
 
-        // THEN
-        verify(mqttGateway, times(1)).sendToMqtt(message);
-    }
+    // THEN
+    verify(mqttGateway, times(1)).sendToMqtt(message);
+  }
 }

@@ -25,27 +25,35 @@ public class MqttTestClient {
     this.mqttClient = mqttClient;
   }
 
-  public void assertThatMessageWasPublishedToMqttTopic(String message, String mqttTopic,
-      Runnable runnable) {
+  public void assertThatMessageWasPublishedToMqttTopic(
+      String message, String mqttTopic, Runnable runnable) {
     try {
       final List<String> receivedAnswers = new ArrayList<>();
 
       System.out.println("Waiting for MQTT test client to be connected");
-      Awaitility.with().atMost(30, TimeUnit.SECONDS).pollDelay(1000, TimeUnit.MILLISECONDS).await()
-          .until(
-              mqttClient::isConnected);
+      Awaitility.with()
+          .atMost(30, TimeUnit.SECONDS)
+          .pollDelay(1000, TimeUnit.MILLISECONDS)
+          .await()
+          .until(mqttClient::isConnected);
       System.out.println("connected!");
 
-      mqttClient.subscribe(mqttTopic, (topic, msg) -> {
-        System.out.println(String.format("Received message on %s: \n %s", topic, msg.toString()));
-        receivedAnswers.add(msg.toString());
-      });
+      mqttClient.subscribe(
+          mqttTopic,
+          (topic, msg) -> {
+            System.out.println(
+                String.format("Received message on %s: \n %s", topic, msg.toString()));
+            receivedAnswers.add(msg.toString());
+          });
 
       System.out.println("execute the runnable:");
       runnable.run();
       System.out.println("done");
 
-      Awaitility.with().atMost(30, TimeUnit.SECONDS).pollDelay(1000, TimeUnit.MILLISECONDS).await()
+      Awaitility.with()
+          .atMost(30, TimeUnit.SECONDS)
+          .pollDelay(1000, TimeUnit.MILLISECONDS)
+          .await()
           .until(() -> receivedAnswers.size() > 0);
 
       System.out.println("check assertions:");
@@ -56,5 +64,4 @@ public class MqttTestClient {
       throw new RuntimeException(e);
     }
   }
-
 }

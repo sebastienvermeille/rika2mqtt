@@ -24,11 +24,9 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class RikaFirenetConfigProperties {
 
-  @NotEmpty
-  private String email;
+  @NotEmpty private String email;
 
-  @NotEmpty
-  private String password;
+  @NotEmpty private String password;
 
   private Duration keepAliveTimeout = Duration.ofSeconds(60); // perform a login after timeout
   // occurs if no query were executed within period
