@@ -19,6 +19,8 @@ jobs:
         with:
           java-version: '20'
           distribution: 'temurin'
+      - name: Check code formatting
+        run: mvn -B com.spotify.fmt:fmt-maven-plugin:check
       - name: Build
         run: mvn -B -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn compile
       - name: Test
