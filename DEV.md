@@ -14,9 +14,9 @@ Required plugins:
 
 This project follow google java style guide: https://google.github.io/styleguide/javaguide.html
 
-You can import it directly to your IDE settings
+To ensure the code style is applied, mvn will automatically format the files at each execution.
 
-* IntelliJ users: https://google.github.io/styleguide/intellij-java-google-style.xml
+You can if desired install the auto formatter in your IDE: https://github.com/google/google-java-format/blob/master/README.md#using-the-formatter
 
 ## Local run
 
