@@ -23,12 +23,12 @@ class EmailObfuscatorTest {
   private EmailObfuscator obfuscator;
 
   @BeforeEach
-  void setUp(){
+  void setUp() {
     obfuscator = new EmailObfuscator();
   }
 
   @Test
-  void maskEmailAddressShouldReplaceAFewCharactersByStarsGivenAnEmailAddress(){
+  void maskEmailAddressShouldReplaceAFewCharactersByStarsGivenAnEmailAddress() {
     // GIVEN
     final var email = "jean.marc@gmail.com";
 
@@ -36,14 +36,11 @@ class EmailObfuscatorTest {
     final var obfuscatedEmail = obfuscator.maskEmailAddress(email);
 
     // THEN
-    assertThat(obfuscatedEmail)
-        .contains("*")
-        .isNotEqualTo(email)
-        .isEqualTo("je****arc@gmail.com");
+    assertThat(obfuscatedEmail).contains("*").isNotEqualTo(email).isEqualTo("je****arc@gmail.com");
   }
 
   @Test
-  void maskEmailAddressShouldReplaceAFewCharactersByStarsGivenAShortEmailAddress(){
+  void maskEmailAddressShouldReplaceAFewCharactersByStarsGivenAShortEmailAddress() {
     // GIVEN
     final var email = "j.doe@lnk.ch";
 
@@ -51,14 +48,11 @@ class EmailObfuscatorTest {
     final var obfuscatedEmail = obfuscator.maskEmailAddress(email);
 
     // THEN
-    assertThat(obfuscatedEmail)
-        .contains("*")
-        .isNotEqualTo(email)
-        .isEqualTo("j**oe@lnk.ch");
+    assertThat(obfuscatedEmail).contains("*").isNotEqualTo(email).isEqualTo("j**oe@lnk.ch");
   }
 
   @Test
-  void maskEmailAddressShouldNotReplaceGivenATinyEmailAddress(){
+  void maskEmailAddressShouldNotReplaceGivenATinyEmailAddress() {
     // GIVEN
     final var email = "ja@gmail.com";
 
@@ -66,9 +60,6 @@ class EmailObfuscatorTest {
     final var obfuscatedEmail = obfuscator.maskEmailAddress(email);
 
     // THEN
-    assertThat(obfuscatedEmail)
-        .doesNotContain("*")
-        .isEqualTo(email);
+    assertThat(obfuscatedEmail).doesNotContain("*").isEqualTo(email);
   }
-
 }

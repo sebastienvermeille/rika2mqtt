@@ -45,6 +45,6 @@ public interface RikaFirenetApi {
    * @return
    */
   @POST("/api/client/{stoveId}/controls")
-  Call<ResponseBody> updateControls(@Path("stoveId") String stoveId,
-      @Body UpdatableControls fields);
+  Call<ResponseBody> updateControls(
+      @Path("stoveId") String stoveId, @Body UpdatableControls fields);
 }

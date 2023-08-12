@@ -11,23 +11,17 @@ package dev.cookiecode.rika2mqtt.rika.firenet.mapper;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import dev.cookiecode.rika2mqtt.rika.firenet.model.Controls;
-import dev.cookiecode.rika2mqtt.rika.firenet.model.UpdatableControls;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.UpdatableControls.Fields;
 import java.util.HashMap;
-import lombok.NonNull;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
-/**
- * Test class
- */
+/** Test class */
 @SpringBootTest(classes = {UpdatableControlsMapperImpl.class})
 class UpdatableControlsMapperTest {
 
-  @Autowired
-  private UpdatableControlsMapper mapper;
+  @Autowired private UpdatableControlsMapper mapper;
 
   @Test
   void toUpdateControlsShouldProperlyMapPropertiesFromControlModel() {
@@ -49,25 +43,25 @@ class UpdatableControlsMapperTest {
     final var frostProtectionActive = true;
     final var frostProtectionTemperature = 15;
     final var heatingTimesActiveForComfort = true;
-    final var controls = Controls.builder()
-        .revision(revision)
-        .onOff(onOff)
-        .operatingMode(operatingMode)
-        .heatingPower(heatingPower)
-        .targetTemperature(targetTemperature)
-        .bakeTemperature(bakeTemperature)
-        .setBackTemperature(setBackTemperature)
-        .convectionFan1Active(convectionFan1Active)
-        .convectionFan1Level(convectionFan1Level)
-        .convectionFan1Area(convectionFan1Area)
-        .convectionFan2Active(convectionFan2Active)
-        .convectionFan2Level(convectionFan2Level)
-        .convectionFan2Area(convectionFan2Area)
-        .frostProtectionActive(frostProtectionActive)
-        .frostProtectionTemperature(frostProtectionTemperature)
-        .heatingTimesActiveForComfort(heatingTimesActiveForComfort)
-        .build();
-
+    final var controls =
+        Controls.builder()
+            .revision(revision)
+            .onOff(onOff)
+            .operatingMode(operatingMode)
+            .heatingPower(heatingPower)
+            .targetTemperature(targetTemperature)
+            .bakeTemperature(bakeTemperature)
+            .setBackTemperature(setBackTemperature)
+            .convectionFan1Active(convectionFan1Active)
+            .convectionFan1Level(convectionFan1Level)
+            .convectionFan1Area(convectionFan1Area)
+            .convectionFan2Active(convectionFan2Active)
+            .convectionFan2Level(convectionFan2Level)
+            .convectionFan2Area(convectionFan2Area)
+            .frostProtectionActive(frostProtectionActive)
+            .frostProtectionTemperature(frostProtectionTemperature)
+            .heatingTimesActiveForComfort(heatingTimesActiveForComfort)
+            .build();
 
     // WHEN
     final var actualUpdateControls = mapper.toUpdateControls(controls);
@@ -97,29 +91,31 @@ class UpdatableControlsMapperTest {
     final var frostProtectionTemperature = 15;
     final var heatingTimesActiveForComfort = true;
 
-    final var controls = Controls.builder()
-        .revision(revision)
-        .onOff(onOff)
-        .operatingMode(operatingMode)
-        .heatingPower(heatingPower)
-        .targetTemperature(targetTemperature)
-        .bakeTemperature(bakeTemperature)
-        .setBackTemperature(setBackTemperature)
-        .convectionFan1Active(convectionFan1Active)
-        .convectionFan1Level(convectionFan1Level)
-        .convectionFan1Area(convectionFan1Area)
-        .convectionFan2Active(convectionFan2Active)
-        .convectionFan2Level(convectionFan2Level)
-        .convectionFan2Area(convectionFan2Area)
-        .frostProtectionActive(frostProtectionActive)
-        .frostProtectionTemperature(frostProtectionTemperature)
-        .heatingTimesActiveForComfort(heatingTimesActiveForComfort)
-        .build();
+    final var controls =
+        Controls.builder()
+            .revision(revision)
+            .onOff(onOff)
+            .operatingMode(operatingMode)
+            .heatingPower(heatingPower)
+            .targetTemperature(targetTemperature)
+            .bakeTemperature(bakeTemperature)
+            .setBackTemperature(setBackTemperature)
+            .convectionFan1Active(convectionFan1Active)
+            .convectionFan1Level(convectionFan1Level)
+            .convectionFan1Area(convectionFan1Area)
+            .convectionFan2Active(convectionFan2Active)
+            .convectionFan2Level(convectionFan2Level)
+            .convectionFan2Area(convectionFan2Area)
+            .frostProtectionActive(frostProtectionActive)
+            .frostProtectionTemperature(frostProtectionTemperature)
+            .heatingTimesActiveForComfort(heatingTimesActiveForComfort)
+            .build();
 
-      var updateControls = mapper.toUpdateControls(controls);
+    var updateControls = mapper.toUpdateControls(controls);
 
     final var expectedRevision = 99;
-// TODO: this test only one property... should be for all but not at once -> parametrized tests might help
+    // TODO: this test only one property... should be for all but not at once -> parametrized tests
+    // might help
     final var fields = new HashMap<String, String>();
     fields.put(Fields.REVISION, String.valueOf(expectedRevision));
 

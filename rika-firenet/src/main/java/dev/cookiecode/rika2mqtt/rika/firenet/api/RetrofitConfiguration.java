@@ -35,24 +35,23 @@ public class RetrofitConfiguration {
   public RikaFirenetApi createRikaFirenetApi() {
     final var cookieHandler = new CookieManager();
 
-    final var gson = new GsonBuilder()
-        .setLenient()
-        .create();
+    final var gson = new GsonBuilder().setLenient().create();
 
-    final var httpClient = new OkHttpClient.Builder()
-        .connectTimeout(60, SECONDS)
-        .readTimeout(60, SECONDS)
-        .writeTimeout(60, SECONDS)
-        .cookieJar(new JavaNetCookieJar(cookieHandler))
-        .build();
+    final var httpClient =
+        new OkHttpClient.Builder()
+            .connectTimeout(60, SECONDS)
+            .readTimeout(60, SECONDS)
+            .writeTimeout(60, SECONDS)
+            .cookieJar(new JavaNetCookieJar(cookieHandler))
+            .build();
 
-    final var retrofit = new Retrofit.Builder()
-        .baseUrl(rikaFirenetApiBaseUrl)
-        .addConverterFactory(GsonConverterFactory.create(gson))
-        .client(httpClient)
-        .build();
+    final var retrofit =
+        new Retrofit.Builder()
+            .baseUrl(rikaFirenetApiBaseUrl)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .client(httpClient)
+            .build();
 
     return retrofit.create(RikaFirenetApi.class);
   }
-
 }

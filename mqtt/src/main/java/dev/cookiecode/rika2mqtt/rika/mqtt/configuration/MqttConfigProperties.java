@@ -24,11 +24,9 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class MqttConfigProperties {
 
-  @NotEmpty
-  private String host;
+  @NotEmpty private String host;
 
-  @NotNull
-  private Integer port = 1883;
+  @NotNull private Integer port = 1883;
 
   private String username;
 

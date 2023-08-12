@@ -19,7 +19,8 @@ public class Rika2MqttApplication {
 
   static final String RIKA2MQTT_BASE_PACKAGE = "dev.cookiecode.rika2mqtt.*";
   private static final String FLOGGER_BACKEND_FACTORY_PROPERTY = "flogger.backend_factory";
-  private static final String SLF4J_BACKEND_FACTORY = "com.google.common.flogger.backend.slf4j.Slf4jBackendFactory#getInstance";
+  private static final String SLF4J_BACKEND_FACTORY =
+      "com.google.common.flogger.backend.slf4j.Slf4jBackendFactory#getInstance";
 
   public static void main(String[] args) {
     System.setProperty(FLOGGER_BACKEND_FACTORY_PROPERTY, SLF4J_BACKEND_FACTORY);

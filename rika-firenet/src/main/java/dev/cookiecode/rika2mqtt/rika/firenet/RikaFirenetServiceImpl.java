@@ -53,8 +53,10 @@ import retrofit2.Response;
 @Flogger
 public class RikaFirenetServiceImpl implements RikaFirenetService {
 
-  static final String IGNORE_RECEIVED_PROPERTY_S_THIS_PROPERTY_IS_ALREADY_MANAGED = "Ignore received property '%s'. This property is already managed by rika2mqtt.";
-  public static final String KEEP_ALIVE_NOTIFICATION = "[KeepAlive] Authenticated to rika-firenet as the bridge had no activity since more than %s";
+  static final String IGNORE_RECEIVED_PROPERTY_S_THIS_PROPERTY_IS_ALREADY_MANAGED =
+      "Ignore received property '%s'. This property is already managed by rika2mqtt.";
+  public static final String KEEP_ALIVE_NOTIFICATION =
+      "[KeepAlive] Authenticated to rika-firenet as the bridge had no activity since more than %s";
   static final String AUTHENTICATED_SUCCESSFULLY = "Authenticated successfully to RIKA Firenet";
   private final RikaFirenetApi firenetApi;
 
@@ -87,14 +89,11 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
 
   @Scheduled(fixedRateString = "${rika.keepAliveTimeout}", initialDelay = 2000)
   void keepAlive() {
-    if (this.lastConnectivity == null || Instant.now()
-        .isAfter(this.lastConnectivity.plus(this.rikaFirenetKeepAliveTimeout))) {
+    if (this.lastConnectivity == null
+        || Instant.now().isAfter(this.lastConnectivity.plus(this.rikaFirenetKeepAliveTimeout))) {
       try {
         authenticate();
-        log.atFinest()
-            .log(
-                    KEEP_ALIVE_NOTIFICATION,
-                this.rikaFirenetKeepAliveTimeout);
+        log.atFinest().log(KEEP_ALIVE_NOTIFICATION, this.rikaFirenetKeepAliveTimeout);
       } catch (final CouldNotAuthenticateToRikaFirenetException e) {
         log.atSevere().log(e.getMessage());
       }
@@ -103,12 +102,12 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
 
   void authenticate() throws CouldNotAuthenticateToRikaFirenetException {
     try {
-      final var query = this.firenetApi.authenticate(
-          Auth.builder()
-              .email(this.rikaFirenetUserEmail)
-              .password(this.rikaFirenetUserPassword)
-              .build()
-      );
+      final var query =
+          this.firenetApi.authenticate(
+              Auth.builder()
+                  .email(this.rikaFirenetUserEmail)
+                  .password(this.rikaFirenetUserPassword)
+                  .build());
 
       final var response = query.execute();
 
@@ -125,8 +124,8 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
     } catch (final IOException e) {
       this.connected = false;
       throw new CouldNotAuthenticateToRikaFirenetException(
-          "Could not authenticate to RIKA Firenet, unable to establish a valid " +
-              "communication with the rika firenet server.");
+          "Could not authenticate to RIKA Firenet, unable to establish a valid "
+              + "communication with the rika firenet server.");
     }
   }
 
@@ -147,18 +146,20 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
 
   /**
    * @implNote This method use another HttpClient which is closable. This was required, as we need a
-   * standalone web context (session, cookies) not related at all with the retrofit ones (okhttp)
-   * Otherwise, after a successful login, even if you try with a wrong username:password -> it will
-   * succeed. Which is not good as this method is used to test changes in the configuration
+   *     standalone web context (session, cookies) not related at all with the retrofit ones
+   *     (okhttp) Otherwise, after a successful login, even if you try with a wrong
+   *     username:password -> it will succeed. Which is not good as this method is used to test
+   *     changes in the configuration
    */
   @Override
   @SneakyThrows
   public boolean isValidCredentials(final String email, final String password) {
     try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
-      var response = Request.post(rikaFirenetApiBaseUrl + "/web/login")
-          .addHeader("Content-Type", "application/x-www-form-urlencoded")
-          .bodyForm(Form.form().add("email", email).add("password", password).build())
-          .execute(httpclient);
+      var response =
+          Request.post(rikaFirenetApiBaseUrl + "/web/login")
+              .addHeader("Content-Type", "application/x-www-form-urlencoded")
+              .bodyForm(Form.form().add("email", email).add("password", password).build())
+              .execute(httpclient);
       var ct = response.returnContent().asString();
       return ct.contains("/web/logout");
     }
@@ -166,7 +167,8 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
 
   @Override
   public void updateControls(@NonNull StoveId stoveId, Map<String, String> fields)
-      throws UnableToControlRikaFirenetException, InvalidStoveIdException, OutdatedRevisionException {
+      throws UnableToControlRikaFirenetException, InvalidStoveIdException,
+          OutdatedRevisionException {
     try {
       var status = getStatus(stoveId);
       this.lastConnectivity = Instant.now(Clock.systemUTC());
@@ -178,51 +180,45 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
       // patch current status with these new properties
       updatableControlsMapper.mergeWithMap(fields, currentControls);
 
-      log.atFine()
-          .log("Send payload to rika-firenet: \n%s", currentControls);
+      log.atFine().log("Send payload to rika-firenet: \n%s", currentControls);
 
       final var query = this.firenetApi.updateControls(stoveId.id().toString(), currentControls);
       final var response = query.execute();
 
-      if(response.code() == HttpStatus.SC_OK){
-        log.atInfo()
-            .log("Stove %s settings are now updated as follow: %s", stoveId, currentControls);
+      if (response.code() == HttpStatus.SC_OK) {
+        log.atInfo().log(
+            "Stove %s settings are now updated as follow: %s", stoveId, currentControls);
       } else {
-        if(response.code() == HttpStatus.SC_NOT_FOUND)
-        {
+        if (response.code() == HttpStatus.SC_NOT_FOUND) {
           var errorContent = response.errorBody().string();
-          if(errorContent.startsWith(String.format("Stove %s is not registered for user", stoveId.id()))){
+          if (errorContent.startsWith(
+              String.format("Stove %s is not registered for user", stoveId.id()))) {
             throw new InvalidStoveIdException(
-                String.format("Could not control stove %s. %n cause reported by RIKA: %s",
-                    stoveId,
-                    errorContent
-                )
-            );
-          }
-          else if(errorContent.endsWith(" is outdated!")) {
+                String.format(
+                    "Could not control stove %s. %n cause reported by RIKA: %s",
+                    stoveId, errorContent));
+          } else if (errorContent.endsWith(" is outdated!")) {
             // revision is outdated -> retry once again
-            throw new OutdatedRevisionException(String.format(
-                "Could not update settings of stove %s: Revision is outdated please retry.",
-                stoveId));
-          }
-          else {
-            throw new UnableToControlRikaFirenetException(String.format(
-                "Could not update settings of stove %s: . %n cause reported by RIKA: %s",
-                stoveId,
-                errorContent));
+            throw new OutdatedRevisionException(
+                String.format(
+                    "Could not update settings of stove %s: Revision is outdated please retry.",
+                    stoveId));
+          } else {
+            throw new UnableToControlRikaFirenetException(
+                String.format(
+                    "Could not update settings of stove %s: . %n cause reported by RIKA: %s",
+                    stoveId, errorContent));
           }
         } else {
-          throw new UnableToControlRikaFirenetException(String.format("Could not update settings of stove %s: Unknown reason.", stoveId));
+          throw new UnableToControlRikaFirenetException(
+              String.format("Could not update settings of stove %s: Unknown reason.", stoveId));
         }
       }
-    } catch (IOException | CouldNotAuthenticateToRikaFirenetException | UnableToRetrieveRikaFirenetDataException e) {
+    } catch (IOException
+        | CouldNotAuthenticateToRikaFirenetException
+        | UnableToRetrieveRikaFirenetDataException e) {
       throw new UnableToControlRikaFirenetException(
-          String.format(
-              "Could not take control of stove %s. An error occurred.",
-              stoveId
-          ),
-          e
-      );
+          String.format("Could not take control of stove %s. An error occurred.", stoveId), e);
     }
   }
 
@@ -230,13 +226,14 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
    * Override revision property
    *
    * @implNote This property can't really be determined by the end user safely. Let's do that here.
-   * inspired from https://github.com/antibill51/rika-firenet-custom-component/blob/main/custom_components/rika_firenet/core.py
+   *     inspired from
+   *     https://github.com/antibill51/rika-firenet-custom-component/blob/main/custom_components/rika_firenet/core.py
    */
   @VisibleForTesting
   void overrideRevision(Map<String, String> fields, UpdatableControls currentControls) {
-    if(fields.containsKey(Fields.REVISION)){
-      log.atWarning()
-          .log(IGNORE_RECEIVED_PROPERTY_S_THIS_PROPERTY_IS_ALREADY_MANAGED, Fields.REVISION);
+    if (fields.containsKey(Fields.REVISION)) {
+      log.atWarning().log(
+          IGNORE_RECEIVED_PROPERTY_S_THIS_PROPERTY_IS_ALREADY_MANAGED, Fields.REVISION);
       fields.remove(Fields.REVISION); // this property is anyway override later
     }
     fields.put(UpdatableControls.Fields.REVISION, String.valueOf(currentControls.getRevision()));
@@ -271,9 +268,9 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
   }
 
   @Override
-  public StoveStatus getStatus(
-      final @NonNull StoveId stoveId)
-      throws InvalidStoveIdException, CouldNotAuthenticateToRikaFirenetException, UnableToRetrieveRikaFirenetDataException {
+  public StoveStatus getStatus(final @NonNull StoveId stoveId)
+      throws InvalidStoveIdException, CouldNotAuthenticateToRikaFirenetException,
+          UnableToRetrieveRikaFirenetDataException {
     try {
       final var stoveString = stoveId.id().toString();
       final var asyncCall = this.firenetApi.getStoveStatus(stoveString);
@@ -285,35 +282,27 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
       } else {
         if (response.code() == 500) {
           throw new InvalidStoveIdException(
-              String.format("Could not retrieve status of stove %s.%n cause reported by RIKA: %s",
-                  stoveId,
-                  response.errorBody().string()
-              )
-          );
+              String.format(
+                  "Could not retrieve status of stove %s.%n cause reported by RIKA: %s",
+                  stoveId, response.errorBody().string()));
         } else if (response.code() == 401) {
           log.atWarning().log(
               "Tried to get status of stove %s, but the bridge was no longer authorized. Please check rika.keepAlive "
-                  + "property.", stoveId);
+                  + "property.",
+              stoveId);
           throw new CouldNotAuthenticateToRikaFirenetException(
-              String.format("Could not retrieve stove %s status. %n cause: %s", stoveId,
-                  response.errorBody().string()));
+              String.format(
+                  "Could not retrieve stove %s status. %n cause: %s",
+                  stoveId, response.errorBody().string()));
         }
         throw new InvalidStoveIdException(
-            String.format("Could not retrieve status of stove %s. %n cause reported by RIKA: %s",
-                stoveId,
-                response.errorBody().string()
-            )
-        );
+            String.format(
+                "Could not retrieve status of stove %s. %n cause reported by RIKA: %s",
+                stoveId, response.errorBody().string()));
       }
     } catch (final IOException e) {
       throw new UnableToRetrieveRikaFirenetDataException(
-          String.format(
-              "Could not retrieve stove %s status from rika-firenet",
-              stoveId
-          ),
-          e
-      );
+          String.format("Could not retrieve stove %s status from rika-firenet", stoveId), e);
     }
   }
-
 }

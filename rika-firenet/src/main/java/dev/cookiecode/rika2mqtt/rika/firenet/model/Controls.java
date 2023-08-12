@@ -54,6 +54,7 @@ public class Controls {
 
   @SerializedName("RoomPowerRequest") // for coherence (the rest of the api is using camelCase)
   private Integer roomPowerRequest;
+
   private Integer debug0;
   private Integer debug1;
   private Integer debug2;

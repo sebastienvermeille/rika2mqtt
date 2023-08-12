@@ -16,10 +16,7 @@ import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
@@ -31,12 +28,10 @@ import dev.cookiecode.rika2mqtt.rika.firenet.api.RetrofitConfiguration;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.CouldNotAuthenticateToRikaFirenetException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.InvalidStoveIdException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.OutdatedRevisionException;
-import dev.cookiecode.rika2mqtt.rika.firenet.mapper.UpdatableControlsMapper;
 import dev.cookiecode.rika2mqtt.rika.firenet.mapper.UpdatableControlsMapperImpl;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.UpdatableControls;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.UpdatableControls.Fields;
-
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
@@ -45,8 +40,6 @@ import lombok.NonNull;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Spy;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.mockserver.client.MockServerClient;
 import org.mockserver.matchers.Times;
 import org.mockserver.model.MediaType;
@@ -54,10 +47,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
-import org.springframework.util.StringUtils;
 import org.testcontainers.containers.MockServerContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
@@ -68,30 +59,32 @@ import org.testcontainers.utility.DockerImageName;
  *
  * @author Sebastien Vermeille
  */
-@SpringBootTest(classes = {
-    UpdatableControlsMapperImpl.class,
-    RikaFirenetServiceImpl.class,
-    RetrofitConfiguration.class
-})
+@SpringBootTest(
+    classes = {
+      UpdatableControlsMapperImpl.class,
+      RikaFirenetServiceImpl.class,
+      RetrofitConfiguration.class
+    })
 @Testcontainers
 @ExtendWith(OutputCaptureExtension.class)
 class RikaFirenetServiceTest {
 
   @Container
-  static MockServerContainer mockServer = new MockServerContainer(
-      DockerImageName.parse("mockserver/mockserver:5.15.0"));
-  @Autowired
-  private RikaFirenetServiceImpl rikaFirenetService;
+  static MockServerContainer mockServer =
+      new MockServerContainer(DockerImageName.parse("mockserver/mockserver:5.15.0"));
+
+  @Autowired private RikaFirenetServiceImpl rikaFirenetService;
 
   @DynamicPropertySource
   static void registerMockServerProperties(final DynamicPropertyRegistry registry) {
-    registry.add("rika.url",
-        () -> "http://" + mockServer.getHost() + ":" + mockServer.getServerPort());
+    registry.add(
+        "rika.url", () -> "http://" + mockServer.getHost() + ":" + mockServer.getServerPort());
     registry.add("rika.keepAliveTimeout", () -> "PT5S");
   }
 
   @Test
-  void keepAliveShouldNotInvokeAuthenticateMoreThanOnceGivenMultipleInvocationInAShortAmountOfTime(CapturedOutput output) throws Exception {
+  void keepAliveShouldNotInvokeAuthenticateMoreThanOnceGivenMultipleInvocationInAShortAmountOfTime(
+      CapturedOutput output) throws Exception {
 
     // GIVEN
     initSuccessLoginMock();
@@ -104,18 +97,24 @@ class RikaFirenetServiceTest {
     rikaFirenetService.keepAlive();
 
     // WHEN
-    final var actualAmountOfAuthenticateCalls = countOccurrencesOf(output.getAll(), AUTHENTICATED_SUCCESSFULLY);
+    final var actualAmountOfAuthenticateCalls =
+        countOccurrencesOf(output.getAll(), AUTHENTICATED_SUCCESSFULLY);
 
     // THEN
     assertThat(actualAmountOfAuthenticateCalls).isEqualTo(1);
   }
 
   /**
-   * @implNote This test work because this class artificially change the value of rika.keepAliveTimeout (See class header)
+   * @implNote This test work because this class artificially change the value of
+   *     rika.keepAliveTimeout (See class header)
    */
   @Test
-  @SuppressWarnings({"java:S2925"}) // Sonar is right about Thread.sleep. As this is happening in context of an integration test, it can be ignored.
-  void keepAliveShouldInvokeAuthenticateMoreThanOnceGivenMultipleInvocationInABigEnoughAmountOfTime(CapturedOutput output) throws Exception {
+  @SuppressWarnings({
+    "java:S2925"
+  }) // Sonar is right about Thread.sleep. As this is happening in context of an integration test,
+  // it can be ignored.
+  void keepAliveShouldInvokeAuthenticateMoreThanOnceGivenMultipleInvocationInABigEnoughAmountOfTime(
+      CapturedOutput output) throws Exception {
     // GIVEN
     initSuccessLoginMock();
     rikaFirenetService.authenticate();
@@ -125,7 +124,8 @@ class RikaFirenetServiceTest {
     rikaFirenetService.keepAlive();
 
     // WHEN
-    final var actualAmountOfAuthenticateCalls = countOccurrencesOf(output.getAll(), AUTHENTICATED_SUCCESSFULLY);
+    final var actualAmountOfAuthenticateCalls =
+        countOccurrencesOf(output.getAll(), AUTHENTICATED_SUCCESSFULLY);
 
     // THEN
     assertThat(actualAmountOfAuthenticateCalls).isGreaterThan(1);
@@ -145,12 +145,7 @@ class RikaFirenetServiceTest {
 
   private void initSuccessLoginMock() {
     new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
-        .when(
-            request()
-                .withMethod("POST")
-                .withPath("/web/login"),
-            Times.once()
-        )
+        .when(request().withMethod("POST").withPath("/web/login"), Times.once())
         .respond(
             response()
                 .withStatusCode(200)
@@ -234,10 +229,8 @@ class RikaFirenetServiceTest {
                                         </div>
                                     </div>
                                 </body>
-                            </html>               
-                        """
-                )
-        );
+                            </html>
+                        """));
   }
 
   @Test
@@ -246,21 +239,18 @@ class RikaFirenetServiceTest {
     initFailureLoginMock();
 
     // THEN
-    assertThrows(CouldNotAuthenticateToRikaFirenetException.class, () -> {
-      // WHEN
-      this.rikaFirenetService.authenticate();
-    });
+    assertThrows(
+        CouldNotAuthenticateToRikaFirenetException.class,
+        () -> {
+          // WHEN
+          this.rikaFirenetService.authenticate();
+        });
     assertThat(this.rikaFirenetService.isAuthenticated()).isFalse();
   }
 
   private void initFailureLoginMock() {
     new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
-        .when(
-            request()
-                .withMethod("POST")
-                .withPath("/web/login"),
-            Times.once()
-        )
+        .when(request().withMethod("POST").withPath("/web/login"), Times.once())
         .respond(
             response()
                 .withStatusCode(200)
@@ -326,9 +316,7 @@ class RikaFirenetServiceTest {
                                 </div>
                             </body>
                         </html>
-                        """
-                )
-        );
+                        """));
   }
 
   @Test
@@ -344,7 +332,8 @@ class RikaFirenetServiceTest {
     final var actualStoves = this.rikaFirenetService.getStoves();
 
     // THEN
-    Assertions.assertThat(actualStoves).hasSize(stoveIds.size())
+    Assertions.assertThat(actualStoves)
+        .hasSize(stoveIds.size())
         .containsExactly(mainStoveId, studioStoveId);
   }
 
@@ -352,28 +341,32 @@ class RikaFirenetServiceTest {
 
     final var stoveHtmlLinksBuilder = new StringBuilder();
     for (final var stoveId : stoveIds) {
-      stoveHtmlLinksBuilder.append("<li>\n")
-          .append("<a href=\"/web/stove/").append(stoveId.id()).append("\" data-ajax=\"false\">")
-          .append("Stove#").append(stoveId).append("</a>\n")
-          .append("<a href=\"/web/edit/").append(stoveId.id()).append("\" data-ajax=\"false\">")
-          .append("Stove#").append(stoveId).append(
-              "</a>\n")
+      stoveHtmlLinksBuilder
+          .append("<li>\n")
+          .append("<a href=\"/web/stove/")
+          .append(stoveId.id())
+          .append("\" data-ajax=\"false\">")
+          .append("Stove#")
+          .append(stoveId)
+          .append("</a>\n")
+          .append("<a href=\"/web/edit/")
+          .append(stoveId.id())
+          .append("\" data-ajax=\"false\">")
+          .append("Stove#")
+          .append(stoveId)
+          .append("</a>\n")
           .append("</li>\n");
     }
 
     new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
-        .when(
-            request()
-                .withMethod("GET")
-                .withPath("/web/summary"),
-            Times.once()
-        )
+        .when(request().withMethod("GET").withPath("/web/summary"), Times.once())
         .respond(
             response()
                 .withStatusCode(200)
                 .withContentType(MediaType.HTML_UTF_8)
-                .withBody(String.format(
-                    """
+                .withBody(
+                    String.format(
+                        """
                             <!DOCTYPE html>
                             <html lang="en" dir="ltr">
                                 <head>
@@ -450,10 +443,9 @@ class RikaFirenetServiceTest {
                                         </div>
                                     </div>
                                 </body>
-                            </html>        
-                        """, stoveHtmlLinksBuilder)
-                )
-        );
+                            </html>
+                        """,
+                        stoveHtmlLinksBuilder)));
   }
 
   @Test
@@ -477,27 +469,33 @@ class RikaFirenetServiceTest {
     initStoveNotOwnedStatusMock(invalidStoveId);
 
     // THEN
-    assertThrows(InvalidStoveIdException.class, () -> {
-      // WHEN
-      this.rikaFirenetService.getStatus(invalidStoveId);
-    });
+    assertThrows(
+        InvalidStoveIdException.class,
+        () -> {
+          // WHEN
+          this.rikaFirenetService.getStatus(invalidStoveId);
+        });
   }
 
   @Test
-  void getStatusShouldThrowCouldNotAuthenticateToRikaFirenetExceptionGivenUserGaveInvalidCredentials() {
+  void
+      getStatusShouldThrowCouldNotAuthenticateToRikaFirenetExceptionGivenUserGaveInvalidCredentials() {
     // GIVEN
     final var stoveId = StoveId.of(111111L);
     initGetStoveNotAuthenticatedMock(stoveId);
 
     // THEN
-    assertThrows(CouldNotAuthenticateToRikaFirenetException.class, () -> {
-      // WHEN
-      this.rikaFirenetService.getStatus(stoveId);
-    });
+    assertThrows(
+        CouldNotAuthenticateToRikaFirenetException.class,
+        () -> {
+          // WHEN
+          this.rikaFirenetService.getStatus(stoveId);
+        });
   }
 
   @Test
-  void updateControlsShouldThrowAnInvalidStoveIdExceptionGivenUserDoesntHavePermissionToControlThatStove() {
+  void
+      updateControlsShouldThrowAnInvalidStoveIdExceptionGivenUserDoesntHavePermissionToControlThatStove() {
     // GIVEN
     final var invalidStoveId = StoveId.of(111111L);
     initStoveNotOwnedControlsMock(invalidStoveId);
@@ -505,10 +503,12 @@ class RikaFirenetServiceTest {
     diffs.put(Fields.TARGET_TEMPERATURE, "19");
 
     // THEN
-    assertThrows(InvalidStoveIdException.class, () -> {
-      // WHEN
-      this.rikaFirenetService.updateControls(invalidStoveId, diffs);
-    });
+    assertThrows(
+        InvalidStoveIdException.class,
+        () -> {
+          // WHEN
+          this.rikaFirenetService.updateControls(invalidStoveId, diffs);
+        });
   }
 
   @Test
@@ -521,14 +521,16 @@ class RikaFirenetServiceTest {
     diffs.put(Fields.TARGET_TEMPERATURE, "19");
 
     // THEN
-    assertThrows(OutdatedRevisionException.class, () -> {
-      // WHEN
-      this.rikaFirenetService.updateControls(validStoveId, diffs);
-    });
+    assertThrows(
+        OutdatedRevisionException.class,
+        () -> {
+          // WHEN
+          this.rikaFirenetService.updateControls(validStoveId, diffs);
+        });
   }
 
   @Test
-  void updateControlsShouldNotThrowAnyExceptionGivenValidStoveIdAndUpdatedControls(){
+  void updateControlsShouldNotThrowAnyExceptionGivenValidStoveIdAndUpdatedControls() {
     // GIVEN
     final var validStoveId = StoveId.of(42L);
     Map<String, String> diffs = new HashMap<>();
@@ -537,14 +539,15 @@ class RikaFirenetServiceTest {
     initStoveOwnedControlsMock(validStoveId);
 
     // THEN
-    assertDoesNotThrow(() -> {
-      // WHEN
-      this.rikaFirenetService.updateControls(validStoveId, diffs);
-    });
+    assertDoesNotThrow(
+        () -> {
+          // WHEN
+          this.rikaFirenetService.updateControls(validStoveId, diffs);
+        });
   }
 
   @Test
-  void overrideRevisionShouldSetRevisionBasedOnFreshlyRetrievedStoveStatus(){
+  void overrideRevisionShouldSetRevisionBasedOnFreshlyRetrievedStoveStatus() {
     // GIVEN
     Map<String, String> fields = new HashMap<>();
     UpdatableControls freshStatus = mock(UpdatableControls.class);
@@ -572,8 +575,16 @@ class RikaFirenetServiceTest {
 
     // THEN
     await()
-            .atMost(5, SECONDS)
-            .untilAsserted(() -> assertTrue(output.getAll().contains(format(IGNORE_RECEIVED_PROPERTY_S_THIS_PROPERTY_IS_ALREADY_MANAGED, Fields.REVISION))));
+        .atMost(5, SECONDS)
+        .untilAsserted(
+            () ->
+                assertTrue(
+                    output
+                        .getAll()
+                        .contains(
+                            format(
+                                IGNORE_RECEIVED_PROPERTY_S_THIS_PROPERTY_IS_ALREADY_MANAGED,
+                                Fields.REVISION))));
   }
 
   @Test
@@ -609,17 +620,15 @@ class RikaFirenetServiceTest {
   private void initStoveStatusMock(final StoveId stoveId) {
     new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
         .when(
-            request()
-                .withMethod("GET")
-                .withPath("/api/client/" + stoveId.id() + "/status"),
-            Times.once()
-        )
+            request().withMethod("GET").withPath("/api/client/" + stoveId.id() + "/status"),
+            Times.once())
         .respond(
             response()
                 .withStatusCode(200)
                 .withContentType(APPLICATION_JSON)
-                .withBody(String.format(
-                    """
+                .withBody(
+                    String.format(
+                        """
                             {
                               "name": "Stove name",
                               "stoveID": "%s",
@@ -765,108 +774,62 @@ class RikaFirenetServiceTest {
                                 "bakeMode": false
                               },
                               "oem": "RIKA"
-                            }                   
-                        """, stoveId.id())
-                )
-        );
+                            }
+                        """,
+                        stoveId.id())));
   }
 
   private void initStoveNotOwnedStatusMock(final StoveId stoveId) {
     new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
         .when(
-            request()
-                .withMethod("GET")
-                .withPath("/api/client/" + stoveId.id() + "/status"),
-            Times.once()
-        )
+            request().withMethod("GET").withPath("/api/client/" + stoveId.id() + "/status"),
+            Times.once())
         .respond(
             response()
                 .withStatusCode(500)
                 .withContentType(APPLICATION_JSON)
-                .withBody(
-                    String.format(
-                        "Stove %s is not registered for user XYZ",
-                        stoveId.id()
-                    )
-                )
-        );
+                .withBody(String.format("Stove %s is not registered for user XYZ", stoveId.id())));
   }
 
   private void initGetStoveNotAuthenticatedMock(final StoveId stoveId) {
     new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
-            .when(
-                    request()
-                            .withMethod("GET")
-                            .withPath("/api/client/" + stoveId.id() + "/status"),
-                    Times.once()
-            )
-            .respond(
-                    response()
-                            .withStatusCode(401)
-                            .withContentType(APPLICATION_JSON)
-            );
+        .when(
+            request().withMethod("GET").withPath("/api/client/" + stoveId.id() + "/status"),
+            Times.once())
+        .respond(response().withStatusCode(401).withContentType(APPLICATION_JSON));
   }
 
-
-  private void initStoveNotOwnedControlsMock(final StoveId stoveId){
+  private void initStoveNotOwnedControlsMock(final StoveId stoveId) {
     new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
         .when(
-            request()
-                .withMethod("POST")
-                .withPath("/api/client/" + stoveId.id() + "/controls"),
-            Times.once()
-        )
+            request().withMethod("POST").withPath("/api/client/" + stoveId.id() + "/controls"),
+            Times.once())
         .respond(
             response()
                 .withStatusCode(404)
                 .withContentType(APPLICATION_JSON)
-                .withBody(
-                    String.format(
-                        "Stove %s is not registered for user XZY",
-                        stoveId.id()
-                    )
-                )
-        );
+                .withBody(String.format("Stove %s is not registered for user XZY", stoveId.id())));
   }
 
-  private void initStoveOutdatedRevisionControlsMock(final StoveId stoveId){
+  private void initStoveOutdatedRevisionControlsMock(final StoveId stoveId) {
     new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
         .when(
-            request()
-                .withMethod("POST")
-                .withPath("/api/client/" + stoveId.id() + "/controls"),
-            Times.once()
-        )
-        .respond(
-            response()
-                .withStatusCode(404)
-                .withBody("Revision 123323131 is outdated!")
-        );
+            request().withMethod("POST").withPath("/api/client/" + stoveId.id() + "/controls"),
+            Times.once())
+        .respond(response().withStatusCode(404).withBody("Revision 123323131 is outdated!"));
   }
 
-  private void initStoveOwnedControlsMock(final StoveId stoveId){
+  private void initStoveOwnedControlsMock(final StoveId stoveId) {
     new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
         .when(
-            request()
-                .withMethod("POST")
-                .withPath("/api/client/" + stoveId.id() + "/controls"),
-            Times.once()
-        )
-        .respond(
-            response()
-                .withStatusCode(200)
-                .withBody("OK")
-        );
+            request().withMethod("POST").withPath("/api/client/" + stoveId.id() + "/controls"),
+            Times.once())
+        .respond(response().withStatusCode(200).withBody("OK"));
   }
 
   private void initRikaFirenetWebLoginSuccessMock() {
     new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
-        .when(
-            request()
-                .withMethod("POST")
-                .withPath("/web/login"),
-            Times.once()
-        )
+        .when(request().withMethod("POST").withPath("/web/login"), Times.once())
         .respond(
             response()
                 .withStatusCode(200)
@@ -950,28 +913,20 @@ class RikaFirenetServiceTest {
                                         </div>
                                     </div>
                                 </body>
-                            </html>               
-                        """
-                )
-        );
+                            </html>
+                        """));
   }
 
   private void initRikaFirenetWebLoginFailureMock() {
     new MockServerClient(mockServer.getHost(), mockServer.getServerPort())
-        .when(
-            request()
-                .withMethod("POST")
-                .withPath("/web/login"),
-            Times.once()
-        )
+        .when(request().withMethod("POST").withPath("/web/login"), Times.once())
         .respond(
             response()
                 .withStatusCode(200)
                 .withContentType(HTML_UTF_8)
-                .withBody("""
+                .withBody(
+                    """
                     <!DOCTYPE html><html lang="en" dir="ltr"><head><title>RIKA firenet</title><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black"><link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Sans+Pro:300,200"><link rel="stylesheet" href="/assets/rika-firenet.css?version=7"><script src="/assets/rika-firenet-en.js?version=4"></script><link rel="shortcut icon" href="/images/favicon/favicon.ico"><link rel="icon" sizes="16x16 32x32 64x64" href="/images/favicon/favicon.ico"><link rel="icon" type="image/png" sizes="196x196" href="/images/favicon/favicon-192.png"><link rel="icon" type="image/png" sizes="160x160" href="/images/favicon/favicon-160.png"><link rel="icon" type="image/png" sizes="96x96" href="/images/favicon/favicon-96.png"><link rel="icon" type="image/png" sizes="64x64" href="/images/favicon/favicon-64.png"><link rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32.png"><link rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16.png"><link rel="apple-touch-icon" href="/images/favicon/favicon-57.png"><link rel="apple-touch-icon" sizes="114x114" href="/images/favicon/favicon-114.png"><link rel="apple-touch-icon" sizes="72x72" href="/images/favicon/favicon-72.png"><link rel="apple-touch-icon" sizes="144x144" href="/images/favicon/favicon-144.png"><link rel="apple-touch-icon" sizes="60x60" href="/images/favicon/favicon-60.png"><link rel="apple-touch-icon" sizes="120x120" href="/images/favicon/favicon-120.png"><link rel="apple-touch-icon" sizes="76x76" href="/images/favicon/favicon-76.png"><link rel="apple-touch-icon" sizes="152x152" href="/images/favicon/favicon-152.png"><link rel="apple-touch-icon" sizes="180x180" href="/images/favicon/favicon-180.png"><meta name="msapplication-TileColor" content="#FFFFFF"><meta name="msapplication-TileImage" content="/images/favicon/favicon-144.png"><meta name="msapplication-config" content="/images/favicon/browserconfig.xml"></head><body id="rika-body"><div data-role="page"><div id="cookieMessage"><div>This site uses cookies. By continuing to browse the site you agree to our use of cookies. To learn more read our <a href=/web/privacy target=_blank> cookie policy </a>.</div><button id="acceptCookies" data-icon="fa-check" data-iconpos="notext" data-mini="true" data-inline="true"></button></div><div id="rika-header" data-role="header" data-position="fixed" data-tap-toggle="false"><div class="rika-header-wrapper"><div id="deploymentStage"></div><a href="/web/" style="float:left"><img src="/images/RIKA-flame.svg" style="height:2.8em; padding: 0.1em;"></a><div style="height:3em; padding:0px 0px; position: relative" class="ui-title"> <span style="vertical-align: middle; line-height: 3em">RIKA firenet</span></div></div></div><div role="main" class="ui-content"><form id="login" method="POST" action="/web/login" data-ajax="false"><h3>Please sign in</h3><label for="email">E-mail address</label><input type="text" data-theme="b" name="email" value="" placeholder="email@example.com"><label for="password">Password</label><input type="password" data-theme="b" name="password" value="" placeholder="password"><button type="submit" data-theme="a" data-icon="fa-sign-in" data-iconpos="right">Sign in</button><a href="/web/" data-role="button" data-iconpos="right" data-icon="fa-times" data-theme="a">Cancel</a><p>Need an account? Go <a href='/web/signup'> here </a> to sign up.</p><p>Forgot your password? Go <a href='/web/recover'> here </a> to reset your password.</p></form><script src="/assets/login.js"></script></div><div id="about-footer"><a href="/web/imprint">Imprint</a><a href="/web/terms">Terms and conditions</a><a href="/web/privacy">Privacy policy</a></div></div></body></html>
-                                                        """)
-        );
-
+                                                        """));
   }
 }
