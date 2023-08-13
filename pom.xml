@@ -334,8 +334,16 @@
               <header>com/mycila/maven/plugin/license/templates/MIT.txt</header>
               <excludes>
                 <exclude>**/*.md</exclude>
+                <exclude>**/*.json</exclude>
+                <exclude>.code/**</exclude>
+                <exclude>docs/**</exclude>
+                <exclude>.github/**</exclude>
+                <exclude>.mvn/**</exclude>
+                <exclude>assets/**</exclude>
                 <exclude>src/test/resources/**</exclude>
                 <exclude>src/main/resources/**</exclude>
+                <exclude>Makefile</exclude>
+                <exclude>lombok.config</exclude>
               </excludes>
             </licenseSet>
           </licenseSets>
