@@ -1,12 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright (c) 2023 Sebastien Vermeille and contributors.
-  ~
-  ~ Use of this source code is governed by an MIT
-  ~ license that can be found in the LICENSE file or at
-  ~ https://opensource.org/licenses/MIT.
-  -->
 
+    The MIT License
+    Copyright © 2022 Sebastien Vermeille
+
+    Permission is hereby granted, free of charge, to any person obtaining a copy
+    of this software and associated documentation files (the "Software"), to deal
+    in the Software without restriction, including without limitation the rights
+    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+    copies of the Software, and to permit persons to whom the Software is
+    furnished to do so, subject to the following conditions:
+
+    The above copyright notice and this permission notice shall be included in
+    all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+    THE SOFTWARE.
+
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -16,6 +32,20 @@
   <version>1.1.0</version>
   <name>rika2mqtt</name>
   <description>Bridge to control a Rka firenet stove through MQTT</description>
+  <inceptionYear>2022</inceptionYear>
+  <organization>
+    <name>CookieCode.dev</name>
+    <url>https://cookiecode.dev</url>
+  </organization>
+  <contributors>
+    <contributor>
+      <name>sebastienvermeille</name>
+      <email>sebastien.vermeille@gmail.com</email>
+      <roles>
+        <role>maintainer</role>
+      </roles>
+    </contributor>
+  </contributors>
   <packaging>pom</packaging>
 
   <properties>
@@ -302,6 +332,38 @@
             </goals>
           </execution>
         </executions>
+      </plugin>
+      <plugin>
+        <groupId>com.mycila</groupId>
+        <artifactId>license-maven-plugin</artifactId>
+        <version>4.1</version>
+        <configuration>
+          <properties>
+            <owner>Sebastien Vermeille</owner>
+            <email>sebastien.vermeille@gmail.com</email>
+            <mapping>
+              <java>JAVAPKG_STYLE</java>
+            </mapping>
+          </properties>
+          <licenseSets>
+            <licenseSet>
+              <header>com/mycila/maven/plugin/license/templates/MIT.txt</header>
+              <excludes>
+                <exclude>**/*.md</exclude>
+                <exclude>**/*.json</exclude>
+                <exclude>.code/**</exclude>
+                <exclude>docs/**</exclude>
+                <exclude>.github/**</exclude>
+                <exclude>.mvn/**</exclude>
+                <exclude>assets/**</exclude>
+                <exclude>src/test/resources/**</exclude>
+                <exclude>src/main/resources/**</exclude>
+                <exclude>Makefile</exclude>
+                <exclude>lombok.config</exclude>
+              </excludes>
+            </licenseSet>
+          </licenseSets>
+        </configuration>
       </plugin>
     </plugins>
   </build>
