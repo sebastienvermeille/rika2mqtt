@@ -58,6 +58,7 @@
     <module>rika-firenet</module>
     <module>bridge</module>
     <module>mqtt</module>
+      <module>rika-simulator</module>
   </modules>
 
   <dependencies>
