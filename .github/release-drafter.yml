@@ -22,12 +22,14 @@ version-resolver:
   major:
     labels:
       - 'major'
+      - 'new feature'
   minor:
     labels:
       - 'minor'
   patch:
     labels:
       - 'patch'
+      - 'dependencies'
   default: patch
 template: |
   ## Changelog
