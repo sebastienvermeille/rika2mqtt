@@ -1,0 +1,4 @@
+documentation: ["*.mdx", "*.md", ".doc/*"]
+java: ["*.java"]
+docker: ["Dockerfile", "docker-compose.yml"]
+CI/CD: [".github/*"]
