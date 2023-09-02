@@ -24,6 +24,8 @@ services:
 #      - RIKA_EMAIL=<your email>
 #      - RIKA_PASSWORD=<your password>
 #optional properties
+#      - MQTT_URI_SCHEME=tcp://
+#      - MQTT_PORT=1883
 #      - MQTT_COMMAND_TOPIC_NAME=cmnd/rika2mqtt
 #      - MQTT_TELEMETRY_REPORT_TOPIC_NAME=tele/rika2mqtt
 

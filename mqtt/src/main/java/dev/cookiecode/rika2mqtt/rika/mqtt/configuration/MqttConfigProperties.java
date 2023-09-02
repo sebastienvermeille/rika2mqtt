@@ -38,6 +38,8 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class MqttConfigProperties {
 
+  private String uriScheme = "tcp://";
+
   @NotEmpty private String host;
 
   @NotNull private Integer port = 1883;

@@ -55,6 +55,14 @@ Default: `cmnd/rika2mqtt`
 The MQTT topic used by RIKA2MQTT to publish RIKA status
 Default: `tele/rika2mqtt`
 
+## MQTT_PORT (Optional)
+
+The port of your MQTT instance
+Default: `1883`
+
+## MQTT_URI_SCHEME (Optional)
+The uri scheme to use to connect to the MQTT server 
+Default: `tcp://`
 
 # Other docs:
 * [FAQ](./FAQ.md)
