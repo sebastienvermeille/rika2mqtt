@@ -72,3 +72,6 @@ Default: `tcp://`
 * [FAQ](./FAQ.md)
 * [Developer doc](./DEV.md)
 * [Release doc](./RELEASE.md)
+
+# Credits
+Thanks to [Freepik](https://www.freepik.com/icon/pellet-stove_6625341) for providing the pellet stove icon used in the diagram
