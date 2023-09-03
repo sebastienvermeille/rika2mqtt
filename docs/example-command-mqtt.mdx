@@ -9,7 +9,7 @@ Here are some example of commands that can be sent to your RIKA stove via MQTT u
 
 ## Update target temperature via MQTT
 
-Publish an MQTT message to `{{ config.defaultCommandTopicName }}` with the following JSON payload:
+Publish an MQTT message to `cmnd/rika2mqtt` (or your custom topic defined in `MQTT_COMMAND_TOPIC_NAME`) with the following JSON payload:
 
 ```json
 "stoveId": "your stove id",
