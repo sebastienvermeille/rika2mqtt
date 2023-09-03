@@ -23,7 +23,7 @@
     ],
     "variables": {
       "versions": {
-        "stable": "1.1.0"
+        "stable": "2.0.0"
       },
       "config": {
         "defaultTelemetryReportTopicName": "tele/rika2mqtt",
