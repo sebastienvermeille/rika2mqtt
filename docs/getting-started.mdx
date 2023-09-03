@@ -1,14 +1,12 @@
 # Getting started
 
-Rika2Mqtt can be used on different platforms.
+RIKA2MQTT can be used on different platforms.
 
 It is mainly built for Docker but some other environment are also available.
 
 > Need another deployment platform ? Please ask :)
 
 <Tabs
-    groupId="deployment-platform"
-    defaultValue="docker"
     values={[
         { label: 'Docker', value: 'docker' },
         { label: 'Unraid', value: 'unraid' },
@@ -19,16 +17,17 @@ It is mainly built for Docker but some other environment are also available.
 
         ```
         docker run \
-        -e RIKA_EMAIL=<yourRikaFirenetAccount> \
-        -e RIKA_PASSWORD=<yourPassword> \
+            -e RIKA_EMAIL=<yourRikaFirenetAccount> \
+            -e RIKA_PASSWORD=<yourPassword> \
             -e MQTT_HOST=127.0.0.1 \
             -e MQTT_USER=<optional> \
-                -e MQTT_PASSWORD=<optional> \
-                    -d --name rika2mqtt cookiecodedev/rika2mqtt:{{ versions.stable }}
+            -e MQTT_PASSWORD=<optional> \
+            -d --name rika2mqtt cookiecodedev/rika2mqtt:{{ versions.stable }}
         ```
 
         <Info>
-            Last stable version is: {{ versions.stable }}
+            Last stable version is: `2.0.0` or the tag `stable` (point always to the last stable release)
+
             If you prefer, you can use `latest` instead which can be unstable (not recommended if you are not a rika2mqtt contributor)
         </Info>
 
