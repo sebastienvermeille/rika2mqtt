@@ -32,3 +32,17 @@ updates:
     labels:
       - "docker"
       - "dependencies"
+      
+  # Enable version updates for GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    assignees:
+      - "sebastienvermeille"
+    reviewers:
+      - "sebastienvermeille"
+    commit-message:
+      prefix: "[github-action] "
+    labels:
+      - "cicd"
