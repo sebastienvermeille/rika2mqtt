@@ -1,5 +1,6 @@
 # rika2mqtt
-Bridge to let you take control and monitor your RIKA firenet stove through MQTT
+Rika2Mqtt is a free and opensource bridge enabling end-users to connect their RIKA firenet stove to an MQTT server.
+It goes both way so you can monitor and also take control of your stove directly via MQTT.
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dev.cookiecode/rika2mqtt-parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/dev.cookiecode/rika2mqtt-parent)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
