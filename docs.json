@@ -18,7 +18,8 @@
         ["Control RIKA stove via MQTT", "/example-command-mqtt"]
       ]],
       ["Misc.", [
-        ["Contributing", "/contributing"]
+        ["Contributing", "/contributing"],
+        ["Stack", "/stack"]
       ]]
     ],
     "variables": {

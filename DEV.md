@@ -1,5 +1,7 @@
 # Developer guide
 
+Stack: https://stackshare.io/rika2mqtt/rika2mqtt#stack
+
 ## IDE
 
 Feel free to use the one you prefer: JAVA is IDE agnostic after all :)
