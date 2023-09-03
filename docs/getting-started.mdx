@@ -6,33 +6,59 @@ It is mainly built for Docker but some other environment are also available.
 
 > Need another deployment platform ? Please ask :)
 
-<Tabs
-    groupId="deployment-platform"
-    defaultValue="docker"
-    values={[
-        { label: 'Docker', value: 'docker' },
-        { label: 'Unraid', value: 'unraid' },
-    ]}
->
-    <TabItem value="docker">
-        # Docker
+[//]: # (<Tabs)
 
-        ```
-        docker run \
-        -e RIKA_EMAIL=<yourRikaFirenetAccount> \
-        -e RIKA_PASSWORD=<yourPassword> \
-            -e MQTT_HOST=127.0.0.1 \
-            -e MQTT_USER=<optional> \
-                -e MQTT_PASSWORD=<optional> \
-                    -d --name rika2mqtt cookiecodedev/rika2mqtt:{{ versions.stable }}
-        ```
+[//]: # (    groupId="deployment-platform")
 
-        <Info>
-            Last stable version is: {{ versions.stable }}
-            If you prefer, you can use `latest` instead which can be unstable (not recommended if you are not a rika2mqtt contributor)
-        </Info>
+[//]: # (    defaultValue="docker")
 
-        To know more about these env please read the configuration page.
-    </TabItem>
-    <TabItem value="unraid">Stay tuned the unraid app development is planed: https://github.com/sebastienvermeille/rika2mqtt/issues/54</TabItem>
-</Tabs>
+[//]: # (    values={[)
+
+[//]: # (        { label: 'Docker', value: 'docker' },)
+
+[//]: # (        { label: 'Unraid', value: 'unraid' },)
+
+[//]: # (    ]})
+
+[//]: # (>)
+
+[//]: # (    <TabItem value="docker">)
+
+[//]: # (        # Docker)
+
+[//]: # ()
+[//]: # (        ```)
+
+[//]: # (        docker run \)
+
+[//]: # (        -e RIKA_EMAIL=<yourRikaFirenetAccount> \)
+
+[//]: # (        -e RIKA_PASSWORD=<yourPassword> \)
+
+[//]: # (            -e MQTT_HOST=127.0.0.1 \)
+
+[//]: # (            -e MQTT_USER=<optional> \)
+
+[//]: # (                -e MQTT_PASSWORD=<optional> \)
+
+[//]: # (                    -d --name rika2mqtt cookiecodedev/rika2mqtt:{{ versions.stable }})
+
+[//]: # (        ```)
+
+[//]: # ()
+[//]: # (        <Info>)
+
+[//]: # (            Last stable version is: {{ versions.stable }})
+
+[//]: # (            If you prefer, you can use `latest` instead which can be unstable &#40;not recommended if you are not a rika2mqtt contributor&#41;)
+
+[//]: # (        </Info>)
+
+[//]: # ()
+[//]: # (        To know more about these env please read the configuration page.)
+
+[//]: # (    </TabItem>)
+
+[//]: # (    <TabItem value="unraid">Stay tuned the unraid app development is planed: https://github.com/sebastienvermeille/rika2mqtt/issues/54</TabItem>)
+
+[//]: # (</Tabs>)
