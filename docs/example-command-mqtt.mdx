@@ -2,14 +2,14 @@
 
 You can send commands to your stove via MQTT. This opens a lot of possibilities for your IoT system, NodeRed, ...
 
-<Info>By default Rika2Mqtt will listen for commands sent in topic: {{ config.defaultCommandTopicName }}.</Info>
+<Info>By default Rika2Mqtt will listen for commands sent in topic: `cmnd/rika2mqtt` (or your custom topic defined in `MQTT_COMMAND_TOPIC_NAME`).</Info>
 
 
 Here are some example of commands that can be sent to your RIKA stove via MQTT using Rika2Mqtt.
 
 ## Update target temperature via MQTT
 
-Publish an MQTT message to `cmnd/rika2mqtt` (or your custom topic defined in `MQTT_COMMAND_TOPIC_NAME`) with the following JSON payload:
+Publish an MQTT message to `cmnd/rika2mqtt`  with the following JSON payload:
 
 ```json
 "stoveId": "your stove id",
