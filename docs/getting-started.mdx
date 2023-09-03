@@ -17,11 +17,12 @@ It is mainly built for Docker but some other environment are also available.
 
         ```
         docker run \
-        -e RIKA_EMAIL=<yourRikaFirenetAccount> \
-        -e RIKA_PASSWORD=<yourPassword> \
+            -e RIKA_EMAIL=<yourRikaFirenetAccount> \
+            -e RIKA_PASSWORD=<yourPassword> \
             -e MQTT_HOST=127.0.0.1 \
             -e MQTT_USER=<optional> \
-                -e MQTT_PASSWORD=<optional> \
+            -e MQTT_PASSWORD=<optional> \
+            -d --name rika2mqtt cookiecodedev/rika2mqtt:{{ versions.stable }}
         ```
 
         To know more about these env please read the configuration page.
