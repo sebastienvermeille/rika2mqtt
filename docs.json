@@ -1,7 +1,7 @@
 {
     "name": "RIKA2MQTT",
     "description": "Connect your RIKA stove to MQTT and gain control the way you want!",
-    "logo": "https://github.com/sebastienvermeille/rika2mqtt/blob/master/assets/rika2mqtt.png?raw=true",
+    "logo": "https://github.com/sebastienvermeille/rika2mqtt/blob/master/assets/rika2mqtt-128x128.png?raw=true",
     "theme": "#36B9B9",
     "anchors": [
       { "title": "Homepage", "icon": "house", "link": "https://rika2mqtt.cookiecode.dev/" },
