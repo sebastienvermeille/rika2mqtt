@@ -1,7 +1,7 @@
 {
     "name": "Rika2Mqtt",
     "description": "Connect your RIKA stove to MQTT and gain control the way you want!",
-    "favicon": "/assets/rika2mqtt-128x128.png",
+    "favicon": "/assets/favicon.png",
     "logo": "/assets/rika2mqtt-128x128.png",
     "googleAnalytics": "G-5K9CY84T71",
     "theme": "#36B9B9",
