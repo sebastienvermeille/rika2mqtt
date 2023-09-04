@@ -7,7 +7,7 @@
     "theme": "#36B9B9",
     "anchors": [
       { "title": "Homepage", "icon": "house", "link": "https://rika2mqtt.cookiecode.dev/" },
-      { "title": "Discord", "icon": "discord", "link": "https://discord.gg/2dUzYpTA" }
+      { "title": "Discord", "icon": "discord", "link": "https://discord.gg/uqQ2SWCQCb" }
     ],
     "sidebar": [
       ["Getting Started", [
