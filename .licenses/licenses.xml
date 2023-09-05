@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<licenses>
+  <valid>
+    <license>
+      <id>MIT</id>
+      <names>
+        <name>MIT</name>
+        <name>MIT-0</name>
+        <name>MIT License</name>
+        <name>The MIT License</name>
+        <name>The MIT License (MIT)</name>
+      </names>
+      <urls>
+        <url>https://opensource.org/license/mit/</url>
+        <url>http://www.opensource.org/licenses/mit-license.php</url>
+      </urls>
+    </license>
+    <license>
+      <id>EPL 1</id>
+      <names>
+        <name>Eclipse Public License - v 1.0</name>
+        <name>Eclipse Public License, Version 1.0</name>
+      </names>
+      <urls>
+        <url>http://www.eclipse.org/legal/epl-v10.html</url>
+        <url>http://www.eclipse.org/org/documents/epl-v10.html</url>
+      </urls>
+    </license>
+    <license>
+      <id>EPL 2</id>
+      <names>
+        <name>Eclipse Public License - v2.0</name>
+        <name>Eclipse Public License - Version 2.0</name>
+        <name>EPL 2.0</name>
+      </names>
+      <urls>
+        <url>https://www.eclipse.org/legal/epl-v20.html</url>
+        <url>http://www.eclipse.org/legal/epl-2.0</url>
+      </urls>
+    </license>
+    <license>
+      <id>EDL 1</id>
+      <names>
+        <name>Eclipse Distribution License - v 1.0</name>
+      </names>
+      <urls>
+        <url>http://www.eclipse.org/org/documents/edl-v10.php</url>
+      </urls>
+    </license>
+    <license>
+      <id>Apache Software License 2.0</id>
+      <description>Apache Software License 2.0</description>
+      <names>
+        <name>Apache 2</name>
+        <name>Apache 2.0</name>
+        <name>Apache-2.0</name>
+        <name>Apache License 2.0</name>
+        <name>The Apache License, Version 2.0</name>
+        <name>Apache License, Version 2.0</name>
+        <name>Apache Software License 2.0</name>
+        <name>Apache License Version 2.0</name>
+        <name>Apache Software License, Version 2.0</name>
+        <name>The Apache Software License, Version 2.0</name>
+      </names>
+      <urls>
+        <url>http://www.apache.org/licenses/LICENSE-2.0</url>
+        <url>http://www.apache.org/licenses/LICENSE-2.0.html</url>
+        <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        <url>http://apache.org/licenses/LICENSE-2.0</url>
+        <url>http://apache.org/licenses/LICENSE-2.0.html</url>
+        <url>http://apache.org/licenses/LICENSE-2.0.txt</url>
+        <url>LICENSE.txt</url>
+      </urls>
+    </license>
+    <license>
+      <id>Common Public License Version 1.0</id>
+      <names>
+        <name>Common Public License Version 1.0</name>
+      </names>
+      <description>Common Public License Version 1.0</description>
+      <urls>
+        <url>http://www.opensource.org/licenses/cpl1.0.txt</url>
+      </urls>
+    </license>
+    <license>
+      <id>BSD License</id>
+      <description>BSD License</description>
+      <names>
+        <name>BSD</name>
+        <name>BSD License</name>
+        <name>The (New) BSD License</name>
+      </names>
+      <urls>
+        <url>http://www.antlr.org/license.html</url>
+        <url>http://antlr.org/license.html</url>
+        <url>http://www.jcraft.com/jzlib/LICENSE.txt</url>
+      </urls>
+    </license>
+    <license>
+      <id>BSD 3</id>
+      <names>
+        <name>BSD License 3</name>
+        <name>BSD-3-Clause</name>
+      </names>
+      <urls>
+      <url>http://opensource.org/licenses/BSD-3-Clause</url>
+        <url>https://asm.ow2.io/license.html</url>
+      </urls>
+    </license>
+    <license>
+      <id>GNU LESSER GENERAL PUBLIC LICENSE</id>
+      <description>GNU LESSER GENERAL PUBLIC LICENSE</description>
+      <names>
+        <name>GNU LESSER GENERAL PUBLIC LICENSE</name>
+      </names>
+      <urls>
+        <url>http://www.gnu.org/licenses/lglp.txt</url>
+      </urls>
+    </license>
+    <license>
+      <id>LGPL 2</id>
+      <names>
+      <name>GNU Lesser General Public License, Version 2.1</name>
+        <name>LGPL-2.1-or-later</name>
+      </names>
+      <urls>
+        <url>http://www.gnu.org/licenses/lgpl-2.1.html</url>
+        <url>http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html</url>
+      </urls>
+    </license>
+    <license>
+      <id>GPL2 w/ CPE</id>
+      <names>
+        <name>GPL2 w/ CPE</name>
+        <name>GNU General Public License, version 2 (GPL2), with the classpath exception</name>
+      </names>
+      <urls>
+        <url>https://www.gnu.org/software/classpath/license.html</url>
+      </urls>
+    </license>
+    <license>
+      <id>CDDL + GPLv2</id>
+      <names>
+        <name>CDDL + GPLv2 with classpath exception</name>
+      </names>
+      <urls>
+        <url>https://oss.oracle.com/licenses/CDDL+GPL-1.1</url>
+      </urls>
+    </license>
+    <license>
+      <id>Bouncy Castle Licence</id>
+      <names>
+        <name>Bouncy Castle Licence</name>
+      </names>
+      <urls>
+        <url>https://www.bouncycastle.org/licence.html</url>
+      </urls>
+    </license>
+    <license>
+      <id>Mozilla Public License, Version 2.0</id>
+      <names>
+        <name>Mozilla Public License, Version 2.0</name>
+      </names>
+      <urls>
+        <url>http://www.mozilla.org/MPL/2.0/index.txt</url>
+      </urls>
+    </license>
+    <license>
+      <id>CDDL/GPLv2+CE</id>
+      <names>
+        <name>MCDDL/GPLv2+CE</name>
+      </names>
+      <urls>
+        <url>https://javaee.github.io/javamail/LICENSE</url>
+      </urls>
+    </license>
+  </valid>
+
+  <invalid>
+    <license>
+      <id>GNU General Public License (GPL)</id>
+      <description>GNU General Public License (GPL)</description>
+      <names>
+        <name>GNU General Public License, version 2</name>
+        <name>GNU General Public License, version 3</name>
+      </names>
+      <urls>
+        <url>http://www.gnu.org/licenses/gpl-2.0.html</url>
+        <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+      </urls>
+    </license>
+    <license>
+      <id>Bouncy Castle License</id>
+      <names>
+        <name>Bouncy Castle License</name>
+      </names>
+      <urls>
+        <url>https://www.bouncycastle.org/licence.html</url>
+      </urls>
+    </license>
+    <license>
+      <id>LGPL 3</id>
+      <names>
+        <name>Lesser General Public License, version 3 or greater</name>
+      </names>
+      <urls>
+        <url>http://www.gnu.org/licenses/lgpl.html</url>
+      </urls>
+    </license>
+  </invalid>
+
+  <warning>
+    <license>
+      <id>Apache Software License 1.1 (Historic)</id>
+      <description>Apache Software License 1.1 (Historic)</description>
+      <names>
+        <name>Apache License, Version 1.1</name>
+      </names>
+      <urls>
+        <url>http://www.apache.org/licenses/LICENSE-1.1</url>
+      </urls>
+    </license>
+  </warning>
+</licenses>
