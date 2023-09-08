@@ -39,6 +39,7 @@
   </parent>
 
   <properties>
+    <rika2mqtt.root>${basedir}/..</rika2mqtt.root>
     <maven.compiler.source>${java.sdk.version}</maven.compiler.source>
     <maven.compiler.target>${java.sdk.version}</maven.compiler.target>
     <project.build.sourceEncoding>${source.encoding}</project.build.sourceEncoding>
