@@ -7,6 +7,7 @@ It goes both way so you can monitor and also take control of your stove directly
 
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dev.cookiecode/rika2mqtt-parent/badge.svg)](https://maven-badges.herokuapp.com/maven-central/dev.cookiecode/rika2mqtt-parent)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![join discord](https://img.shields.io/badge/join%20discord-gray?style=flat&logo=discord&link=https://discord.gg/uqQ2SWCQCb)](https://discord.gg/uqQ2SWCQCb)
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sebastienvermeille_rika2mqtt&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=sebastienvermeille_rika2mqtt)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=sebastienvermeille_rika2mqtt&metric=coverage)](https://sonarcloud.io/summary/new_code?id=sebastienvermeille_rika2mqtt)
