@@ -28,5 +28,10 @@
       "versions": {
         "stable": "2.0.0"
       }
+    },
+    "docsearch": {
+      "appId": "E1W6T35JS9",
+      "apiKey": "98471285c8a136a9d660a78e4e523445",
+      "indexName": "rika2mqtt"
     }
 }
