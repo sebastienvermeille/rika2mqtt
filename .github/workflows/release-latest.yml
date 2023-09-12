@@ -1,4 +1,4 @@
-name: Publish docker:latest
+name: "Publish docker:latest"
 # Push a new changes merged to master to rika2mqtt:latest branch
 on:
   workflow_run: # only executed on master branch
