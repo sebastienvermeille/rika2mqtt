@@ -1,0 +1,51 @@
+name: Publish docker:latest
+# Push a new changes merged to master to rika2mqtt:latest branch
+on:
+  workflow_run: # only executed on master branch
+    workflows: [ Build ]
+    types: [ completed ]
+    branches:
+      - master
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Java for building
+        uses: actions/setup-java@v3
+        with:
+          java-version: '20'
+          distribution: 'temurin'
+        # Set version as github run build number for traceability
+        run: mvn -B versions:set -DnewVersion=${{github.run_number}} -DgenerateBackupPoms=false
+      - name: Package jars
+        run: mvn --no-transfer-progress --batch-mode package -DperformRelease=true
+        env:
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME_OSSRH }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD_OSSRH }}
+          MAVEN_OPTS: "--add-opens=java.base/java.util=ALL-UNNAMED --add-opens=java.base/java.lang.reflect=ALL-UNNAMED --add-opens=java.base/java.text=ALL-UNNAMED --add-opens=java.desktop/java.awt.font=ALL-UNNAMED"
+          GPG_PASSPHRASE: ${{ secrets.MAVEN_GPG_PASSPHRASE }}
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+      - name: Login to Docker Hub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKER_HUB_USERNAME }}
+          password: ${{ secrets.DOCKER_HUB_SECRET }}
+      - name: Build and push
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: cookiecodedev/rika2mqtt:latest
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'New changes published to docker image cookiecodedev/rika2mqtt:latest !'
