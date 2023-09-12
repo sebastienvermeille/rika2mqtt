@@ -12,6 +12,7 @@ It goes both way so you can monitor and also take control of your stove directly
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=sebastienvermeille_rika2mqtt&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=sebastienvermeille_rika2mqtt)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=sebastienvermeille_rika2mqtt&metric=coverage)](https://sonarcloud.io/summary/new_code?id=sebastienvermeille_rika2mqtt)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=sebastienvermeille_rika2mqtt&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=sebastienvermeille_rika2mqtt)
+[![code style](https://img.shields.io/badge/code%20style-google%20code%20style-green?style=flat&link=https://google.github.io/styleguide/javaguide.html)](https://google.github.io/styleguide/javaguide.html)
 [![Known Vulnerabilities](https://snyk.io/test/github/sebastienvermeille/rika2mqtt/badge.svg)](https://snyk.io/test/github/sebastienvermeille/rika2mqtt)
 [![OpenSSF Best Practices](https://bestpractices.coreinfrastructure.org/projects/7361/badge)](https://bestpractices.coreinfrastructure.org/projects/7361)
 
