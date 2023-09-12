@@ -19,7 +19,7 @@ jobs:
         with:
           java-version: '20'
           distribution: 'temurin'
-        # Set version as github run build number for traceability
+      - name: Set version in pom.xml as github run build number for traceability
         run: mvn -B versions:set -DnewVersion=${{github.run_number}} -DgenerateBackupPoms=false
       - name: Package jars
         run: mvn --no-transfer-progress --batch-mode package -DperformRelease=true
