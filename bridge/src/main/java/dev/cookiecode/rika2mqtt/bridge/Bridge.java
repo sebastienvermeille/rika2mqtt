@@ -113,6 +113,7 @@ public class Bridge {
           bridgeReportInterval);
     }
   }
+
   /** Poll rika-firenet stove status regularly and publish to MQTT */
   @Scheduled(fixedDelayString = "${bridge.reportInterval}")
   void publishToMqtt() {
