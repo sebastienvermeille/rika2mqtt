@@ -181,7 +181,8 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
 
   @Override
   public void updateControls(@NonNull StoveId stoveId, Map<String, String> fields)
-      throws UnableToControlRikaFirenetException, InvalidStoveIdException,
+      throws UnableToControlRikaFirenetException,
+          InvalidStoveIdException,
           OutdatedRevisionException {
     try {
       var status = getStatus(stoveId);
@@ -283,7 +284,8 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
 
   @Override
   public StoveStatus getStatus(final @NonNull StoveId stoveId)
-      throws InvalidStoveIdException, CouldNotAuthenticateToRikaFirenetException,
+      throws InvalidStoveIdException,
+          CouldNotAuthenticateToRikaFirenetException,
           UnableToRetrieveRikaFirenetDataException {
     try {
       final var stoveString = stoveId.id().toString();

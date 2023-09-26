@@ -57,7 +57,8 @@ public interface RikaFirenetService {
    * @throws UnableToRetrieveRikaFirenetDataException
    */
   StoveStatus getStatus(@NonNull final StoveId stoveId)
-      throws InvalidStoveIdException, CouldNotAuthenticateToRikaFirenetException,
+      throws InvalidStoveIdException,
+          CouldNotAuthenticateToRikaFirenetException,
           UnableToRetrieveRikaFirenetDataException;
 
   /**
@@ -85,6 +86,7 @@ public interface RikaFirenetService {
    * @throws UnableToControlRikaFirenetException
    */
   void updateControls(@NonNull final StoveId stoveId, Map<String, String> fields)
-      throws UnableToControlRikaFirenetException, InvalidStoveIdException,
+      throws UnableToControlRikaFirenetException,
+          InvalidStoveIdException,
           OutdatedRevisionException;
 }
