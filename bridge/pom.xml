@@ -72,6 +72,25 @@
         <groupId>org.springframework.boot</groupId>
       </plugin>
       <plugin>
+        <groupId>com.coderplus.maven.plugins</groupId>
+        <artifactId>copy-rename-maven-plugin</artifactId>
+        <version>1.0</version>
+        <executions>
+          <execution>
+            <id>copy-rename-file</id>
+            <phase>install</phase>
+            <goals>
+              <goal>copy</goal>
+            </goals>
+            <configuration>
+              <!-- copy rika2mqtt-bridge-<version>.jar rika2mqtt.jar file (ease copy from Dockerfile -->
+              <sourceFile>target/rika2mqtt-bridge-${project.version}.jar</sourceFile>
+              <destinationFile>target/rika2mqtt.jar</destinationFile>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
         <executions>
