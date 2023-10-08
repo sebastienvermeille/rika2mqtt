@@ -47,8 +47,7 @@ class StoveStatusSerdeTest {
   @Test
   void serializationOfStoveStatusToJsonShouldNotPropagateUppercaseId() {
     // GIVEN
-    var status = new StoveStatus();
-    status.setStoveId(12L);
+    var status = StoveStatus.builder().stoveId(12L).build();
 
     // WHEN
     var jsonResult = gson.toJson(status);

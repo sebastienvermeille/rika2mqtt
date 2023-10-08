@@ -25,6 +25,9 @@ package dev.cookiecode.rika2mqtt.bridge;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import dev.cookiecode.rika2mqtt.bridge.misc.EmailObfuscator;
+import dev.cookiecode.rika2mqtt.plugins.internal.Rika2MqttPluginManager;
+import dev.cookiecode.rika2mqtt.plugins.internal.event.PolledStoveStatusEvent;
+import dev.cookiecode.rika2mqtt.plugins.internal.mapper.StoveStatusMapper;
 import dev.cookiecode.rika2mqtt.rika.firenet.RikaFirenetService;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.CouldNotAuthenticateToRikaFirenetException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.InvalidStoveIdException;
@@ -43,6 +46,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.flogger.Flogger;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
@@ -76,6 +80,11 @@ public class Bridge {
 
   private final EmailObfuscator emailObfuscator;
   private final Gson gson;
+  private final StoveStatusMapper stoveStatusMapper;
+
+  private final Rika2MqttPluginManager pluginManager;
+
+  private final ApplicationEventPublisher applicationEventPublisher;
 
   private final List<StoveId> stoveIds = new ArrayList<>();
 
@@ -85,6 +94,7 @@ public class Bridge {
 
     initStoves(rikaFirenetService.getStoves());
     printStartupMessages();
+    pluginManager.start();
     publishToMqtt();
   }
 
@@ -123,7 +133,25 @@ public class Bridge {
 
           try {
             status = rikaFirenetService.getStatus(stoveId);
-            mqttService.publish(gson.toJson(status));
+            final var jsonStatus = gson.toJson(status);
+            mqttService.publish(jsonStatus);
+
+            applicationEventPublisher.publishEvent(
+                PolledStoveStatusEvent.builder()
+                    .stoveStatus(
+                        stoveStatusMapper.toApiStoveStatus(status)
+                        // RIKA API data structure has some drawback, the mapper address
+                        // it by adding some convenience for plugin developers. (i.e:
+                        // error0 error1 -> errors[])
+                        //                        gson.fromJson(
+                        //                            jsonStatus,
+                        //
+                        // dev.cookiecode.rika2mqtt.plugins.api.model.StoveStatus
+                        //                                .class) // TODO: a bit a hack mapstruct
+                        // would help having something
+                        //                        // nicer I believe
+                        )
+                    .build());
           } catch (InvalidStoveIdException e) {
             // TODO: could occurs if a stove is added later (after deployment of this rika2mqtt
             // instance, might be valuable to perform a reload of stoves "periodically") -> should

@@ -54,8 +54,10 @@
     <rika2mqtt.root>${basedir}</rika2mqtt.root>
     <!-- dependencies version-->
     <lombok.version>1.18.30</lombok.version>
+    <mapstruct.version>1.5.5.Final</mapstruct.version>
     <flogger.version>0.8</flogger.version>
     <hibernate.validator.version>8.0.1.Final</hibernate.validator.version>
+    <pf4j.version>3.10.0</pf4j.version>
 
     <!-- test dependencies version -->
     <testcontainers.version>1.19.1</testcontainers.version>
@@ -88,6 +90,10 @@
     <module>rika-firenet</module>
     <module>bridge</module>
     <module>mqtt</module>
+    <module>plugins-api</module>
+    <module>rika2mqtt-flux-metrics-plugin</module>
+      <module>plugins-internal</module>
+    <module>rika2mqtt-example-plugin</module>
   </modules>
 
   <dependencies>

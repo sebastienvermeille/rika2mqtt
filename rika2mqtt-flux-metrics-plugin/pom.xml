@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>dev.cookiecode</groupId>
+        <artifactId>rika2mqtt-parent</artifactId>
+        <version>1.1.0</version>
+    </parent>
+
+    <artifactId>rika2mqtt-flux-metrics-plugin</artifactId>
+
+    <properties>
+        <rika2mqtt.root>${basedir}/..</rika2mqtt.root>
+        <maven.compiler.source>${java.sdk.version}</maven.compiler.source>
+        <maven.compiler.target>${java.sdk.version}</maven.compiler.target>
+        <project.build.sourceEncoding>${source.encoding}</project.build.sourceEncoding>
+        <kamon.version>2.5.9</kamon.version>
+    </properties>
+    <dependencies>
+        <dependency>
+            <groupId>dev.cookiecode</groupId>
+            <artifactId>plugins-api</artifactId>
+            <version>1.1.0</version>
+            <scope>provided</scope> <!-- VERY IMPORTANT: cf: https://github.com/pf4j/pf4j/issues/230 -->
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>com.typesafe</groupId>-->
+<!--            <artifactId>config</artifactId>-->
+<!--            <version>1.4.1</version>-->
+<!--            <scope>compile</scope>-->
+<!--        </dependency>-->
+        <dependency>
+            <groupId>io.kamon</groupId>
+            <artifactId>kamon-bundle_2.13</artifactId>
+            <version>${kamon.version}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.kamon</groupId>
+            <artifactId>kamon-influxdb_2.13</artifactId>
+            <version>${kamon.version}</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+<!--            <plugin>-->
+<!--                &lt;!&ndash; workaround to disable this plugin because we are in a plugin and want to have a "fatjar" built with maven-assembly-plugin instead &ndash;&gt;-->
+<!--                <artifactId>maven-jar-plugin</artifactId>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>default-jar</id>-->
+<!--                        <phase>none</phase>-->
+<!--                        <configuration>-->
+<!--                            <finalName>unwanted</finalName>-->
+<!--                            <classifier>unwanted</classifier>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>shade-jar-with-dependencies</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <Plugin-Class>dev.cookiecode.rika2mqtt.plugins.influxdb.metrics.Rika2MqttInfluxMetricsPlugin</Plugin-Class>
+                                        <Plugin-Id>${project.artifactId}</Plugin-Id>
+                                        <Plugin-Version>${project.version}</Plugin-Version>
+                                        <Plugin-Requires>${project.version}</Plugin-Requires>
+                                        <Plugin-Description>Export RIKA stoves values to InfluxDB.</Plugin-Description>
+                                        <Plugin-Provider>Sebastien Vermeille</Plugin-Provider>
+                                        <Plugin-License>MIT</Plugin-License>
+                                        <Plugin-Dependencies></Plugin-Dependencies><!-- atm forced to declare this due to an issue in PF4J-->
+                                    </manifestEntries>
+                                </transformer>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
+                                    <resource>reference.conf</resource>
+                                </transformer>
+                            </transformers>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-assembly-plugin</artifactId>-->
+<!--                <version>3.6.0</version>-->
+<!--                <configuration>-->
+<!--                    <descriptorRefs>-->
+<!--                        <descriptorRef>jar-with-dependencies</descriptorRef>-->
+<!--                    </descriptorRefs>-->
+<!--                    <finalName>${project.artifactId}-${project.version}</finalName>-->
+<!--                    <appendAssemblyId>false</appendAssemblyId>-->
+<!--                    <attach>false</attach>-->
+<!--                    <archive>-->
+<!--                        <manifest>-->
+<!--                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>-->
+<!--                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>-->
+<!--                        </manifest>-->
+<!--                        <manifestEntries>-->
+<!--                            <Plugin-Class>dev.cookiecode.rika2mqtt.plugins.influxdb.metrics.Rika2MqttInfluxMetricsPlugin</Plugin-Class>-->
+<!--                            <Plugin-Id>influx-metrics-plugin</Plugin-Id>-->
+<!--                            <Plugin-Version>0.0.1</Plugin-Version>-->
+<!--                            <Plugin-Requires>2.0.0</Plugin-Requires>-->
+<!--                            <Plugin-Description>Export RIKA stoves values to InfluxDB.</Plugin-Description>-->
+<!--                            <Plugin-Provider>Sebastien Vermeille</Plugin-Provider>-->
+<!--                            <Plugin-License>MIT</Plugin-License>-->
+<!--                            <Plugin-Dependencies></Plugin-Dependencies>&lt;!&ndash; atm forced to declare this due to an issue in PF4J&ndash;&gt;-->
+<!--                        </manifestEntries>-->
+<!--                    </archive>-->
+
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>make-assembly</id>-->
+<!--                        <phase>package</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>single</goal>-->
+<!--                        </goals>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
+
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <!-- copy just built artifact to plugins dir, that way it can be easily tested -->
+                        <id>copy-to-lib</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <copy
+                                        file="${project.build.directory}/${project.build.finalName}.${project.packaging}"
+                                        tofile="${rika2mqtt.root}/plugins/${project.build.finalName}.${project.packaging}" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

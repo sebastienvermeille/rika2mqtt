@@ -36,6 +36,8 @@ import static org.mockito.Mockito.when;
 
 import com.google.gson.Gson;
 import dev.cookiecode.rika2mqtt.bridge.misc.EmailObfuscator;
+import dev.cookiecode.rika2mqtt.plugins.internal.Rika2MqttPluginManager;
+import dev.cookiecode.rika2mqtt.plugins.internal.mapper.StoveStatusMapper;
 import dev.cookiecode.rika2mqtt.rika.firenet.RikaFirenetService;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
 import dev.cookiecode.rika2mqtt.rika.mqtt.MqttService;
@@ -52,6 +54,7 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 /**
  * Test class
@@ -66,6 +69,11 @@ class BridgeTest {
   @Mock MqttService mqttService;
   @Mock EmailObfuscator emailObfuscator;
   @Mock Gson gson;
+  @Mock StoveStatusMapper stoveStatusMapper;
+
+  @Mock Rika2MqttPluginManager pluginManager;
+
+  @Mock ApplicationEventPublisher applicationEventPublisher;
   @InjectMocks @Spy Bridge bridge;
 
   @BeforeEach

@@ -45,7 +45,6 @@
     <project.build.sourceEncoding>${source.encoding}</project.build.sourceEncoding>
 
     <!-- dependencies version -->
-    <mapstruct.version>1.5.5.Final</mapstruct.version>
     <retrofit.version>2.9.0</retrofit.version>
     <okhttp3.version>4.12.0</okhttp3.version>
     <httpclient5.version>5.2.1</httpclient5.version>

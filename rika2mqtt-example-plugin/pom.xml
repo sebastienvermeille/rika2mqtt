@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>dev.cookiecode</groupId>
+        <artifactId>rika2mqtt-parent</artifactId>
+        <version>1.1.0</version>
+    </parent>
+
+    <artifactId>rika2mqtt-example-plugin</artifactId>
+
+    <properties>
+        <rika2mqtt.root>${basedir}/..</rika2mqtt.root>
+        <maven.compiler.source>${java.sdk.version}</maven.compiler.source>
+        <maven.compiler.target>${java.sdk.version}</maven.compiler.target>
+        <project.build.sourceEncoding>${source.encoding}</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>dev.cookiecode</groupId>
+            <artifactId>plugins-api</artifactId>
+            <version>1.1.0</version>
+            <scope>provided</scope> <!-- VERY IMPORTANT: cf: https://github.com/pf4j/pf4j/issues/230 -->
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>3.6.0</version>
+                <configuration>
+                    <descriptorRefs>
+                        <descriptorRef>jar-with-dependencies</descriptorRef>
+                    </descriptorRefs>
+                    <finalName>${project.artifactId}-${project.version}</finalName>
+                    <appendAssemblyId>false</appendAssemblyId>
+                    <attach>false</attach>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <Plugin-Class>dev.cookiecode.rika2mqtt.plugins.example.ExamplePlugin</Plugin-Class>
+                            <Plugin-Id>example-plugin</Plugin-Id>
+                            <Plugin-Version>0.0.1</Plugin-Version>
+                            <Plugin-Requires>2.0.0</Plugin-Requires>
+                            <Plugin-Description>Log each time an extension point is invoked.</Plugin-Description>
+                            <Plugin-Provider>Sebastien Vermeille</Plugin-Provider>
+                            <Plugin-License>MIT</Plugin-License>
+<!--                            <Plugin-Dependencies></Plugin-Dependencies>&lt;!&ndash; atm forced to declare this due to an issue in PF4J&ndash;&gt;-->
+                        </manifestEntries>
+                    </archive>
+
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>make-assembly</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.1.0</version>
+                <executions>
+                    <execution>
+                        <!-- copy just built artifact to plugins dir, that way it can be easily tested -->
+                        <id>copy-to-lib</id>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <copy
+                                        file="${project.build.directory}/${project.build.finalName}.${project.packaging}"
+                                        tofile="${rika2mqtt.root}/plugins/${project.build.finalName}.${project.packaging}" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+</project>

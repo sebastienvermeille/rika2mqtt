@@ -20,9 +20,9 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.rika.firenet.model;
+package dev.cookiecode.rika2mqtt.plugins.api.model;
 
-import com.google.gson.annotations.SerializedName;
+import java.util.List;
 import lombok.Builder;
 import lombok.Data;
 
@@ -43,10 +43,10 @@ public class Sensors {
   private Integer outputDischargeMotor;
   private Integer outputDischargeCurrent;
 
-  @SerializedName("outputIDFan") // for coherence (the rest of the api is using camelCase)
+  //  @SerializedName("outputIDFan") // for coherence (the rest of the api is using camelCase)
   private Integer outputIdFan;
 
-  @SerializedName("outputIDFanTarget") // for coherence (the rest of the api is using camelCase)
+  //  @SerializedName("outputIDFanTarget") // for coherence (the rest of the api is using camelCase)
   private Integer outputIdFanTarget;
 
   private Integer outputInsertionMotor;
@@ -68,10 +68,12 @@ public class Sensors {
   private Double inputBoardTemperature;
   private Integer inputCurrentStage;
 
-  @SerializedName("inputTargetStagePID") // for coherence (the rest of the api is using camelCase)
+  //  @SerializedName("inputTargetStagePID") // for coherence (the rest of the api is using
+  // camelCase)
   private Integer inputTargetStagePid;
 
-  @SerializedName("inputCurrentStagePID") // for coherence (the rest of the api is using camelCase)
+  //  @SerializedName("inputCurrentStagePID") // for coherence (the rest of the api is using
+  // camelCase)
   private Integer inputCurrentStagePid;
 
   private Integer statusMainState;
@@ -83,29 +85,31 @@ public class Sensors {
   private Integer parameterLanguageNumber;
   private Integer parameterVersionMainBoard;
 
-  @SerializedName("parameterVersionTFT") // for coherence (the rest of the api is using camelCase)
+  //  @SerializedName("parameterVersionTFT") // for coherence (the rest of the api is using
+  // camelCase)
   private Integer parameterVersionTft;
 
-  @SerializedName("parameterVersionWiFi") // for coherence (the rest of the api use Wifi not WiFi)
+  //  @SerializedName("parameterVersionWiFi") // for coherence (the rest of the api use Wifi not
+  // WiFi)
   private Integer parameterVersionWifi;
 
   private Integer parameterVersionMainBoardBootLoader;
 
-  @SerializedName("parameterVersionTFTBootLoader")
+  //  @SerializedName("parameterVersionTFTBootLoader")
   // for coherence (the rest of the api is using camelCase)
   private Integer parameterVersionTftBootLoader;
 
-  @SerializedName("parameterVersionWiFiBootLoader")
+  //  @SerializedName("parameterVersionWiFiBootLoader")
   // for coherence (the rest of the api is using camelCase)
   private Integer parameterVersionWifiBootLoader;
 
   private Integer parameterVersionMainBoardSub;
 
-  @SerializedName("parameterVersionTFTSub")
+  //  @SerializedName("parameterVersionTFTSub")
   // for coherence (the rest of the api is using camelCase)
   private Integer parameterVersionTftSub;
 
-  @SerializedName("parameterVersionWiFiSub")
+  //  @SerializedName("parameterVersionWiFiSub")
   // for coherence (the rest of the api use Wifi not WiFi)
   private Integer parameterVersionWifiSub;
 
@@ -139,11 +143,15 @@ public class Sensors {
   private Integer parameterErrorCount17;
   private Integer parameterErrorCount18;
   private Integer parameterErrorCount19;
+
+  private List<ParameterErrorCount> parametersErrorCount;
+
   private Boolean statusHeatingTimesNotProgrammed;
   private Boolean statusFrostStarted;
   private Integer parameterSpiralMotorsTuning;
 
-  @SerializedName("parameterIDFanTuning") // for coherence (the rest of the api is using camelCase)
+  //  @SerializedName("parameterIDFanTuning") // for coherence (the rest of the api is using
+  // camelCase)
   private Integer parameterIdFanTuning;
 
   private Integer parameterCleanIntervalBig;
@@ -153,4 +161,6 @@ public class Sensors {
   private Integer parameterDebug2;
   private Integer parameterDebug3;
   private Integer parameterDebug4;
+
+  private List<ParameterDebug> parametersDebug;
 }

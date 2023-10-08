@@ -20,30 +20,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.rika.firenet.model;
-
-import com.google.gson.annotations.SerializedName;
-import lombok.Builder;
-import lombok.Data;
+package dev.cookiecode.rika2mqtt.plugins.api.model;
 
 /**
  * @author Sebastien Vermeille
  */
-@Data
-@Builder
-public class StoveStatus {
+public record StoveId(Long id) {
 
-  private String name;
-
-  @SerializedName(
-      value = "stoveId",
-      alternate = {"stoveID"}) // for coherence (the rest of the api is using camelCase)
-  private Long stoveId;
-
-  private Long lastSeenMinutes;
-  private Long lastConfirmedRevision;
-  private String oem;
-  private String stoveType;
-  private Sensors sensors;
-  private Controls controls;
+  public static StoveId of(Long id) {
+    return new StoveId(id);
+  }
 }

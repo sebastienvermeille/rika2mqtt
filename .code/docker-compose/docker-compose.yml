@@ -30,6 +30,23 @@ services:
 #      - MQTT_TELEMETRY_REPORT_TOPIC_NAME=tele/rika2mqtt
 
 
+  influxdb:
+    container_name: influxdb
+    image: influxdb:2.7
+    ports:
+      - 8086:8086
+#    volumes:
+#    - $PWD/data:/var/lib/influxdb2
+#    - $PWD/config:/etc/influxdb2
+    environment:
+      - DOCKER_INFLUXDB_INIT_MODE=setup
+      - DOCKER_INFLUXDB_INIT_USERNAME=admin
+      - DOCKER_INFLUXDB_INIT_PASSWORD=adminadmin
+      - DOCKER_INFLUXDB_INIT_ORG=my-org
+      - DOCKER_INFLUXDB_INIT_RETENTION=1w
+      - DOCKER_INFLUXDB_INIT_BUCKET=rika2mqtt
+      - DOCKER_INFLUXDB_INIT_ADMIN_TOKEN=admin-token
+
 volumes:
   data:
     name: "mqtt-broker-data"
