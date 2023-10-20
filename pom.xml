@@ -54,7 +54,7 @@
     <rika2mqtt.root>${basedir}</rika2mqtt.root>
     <!-- dependencies version-->
     <lombok.version>1.18.30</lombok.version>
-    <flogger.version>0.7.4</flogger.version>
+    <flogger.version>0.8</flogger.version>
     <hibernate.validator.version>8.0.1.Final</hibernate.validator.version>
 
     <!-- test dependencies version -->
