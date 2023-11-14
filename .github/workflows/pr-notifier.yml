@@ -16,4 +16,4 @@ jobs:
           DISCORD_WEBHOOK: ${{ secrets.DISCORD_PR_SEEKER_WEBHOOK }}
         uses: Ilshidur/action-discord@master
         with:
-          args: 'A new PR has been opened for {{ EVENT_PAYLOAD.repository.full_name }}: {{ EVENT_PAYLOAD.pull_request.url }}'
+          args: 'A new PR has been opened: https://github.com/sebastienvermeille/rika2mqtt/pull/{{ EVENT_PAYLOAD.pull_request.id }}'
