@@ -1,0 +1,19 @@
+name: Issue Notifier (Discord)
+on:
+  issues:
+    types: [opened]
+
+permissions:
+  contents: read
+
+jobs:
+  pr-notifier:
+    name: Notify on discord when a new issue is created
+    runs-on: ubuntu-latest
+    steps:
+      - name: Discord notification
+        env:
+          DISCORD_WEBHOOK: ${{ secrets.DISCORD_BUG_BUSTER_WEBHOOK }}
+        uses: Ilshidur/action-discord@master
+        with:
+          args: 'A new issue has been opened : {{ EVENT_PAYLOAD.issue.url }}'
