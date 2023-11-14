@@ -17,7 +17,7 @@ jobs:
       - name: Set up Java for building
         uses: actions/setup-java@v3
         with:
-          java-version: '20'
+          java-version: '21'
           distribution: 'temurin'
       - name: Set version in pom.xml as github run build number for traceability
         run: mvn -B versions:set -DnewVersion=${{github.run_number}} -DgenerateBackupPoms=false

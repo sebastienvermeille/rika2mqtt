@@ -49,7 +49,7 @@
   <packaging>pom</packaging>
 
   <properties>
-    <java.sdk.version>20</java.sdk.version>
+    <java.sdk.version>21</java.sdk.version>
     <source.encoding>UTF-8</source.encoding>
     <rika2mqtt.root>${basedir}</rika2mqtt.root>
     <!-- dependencies version-->
