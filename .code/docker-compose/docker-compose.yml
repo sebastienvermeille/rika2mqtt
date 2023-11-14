@@ -18,7 +18,7 @@ services:
 #      - mqtt-server
 #    image: cookiecodedev/rika2mqtt
 #    environment:
-#      - MQTT_HOST=localhost
+#      - MQTT_HOST=mqtt-server
 #      - MQTT_USERNAME=testuser
 #      - MQTT_PASSWORD=secret
 #      - RIKA_EMAIL=<your email>
