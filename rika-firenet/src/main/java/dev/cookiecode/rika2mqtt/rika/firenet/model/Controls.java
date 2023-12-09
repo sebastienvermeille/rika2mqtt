@@ -64,7 +64,7 @@ public class Controls {
   private Integer convectionFan2Area;
   private Boolean frostProtectionActive;
   private Integer frostProtectionTemperature;
-  private Integer temperatureOffset;
+  private Double temperatureOffset;
 
   @SerializedName("RoomPowerRequest") // for coherence (the rest of the api is using camelCase)
   private Integer roomPowerRequest;
