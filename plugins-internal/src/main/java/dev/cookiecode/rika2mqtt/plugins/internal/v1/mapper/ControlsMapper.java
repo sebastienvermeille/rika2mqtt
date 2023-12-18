@@ -26,7 +26,6 @@ import static com.google.common.collect.ImmutableList.of;
 import static java.time.DayOfWeek.*;
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.Controls;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.TimeRange;
