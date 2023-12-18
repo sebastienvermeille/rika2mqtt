@@ -1,6 +1,6 @@
 package dev.cookiecode.rika2mqtt.plugins.example;
 
-import dev.cookiecode.rika2mqtt.plugins.api.Rika2MqttPlugin;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.Rika2MqttPlugin;
 
 public class ExamplePlugin extends Rika2MqttPlugin {
 

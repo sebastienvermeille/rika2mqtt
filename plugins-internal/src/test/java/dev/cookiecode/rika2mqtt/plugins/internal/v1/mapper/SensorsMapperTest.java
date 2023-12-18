@@ -1,7 +1,6 @@
-package dev.cookiecode.rika2mqtt.plugins.internal.mapper;
+package dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 import dev.cookiecode.rika2mqtt.rika.firenet.model.Sensors;
 import org.junit.jupiter.api.Test;

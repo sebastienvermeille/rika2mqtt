@@ -20,11 +20,14 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.plugins.api.model;
+package dev.cookiecode.rika2mqtt.plugins.api.v1.model;
+
+import static lombok.AccessLevel.NONE;
 
 import java.util.List;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 /**
  * @author Sebastien Vermeille
@@ -42,13 +45,8 @@ public class Sensors {
   private Integer statusService;
   private Integer outputDischargeMotor;
   private Integer outputDischargeCurrent;
-
-  //  @SerializedName("outputIDFan") // for coherence (the rest of the api is using camelCase)
   private Integer outputIdFan;
-
-  //  @SerializedName("outputIDFanTarget") // for coherence (the rest of the api is using camelCase)
   private Integer outputIdFanTarget;
-
   private Integer outputInsertionMotor;
   private Integer outputInsertionCurrent;
   private Integer outputAirFlaps;
@@ -123,27 +121,70 @@ public class Sensors {
   private Integer parameterOnOffCycleCount;
   private Integer parameterFlameSensorOffset;
   private Integer parameterPressureSensorOffset;
+
+  // region HeatingTime
+  // TODO: consider removing these properties handled in getParametersErrorCount()
+  @Getter(NONE)
   private Integer parameterErrorCount0;
+
+  @Getter(NONE)
   private Integer parameterErrorCount1;
+
+  @Getter(NONE)
   private Integer parameterErrorCount2;
+
+  @Getter(NONE)
   private Integer parameterErrorCount3;
+
+  @Getter(NONE)
   private Integer parameterErrorCount4;
+
+  @Getter(NONE)
   private Integer parameterErrorCount5;
+
+  @Getter(NONE)
   private Integer parameterErrorCount6;
+
+  @Getter(NONE)
   private Integer parameterErrorCount7;
+
+  @Getter(NONE)
   private Integer parameterErrorCount8;
+
+  @Getter(NONE)
   private Integer parameterErrorCount9;
+
+  @Getter(NONE)
   private Integer parameterErrorCount10;
+
+  @Getter(NONE)
   private Integer parameterErrorCount11;
+
+  @Getter(NONE)
   private Integer parameterErrorCount12;
+
+  @Getter(NONE)
   private Integer parameterErrorCount13;
+
+  @Getter(NONE)
   private Integer parameterErrorCount14;
+
+  @Getter(NONE)
   private Integer parameterErrorCount15;
+
+  @Getter(NONE)
   private Integer parameterErrorCount16;
+
+  @Getter(NONE)
   private Integer parameterErrorCount17;
+
+  @Getter(NONE)
   private Integer parameterErrorCount18;
+
+  @Getter(NONE)
   private Integer parameterErrorCount19;
 
+  // endregion
   private List<ParameterErrorCount> parametersErrorCount;
 
   private Boolean statusHeatingTimesNotProgrammed;
@@ -156,11 +197,23 @@ public class Sensors {
 
   private Integer parameterCleanIntervalBig;
   private Integer parameterKgTillCleaning;
+
+  // region ParameterDebug
+  @Getter(NONE)
   private Integer parameterDebug0;
+
+  @Getter(NONE)
   private Integer parameterDebug1;
+
+  @Getter(NONE)
   private Integer parameterDebug2;
+
+  @Getter(NONE)
   private Integer parameterDebug3;
+
+  @Getter(NONE)
   private Integer parameterDebug4;
 
+  // endregion
   private List<ParameterDebug> parametersDebug;
 }

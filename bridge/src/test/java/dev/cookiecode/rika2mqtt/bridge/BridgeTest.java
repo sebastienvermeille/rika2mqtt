@@ -36,8 +36,8 @@ import static org.mockito.Mockito.when;
 
 import com.google.gson.Gson;
 import dev.cookiecode.rika2mqtt.bridge.misc.EmailObfuscator;
-import dev.cookiecode.rika2mqtt.plugins.internal.Rika2MqttPluginManager;
-import dev.cookiecode.rika2mqtt.plugins.internal.mapper.StoveStatusMapper;
+import dev.cookiecode.rika2mqtt.plugins.internal.v1.Rika2MqttPluginManager;
+import dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper.StoveStatusMapper;
 import dev.cookiecode.rika2mqtt.rika.firenet.RikaFirenetService;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
 import dev.cookiecode.rika2mqtt.rika.mqtt.MqttService;

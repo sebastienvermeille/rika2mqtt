@@ -1,4 +1,4 @@
-package dev.cookiecode.rika2mqtt.plugins.api.model;
+package dev.cookiecode.rika2mqtt.plugins.api.v1.model;
 
 import lombok.Builder;
 import lombok.Data;

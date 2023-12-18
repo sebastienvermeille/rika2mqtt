@@ -1,10 +1,10 @@
-package dev.cookiecode.rika2mqtt.plugins.internal.mapper;
+package dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper;
 
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
-import dev.cookiecode.rika2mqtt.plugins.api.model.ParameterDebug;
-import dev.cookiecode.rika2mqtt.plugins.api.model.ParameterErrorCount;
-import dev.cookiecode.rika2mqtt.plugins.api.model.Sensors;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.model.ParameterDebug;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.model.ParameterErrorCount;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.model.Sensors;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.NonNull;

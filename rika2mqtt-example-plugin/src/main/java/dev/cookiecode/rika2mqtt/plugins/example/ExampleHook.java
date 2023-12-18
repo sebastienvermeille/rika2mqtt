@@ -1,7 +1,7 @@
 package dev.cookiecode.rika2mqtt.plugins.example;
 
-import dev.cookiecode.rika2mqtt.plugins.api.StoveStatusExtension;
-import dev.cookiecode.rika2mqtt.plugins.api.model.StoveStatus;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.StoveStatusExtension;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveStatus;
 import org.pf4j.Extension;
 
 @Extension

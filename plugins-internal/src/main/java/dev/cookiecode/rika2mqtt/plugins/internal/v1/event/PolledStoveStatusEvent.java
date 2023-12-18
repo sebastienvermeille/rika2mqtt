@@ -1,6 +1,6 @@
-package dev.cookiecode.rika2mqtt.plugins.internal.event;
+package dev.cookiecode.rika2mqtt.plugins.internal.v1.event;
 
-import dev.cookiecode.rika2mqtt.plugins.api.model.StoveStatus;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveStatus;
 import lombok.*;
 
 @RequiredArgsConstructor

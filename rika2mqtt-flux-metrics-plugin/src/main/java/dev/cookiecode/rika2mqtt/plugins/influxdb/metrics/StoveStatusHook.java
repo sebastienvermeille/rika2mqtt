@@ -1,218 +1,381 @@
 package dev.cookiecode.rika2mqtt.plugins.influxdb.metrics;
 
-import static java.util.Optional.ofNullable;
+import static dev.cookiecode.rika2mqtt.plugins.influxdb.metrics.reflection.ReflectionUtils.isBooleanProperty;
+import static java.lang.Boolean.TRUE;
+import static java.util.concurrent.TimeUnit.HOURS;
 
-import dev.cookiecode.rika2mqtt.plugins.api.StoveStatusExtension;
-import dev.cookiecode.rika2mqtt.plugins.api.model.StoveStatus;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.StoveStatusExtension;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.model.Controls;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.model.Sensors;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveStatus;
+import java.util.Optional;
+import java.util.stream.IntStream;
 import kamon.Kamon;
 import lombok.NonNull;
+import lombok.extern.flogger.Flogger;
 import org.pf4j.Extension;
 
 @Extension
+@Flogger
 public class StoveStatusHook implements StoveStatusExtension {
 
+  // Tags used for influx storage (ease filtering)
   private static final String STOVE_ID = "STOVE_ID";
   private static final String STOVE_NAME = "STOVE_NAME";
+  private static final String FAN_ID = "FAN_ID";
+  private static final String DAY_OF_WEEK = "DAY_OF_WEEK";
+  private static final String TIME_RANGE_INDEX = "TIME_RANGE_INDEX";
   private static final String ERROR_NUMBER = "ERROR_NUMBER";
   private static final String DEBUG_NUMBER = "DEBUG_NUMBER";
 
-  private static final int MAX_ERROR_NUMBER = 18;
-  private static final int MAX_DEBUG_NUMBER = 4;
-
   @Override
   public void onPollStoveStatusSucceed(StoveStatus stoveStatus) {
-    System.out.println(
-        "STOVE STATUS POLLED HOOKED INSIDE PLUGIN WOOHOO!"); // TODO: add flogger support
-
-    //    Kamon
-    //      .gauge("LAST_SEEN_MINUTES", "Last time the stove communicated with rika-firenet
-    // servers.") // TODO: should we store it that way or with date?
-    //      .withTag(STOVE_ID, stoveStatus.getStoveId())
-    //      .withTag(STOVE_NAME, stoveStatus.getName())
-    //      .update(stoveStatus.getLastSeenMinutes());
-
-    // TODO: last confirmed revision is a timestamp how should we deal with that ? a boolean the
-    // date it happened ? can we ?
-    //    Kamon
-    //      .gauge()
-
-    System.out.println("TATATATA");
+    log.atInfo().atMostEvery(1, HOURS).log(
+        "Stove status is being continuously forwarded to Influx");
 
     exportSensorsMetrics(stoveStatus);
+    exportControlsMetrics(stoveStatus);
+
+    exportProperty(stoveStatus, "lastSeenMinutes", Long.class);
+    exportProperty(stoveStatus, "lastConfirmedRevision", Long.class);
   }
 
+  private void exportControlsMetrics(@NonNull StoveStatus stoveStatus) {
+    exportProperty(stoveStatus, "controls.revision", Long.class);
+    exportProperty(stoveStatus, "controls.on", Boolean.class);
+    exportProperty(stoveStatus, "controls.operatingMode", Integer.class);
+    exportProperty(stoveStatus, "controls.heatingPower", Integer.class);
+    exportProperty(stoveStatus, "controls.targetTemperature", Integer.class);
+    exportProperty(stoveStatus, "controls.bakeTemperature", Integer.class);
+    exportProperty(stoveStatus, "controls.ecoMode", Boolean.class);
+    exportProperty(stoveStatus, "controls.heatingTimesActiveForComfort", Boolean.class);
+    exportProperty(stoveStatus, "controls.setBackTemperature", Integer.class);
+    exportProperty(stoveStatus, "controls.frostProtectionActive", Boolean.class);
+    exportProperty(stoveStatus, "controls.frostProtectionTemperature", Integer.class);
+    exportProperty(stoveStatus, "controls.temperatureOffset", Double.class);
+    exportProperty(stoveStatus, "controls.roomPowerRequest", Integer.class);
 
-  private void getPropertyValue(
-      @NonNull StoveStatus stoveStatus, @NonNull final String propertyName) {
-    try {
-      Class<?> clazz = StoveStatus.class;
+    // following metrics are requiring special treatment
+    stoveStatus
+        .getControls()
+        .getFans()
+        .forEach(
+            convectionFan -> {
+              Kamon.gauge("controls.convectionFan.area")
+                  .withTag(STOVE_ID, stoveStatus.getStoveId())
+                  .withTag(STOVE_NAME, stoveStatus.getName())
+                  .withTag(FAN_ID, convectionFan.getIdentifier()) // extra tag
+                  .update(convectionFan.getArea());
 
-      // Get a reference to the append() method
-      var getterMethodName =
-          "get" + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
-      var getterMethod = clazz.getMethod(getterMethodName);
+              Kamon.gauge("controls.convectionFan.level")
+                  .withTag(STOVE_ID, stoveStatus.getStoveId())
+                  .withTag(STOVE_NAME, stoveStatus.getName())
+                  .withTag(FAN_ID, convectionFan.getIdentifier()) // extra tag
+                  .update(convectionFan.getLevel());
 
-      var result = getterMethod.invoke(stoveStatus);
-      System.out.println(result);
-      System.out.println(result);
-      System.out.println(result);
-      System.out.println(result);
-    } catch (Exception ex) {
-      ex.printStackTrace(); // TODO: refactor
+              Kamon.gauge("controls.convectionFan.active")
+                  .withTag(STOVE_ID, stoveStatus.getStoveId())
+                  .withTag(STOVE_NAME, stoveStatus.getName())
+                  .withTag(FAN_ID, convectionFan.getIdentifier()) // extra tag
+                  .update(convectionFan.isActive() ? 1 : 0);
+            });
+
+    stoveStatus
+        .getControls()
+        .getHeatingTimes()
+        .forEach(
+            (dayOfWeek, timeRanges) ->
+                IntStream.range(0, timeRanges.size())
+                    .forEach(
+                        index -> {
+                          final var timeRange = timeRanges.get(index);
+                          // from
+                          Kamon.gauge("controls.heatingTime.from.hours")
+                              .withTag(STOVE_ID, stoveStatus.getStoveId())
+                              .withTag(STOVE_NAME, stoveStatus.getName())
+                              .withTag(DAY_OF_WEEK, dayOfWeek.name()) // extra tag
+                              .withTag(TIME_RANGE_INDEX, index)
+                              .update(timeRange.getFrom().getHours());
+                          Kamon.gauge("controls.heatingTime.from.minutes")
+                              .withTag(STOVE_ID, stoveStatus.getStoveId())
+                              .withTag(STOVE_NAME, stoveStatus.getName())
+                              .withTag(DAY_OF_WEEK, dayOfWeek.name()) // extra tag
+                              .withTag(TIME_RANGE_INDEX, index)
+                              .update(timeRange.getFrom().getMinutes());
+                          Kamon.gauge("controls.heatingTime.from.decimal")
+                              .withTag(STOVE_ID, stoveStatus.getStoveId())
+                              .withTag(STOVE_NAME, stoveStatus.getName())
+                              .withTag(DAY_OF_WEEK, dayOfWeek.name()) // extra tag
+                              .withTag(TIME_RANGE_INDEX, index)
+                              .update(timeRange.getFrom().asDecimal());
+
+                          // to
+                          Kamon.gauge("controls.heatingTime.to.hours")
+                              .withTag(STOVE_ID, stoveStatus.getStoveId())
+                              .withTag(STOVE_NAME, stoveStatus.getName())
+                              .withTag(DAY_OF_WEEK, dayOfWeek.name()) // extra tag
+                              .withTag(TIME_RANGE_INDEX, index)
+                              .update(timeRange.getTo().getHours());
+                          Kamon.gauge("controls.heatingTime.to.minutes")
+                              .withTag(STOVE_ID, stoveStatus.getStoveId())
+                              .withTag(STOVE_NAME, stoveStatus.getName())
+                              .withTag(DAY_OF_WEEK, dayOfWeek.name()) // extra tag
+                              .withTag(TIME_RANGE_INDEX, index)
+                              .update(timeRange.getTo().getMinutes());
+
+                          Kamon.gauge("controls.heatingTime.to.decimal")
+                              .withTag(STOVE_ID, stoveStatus.getStoveId())
+                              .withTag(STOVE_NAME, stoveStatus.getName())
+                              .withTag(DAY_OF_WEEK, dayOfWeek.name()) // extra tag
+                              .withTag(TIME_RANGE_INDEX, index)
+                              .update(timeRange.getTo().asDecimal());
+                        }));
+
+    final var controlsDebugs = stoveStatus.getControls().getDebugs();
+    IntStream.range(0, controlsDebugs.size())
+        .forEach(
+            index -> {
+              final var debugValue = controlsDebugs.get(index);
+              Kamon.gauge("controls.debug")
+                  .withTag(STOVE_ID, stoveStatus.getStoveId())
+                  .withTag(STOVE_NAME, stoveStatus.getName())
+                  .withTag(DEBUG_NUMBER, index) // extra tag
+                  .update(debugValue);
+            });
+  }
+
+  private void exportProperty(
+      @NonNull StoveStatus stoveStatus, @NonNull final String propertyName, Class<?> returnType) {
+    if (returnType == Double.class) {
+      getDoublePropertyValue(stoveStatus, propertyName)
+          .ifPresentOrElse(
+              value ->
+                  Kamon.gauge(propertyName)
+                      .withTag(STOVE_ID, stoveStatus.getStoveId())
+                      .withTag(STOVE_NAME, stoveStatus.getName())
+                      .update(value),
+              () ->
+                  log.atWarning().log(
+                      "Could not export property %s, it could not be retrieved.", propertyName));
+    } else if (returnType == Integer.class) {
+      getIntegerPropertyValue(stoveStatus, propertyName)
+          .ifPresentOrElse(
+              value ->
+                  Kamon.gauge(propertyName)
+                      .withTag(STOVE_ID, stoveStatus.getStoveId())
+                      .withTag(STOVE_NAME, stoveStatus.getName())
+                      .update(value),
+              () ->
+                  log.atWarning().log(
+                      "Could not export property %s, it could not be retrieved.", propertyName));
+      ;
+    } else if (returnType == Long.class) {
+      getLongPropertyValue(stoveStatus, propertyName)
+          .ifPresentOrElse(
+              value ->
+                  Kamon.gauge(propertyName)
+                      .withTag(STOVE_ID, stoveStatus.getStoveId())
+                      .withTag(STOVE_NAME, stoveStatus.getName())
+                      .update(value),
+              () ->
+                  log.atWarning().log(
+                      "Could not export property %s, it could not be retrieved.", propertyName));
+      ;
+    } else if (returnType == Boolean.class) {
+      getBooleanPropertyValue(stoveStatus, propertyName)
+          .map(value -> value == TRUE ? 1 : 0)
+          .map(
+              value ->
+                  Kamon.gauge(propertyName)
+                      .withTag(STOVE_ID, stoveStatus.getStoveId())
+                      .withTag(STOVE_NAME, stoveStatus.getName())
+                      .update(value));
+    } else {
+      log.atSevere().log(
+          "Could not extract property %s because it's return type %s is unsupported.",
+          propertyName, returnType);
     }
+  }
+
+  private Optional<String> getPropertyValue(
+      @NonNull StoveStatus stoveStatus, @NonNull final String propertyName) {
+    if (propertyName.startsWith("sensors.")) {
+      try {
+
+        Class<?> clazz = Sensors.class;
+        final var shortName = propertyName.replace("sensors.", "");
+        String getterMethodName;
+        if (isBooleanProperty(clazz, shortName)) {
+          getterMethodName =
+              "is" + shortName.substring(0, 1).toUpperCase() + shortName.substring(1);
+        } else {
+          getterMethodName =
+              "get" + shortName.substring(0, 1).toUpperCase() + shortName.substring(1);
+        }
+        // Get a reference to the append() method
+        var getterMethod = clazz.getMethod(getterMethodName);
+
+        var result = getterMethod.invoke(stoveStatus.getSensors());
+        return Optional.ofNullable(result.toString());
+      } catch (Exception ex) {
+        log.atSevere().withCause(ex).log("Could not get property %s", propertyName);
+        return Optional.empty();
+      }
+    } else if (propertyName.startsWith("controls.")) {
+      try {
+
+        final var shortName = propertyName.replace("controls.", "");
+
+        Class<?> clazz = Controls.class;
+
+        String getterMethodName;
+        if (isBooleanProperty(clazz, shortName)) {
+          getterMethodName =
+              "is" + shortName.substring(0, 1).toUpperCase() + shortName.substring(1);
+        } else {
+          getterMethodName =
+              "get" + shortName.substring(0, 1).toUpperCase() + shortName.substring(1);
+        }
+
+        // Get a reference to the append() method
+        var getterMethod = clazz.getMethod(getterMethodName);
+        var result = Optional.ofNullable(getterMethod.invoke(stoveStatus.getControls()));
+        return result.map(Object::toString);
+      } catch (Exception ex) {
+        log.atSevere().withCause(ex).log("Could not get property %s", propertyName);
+        return Optional.empty();
+      }
+    } else {
+      try {
+
+        Class<?> clazz = StoveStatus.class;
+
+        // Get a reference to the append() method
+        var getterMethodName =
+            "get" + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
+        var getterMethod = clazz.getMethod(getterMethodName);
+
+        var result = getterMethod.invoke(stoveStatus);
+        return Optional.ofNullable(result.toString());
+      } catch (Exception ex) {
+        log.atSevere().withCause(ex).log("Could not get property %s", propertyName);
+        return Optional.empty();
+      }
+    }
+  }
+
+  private Optional<Double> getDoublePropertyValue(
+      @NonNull StoveStatus stoveStatus, @NonNull final String propertyName) {
+    return getPropertyValue(stoveStatus, propertyName).map(Double::valueOf);
+  }
+
+  private Optional<Integer> getIntegerPropertyValue(
+      @NonNull StoveStatus stoveStatus, @NonNull final String propertyName) {
+    return getPropertyValue(stoveStatus, propertyName).map(Integer::valueOf);
+  }
+
+  private Optional<Long> getLongPropertyValue(
+      @NonNull StoveStatus stoveStatus, @NonNull final String propertyName) {
+    return getPropertyValue(stoveStatus, propertyName).map(Long::valueOf);
+  }
+
+  private Optional<Boolean> getBooleanPropertyValue(
+      @NonNull StoveStatus stoveStatus, @NonNull final String propertyName) {
+    return getPropertyValue(stoveStatus, propertyName).map(Boolean::valueOf);
   }
 
   private void exportSensorsMetrics(@NonNull final StoveStatus stoveStatus) {
 
-    System.out.println(stoveStatus.toString());
+    exportProperty(stoveStatus, "sensors.inputRoomTemperature", Double.class);
+    exportProperty(stoveStatus, "sensors.inputFlameTemperature", Integer.class);
+    exportProperty(stoveStatus, "sensors.inputBakeTemperature", Integer.class);
+    exportProperty(stoveStatus, "sensors.statusError", Integer.class);
+    exportProperty(stoveStatus, "sensors.statusSubError", Integer.class);
+    exportProperty(stoveStatus, "sensors.statusWarning", Integer.class);
+    exportProperty(stoveStatus, "sensors.statusService", Integer.class);
+    exportProperty(stoveStatus, "sensors.outputDischargeMotor", Integer.class);
+    exportProperty(stoveStatus, "sensors.outputDischargeCurrent", Integer.class);
+    exportProperty(stoveStatus, "sensors.outputIdFan", Integer.class);
+    exportProperty(stoveStatus, "sensors.outputIdFanTarget", Integer.class);
+    exportProperty(stoveStatus, "sensors.outputInsertionMotor", Integer.class);
+    exportProperty(stoveStatus, "sensors.outputInsertionCurrent", Integer.class);
+    exportProperty(stoveStatus, "sensors.outputAirFlaps", Integer.class);
+    exportProperty(stoveStatus, "sensors.outputAirFlapsTargetPosition", Integer.class);
+    exportProperty(stoveStatus, "sensors.outputBurnBackFlapMagnet", Boolean.class);
+    exportProperty(stoveStatus, "sensors.outputGridMotor", Boolean.class);
+    exportProperty(stoveStatus, "sensors.outputIgnition", Boolean.class);
+    exportProperty(stoveStatus, "sensors.inputUpperTemperatureLimiter", Boolean.class);
+    exportProperty(stoveStatus, "sensors.inputPressureSwitch", Boolean.class);
+    exportProperty(stoveStatus, "sensors.inputPressureSensor", Integer.class);
+    exportProperty(stoveStatus, "sensors.inputGridContact", Boolean.class);
+    exportProperty(stoveStatus, "sensors.inputDoor", Boolean.class);
+    exportProperty(stoveStatus, "sensors.inputCover", Boolean.class);
+    exportProperty(stoveStatus, "sensors.inputExternalRequest", Boolean.class);
+    exportProperty(stoveStatus, "sensors.inputBurnBackFlapSwitch", Boolean.class);
+    exportProperty(stoveStatus, "sensors.inputFlueGasFlapSwitch", Boolean.class);
+    exportProperty(stoveStatus, "sensors.inputBoardTemperature", Double.class);
+    exportProperty(stoveStatus, "sensors.inputCurrentStage", Integer.class);
+    exportProperty(stoveStatus, "sensors.inputTargetStagePid", Integer.class);
+    exportProperty(stoveStatus, "sensors.inputCurrentStagePid", Integer.class);
 
-    ofNullable(stoveStatus.getSensors().getParameterRuntimePellets())
-        .ifPresent(
-            value ->
-                Kamon.gauge("parameterRuntimePellets")
+    exportProperty(stoveStatus, "sensors.statusMainState", Integer.class);
+    exportProperty(stoveStatus, "sensors.statusSubState", Integer.class);
+    exportProperty(stoveStatus, "sensors.statusWifiStrength", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterEcoModePossible", Boolean.class);
+    exportProperty(stoveStatus, "sensors.parameterFabricationNumber", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterStoveTypeNumber", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterLanguageNumber", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterVersionMainBoard", Integer.class);
+
+    exportProperty(stoveStatus, "sensors.parameterVersionTft", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterVersionWifi", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterVersionMainBoardBootLoader", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterVersionTftBootLoader", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterVersionWifiBootLoader", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterVersionMainBoardSub", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterVersionTftSub", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterVersionWifiSub", Integer.class);
+
+    exportProperty(stoveStatus, "sensors.parameterRuntimePellets", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterRuntimeLogs", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterFeedRateTotal", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterFeedRateService", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterServiceCountdownKg", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterServiceCountdownTime", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterIgnitionCount", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterOnOffCycleCount", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterFlameSensorOffset", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterPressureSensorOffset", Integer.class);
+
+    exportProperty(stoveStatus, "sensors.statusHeatingTimesNotProgrammed", Boolean.class);
+    exportProperty(stoveStatus, "sensors.statusFrostStarted", Boolean.class);
+    exportProperty(stoveStatus, "sensors.parameterSpiralMotorsTuning", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterIdFanTuning", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterCleanIntervalBig", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterKgTillCleaning", Integer.class);
+
+    // following metrics are requiring special treatment
+    stoveStatus
+        .getSensors()
+        .getParametersErrorCount()
+        .forEach(
+            parameterErrorCount ->
+                Kamon.gauge("sensors.parameterErrorCount")
                     .withTag(STOVE_ID, stoveStatus.getStoveId())
                     .withTag(STOVE_NAME, stoveStatus.getName())
-                    .update(value));
+                    .withTag(ERROR_NUMBER, parameterErrorCount.getNumber()) // extra tag
+                    .update(parameterErrorCount.getValue()));
 
-    ofNullable(stoveStatus.getSensors().getParameterRuntimeLogs())
-        .ifPresent(
-            value ->
-                Kamon.gauge("parameterRuntimeLogs")
-                    .withTag(STOVE_ID, stoveStatus.getStoveId())
-                    .withTag(STOVE_NAME, stoveStatus.getName())
-                    .update(value));
-
-    ofNullable(stoveStatus.getSensors().getParameterFeedRateTotal())
-        .ifPresent(
-            value ->
-                Kamon.gauge("parameterFeedRateTotal")
-                    .withTag(STOVE_ID, stoveStatus.getStoveId())
-                    .withTag(STOVE_NAME, stoveStatus.getName())
-                    .update(value));
-
-    ofNullable(stoveStatus.getSensors().getParameterFeedRateService())
-        .ifPresent(
-            value ->
-                Kamon.gauge("parameterFeedRateService")
-                    .withTag(STOVE_ID, stoveStatus.getStoveId())
-                    .withTag(STOVE_NAME, stoveStatus.getName())
-                    .update(value));
-
-    ofNullable(stoveStatus.getSensors().getParameterServiceCountdownKg())
-        .ifPresent(
-            value ->
-                // TODO: maybe should be reverse (think about)
-                Kamon.gauge("parameterServiceCountdownKg")
-                    .withTag(STOVE_ID, stoveStatus.getStoveId())
-                    .withTag(STOVE_NAME, stoveStatus.getName())
-                    .update(value));
-
-    ofNullable(stoveStatus.getSensors().getParameterServiceCountdownTime())
-        .ifPresent(
-            value ->
-                Kamon.gauge("parameterServiceCountdownTime")
-                    .withTag(STOVE_ID, stoveStatus.getStoveId())
-                    .withTag(STOVE_NAME, stoveStatus.getName())
-                    .update(value));
-
-    ofNullable(stoveStatus.getSensors().getParameterIgnitionCount())
-        .ifPresent(
-            value ->
-                Kamon.gauge("parameterIgnitionCount")
-                    .withTag(STOVE_ID, stoveStatus.getStoveId())
-                    .withTag(STOVE_NAME, stoveStatus.getName())
-                    .update(value));
-
-    ofNullable(stoveStatus.getSensors().getParameterOnOffCycleCount())
-        .ifPresent(
-            value ->
-                Kamon.gauge("parameterOnOffCycleCount")
-                    .withTag(STOVE_ID, stoveStatus.getStoveId())
-                    .withTag(STOVE_NAME, stoveStatus.getName())
-                    .update(value));
-
-    ofNullable(stoveStatus.getSensors().getParameterFlameSensorOffset())
-        .ifPresent(
-            value ->
-                Kamon.gauge("parameterFlameSensorOffset")
-                    .withTag(STOVE_ID, stoveStatus.getStoveId())
-                    .withTag(STOVE_NAME, stoveStatus.getName())
-                    .update(value));
-
-    ofNullable(stoveStatus.getSensors().getParameterPressureSensorOffset())
-        .ifPresent(
-            value ->
-                Kamon.gauge("parameterPressureSensorOffset")
-                    .withTag(STOVE_ID, stoveStatus.getStoveId())
-                    .withTag(STOVE_NAME, stoveStatus.getName())
-                    .update(value));
-
-    // TODO: as these values rarely changes see how they get stored (not that we store one value
-    // each minute that would consume disk for no value
-
-    ofNullable(stoveStatus.getSensors().getParameterSpiralMotorsTuning())
-        .ifPresent(
-            value ->
-                Kamon.gauge("parameterSpiralMotorsTuning")
-                    .withTag(STOVE_ID, stoveStatus.getStoveId())
-                    .withTag(STOVE_NAME, stoveStatus.getName())
-                    .update(value));
-
-    ofNullable(stoveStatus.getSensors().getParameterIdFanTuning())
-        .ifPresent(
-            value ->
-                Kamon.gauge("parameterIdFanTuning")
-                    .withTag(STOVE_ID, stoveStatus.getStoveId())
-                    .withTag(STOVE_NAME, stoveStatus.getName())
-                    .update(value));
-
-    ofNullable(stoveStatus.getSensors().getParameterCleanIntervalBig())
-        .ifPresent(
-            value ->
-                Kamon.gauge("parameterCleanIntervalBig")
-                    .withTag(STOVE_ID, stoveStatus.getStoveId())
-                    .withTag(STOVE_NAME, stoveStatus.getName())
-                    .update(value));
-
-    ofNullable(stoveStatus.getSensors().getParameterKgTillCleaning())
-        .ifPresent(
-            value ->
-                Kamon.gauge(
-                        "parameterKgTillCleaning",
-                        "Amount of Kg of pellets to burn before the stove will warn about cleaning it.")
-                    .withTag(STOVE_ID, stoveStatus.getStoveId())
-                    .withTag(STOVE_NAME, stoveStatus.getName())
-                    .update(value));
-
-    // misc metrics
-    stoveStatus.getSensors().getParametersErrorCount()
-            .forEach(
-                    parameterErrorCount -> {
-                      Kamon.gauge("parameterErrorCount")
-                              .withTag(STOVE_ID, stoveStatus.getStoveId())
-                              .withTag(STOVE_NAME, stoveStatus.getName())
-                              .withTag(ERROR_NUMBER, parameterErrorCount.getNumber())
-                              .update(parameterErrorCount.getValue());
-                    }
-            );
-
-    stoveStatus.getSensors().getParametersDebug()
-            .forEach(
-                    parameterDebug -> {
-                      Kamon.gauge("parameterDebug")
-                              .withTag(STOVE_ID, stoveStatus.getStoveId())
-                              .withTag(STOVE_NAME, stoveStatus.getName())
-                              .withTag(DEBUG_NUMBER, parameterDebug.getNumber())
-                              .update(parameterDebug.getValue());
-                    }
-            );
-
-    ofNullable(stoveStatus.getControls().getTargetTemperature())
-        .ifPresent(
-            value ->
-                Kamon.gauge("controlsTargetTemperature", "Target temperature defined by the user.")
-                    .withTag(STOVE_ID, stoveStatus.getStoveId())
-                    .withTag(STOVE_NAME, stoveStatus.getName())
-                    .update(value));
+    stoveStatus
+        .getSensors()
+        .getParametersDebug()
+        .forEach(
+            parameterDebug -> {
+              Kamon.gauge("sensors.parameterDebug")
+                  .withTag(STOVE_ID, stoveStatus.getStoveId())
+                  .withTag(STOVE_NAME, stoveStatus.getName())
+                  .withTag(DEBUG_NUMBER, parameterDebug.getNumber()) // extra tag
+                  .update(parameterDebug.getValue());
+            });
   }
 }

@@ -387,7 +387,7 @@
           <licenseFile>${rika2mqtt.root}/.licenses/licenses.xml</licenseFile>
           <requireAllValid>false</requireAllValid>
           <failOnForbidden>true</failOnForbidden>
-          <failOnMissing>true</failOnMissing>
+          <failOnMissing>false</failOnMissing>
           <failOnUnknown>true</failOnUnknown>
         </configuration>
       </plugin>

@@ -1,7 +1,9 @@
-package dev.cookiecode.rika2mqtt.plugins.internal.mapper;
+package dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper.helper.ControlsMapperEmptyImpl;
+import dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper.helper.SensorsMapperEmptyImpl;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.Controls;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.Sensors;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveStatus;
@@ -10,7 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 /** Test class */
-@SpringBootTest(classes = {StoveStatusMapperImpl.class})
+@SpringBootTest(
+    classes = {
+      StoveStatusMapperImpl.class,
+      SensorsMapperEmptyImpl.class,
+      ControlsMapperEmptyImpl.class
+    })
 class StoveStatusMapperTest {
 
   @Autowired private StoveStatusMapper mapper;

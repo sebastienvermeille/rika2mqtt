@@ -20,39 +20,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.plugins.api.model;
+package dev.cookiecode.rika2mqtt.plugins.api.v1.model;
 
-import lombok.Builder;
+import static lombok.AccessLevel.NONE;
+
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-/**
- * @author Sebastien Vermeille
- */
 @Data
-@Builder
-public class Controls {
+public class UpdatableControls {
 
   private Long revision;
-  private Boolean onOff;
+  /** Fields below (some, or all) can be sent using MQTT command to pilot RIKA. */
   private Integer operatingMode;
+
   private Integer heatingPower;
   private Integer targetTemperature;
   private Integer bakeTemperature;
-  private Boolean ecoMode;
-  private String heatingTimeMon1;
-  private String heatingTimeMon2;
-  private String heatingTimeTue1;
-  private String heatingTimeTue2;
-  private String heatingTimeWed1;
-  private String heatingTimeWed2;
-  private String heatingTimeThu1;
-  private String heatingTimeThu2;
-  private String heatingTimeFri1;
-  private String heatingTimeFri2;
-  private String heatingTimeSat1;
-  private String heatingTimeSat2;
-  private String heatingTimeSun1;
-  private String heatingTimeSun2;
   private Boolean heatingTimesActiveForComfort;
   private Integer setBackTemperature;
   private Boolean convectionFan1Active;
@@ -63,14 +47,28 @@ public class Controls {
   private Integer convectionFan2Area;
   private Boolean frostProtectionActive;
   private Integer frostProtectionTemperature;
-  private Integer temperatureOffset;
+  private Boolean onOff;
 
-  //  @SerializedName("RoomPowerRequest") // for coherence (the rest of the api is using camelCase)
-  private Integer roomPowerRequest;
-
-  private Integer debug0;
-  private Integer debug1;
-  private Integer debug2;
-  private Integer debug3;
-  private Integer debug4;
+  // @FieldNameConstants lombok annotation would generate this. Unfortunately at the moment it
+  // generates issues to generate
+  // javadoc: error: cannot find symbol
+  @NoArgsConstructor(access = NONE)
+  public static final class Fields {
+    public static final String REVISION = "revision";
+    public static final String OPERATING_MODE = "operatingMode";
+    public static final String HEATING_POWER = "heatingPower";
+    public static final String TARGET_TEMPERATURE = "targetTemperature";
+    public static final String BAKE_TEMPERATURE = "bakeTemperature";
+    public static final String HEATING_TIMES_ACTIVE_FOR_COMFORT = "heatingTimesActiveForComfort";
+    public static final String SET_BACK_TEMPERATURE = "setBackTemperature";
+    public static final String CONVECTION_FAN1_ACTIVE = "convectionFan1Active";
+    public static final String CONVECTION_FAN1_LEVEL = "convectionFan1Level";
+    public static final String CONVECTION_FAN1_AREA = "convectionFan1Area";
+    public static final String CONVECTION_FAN2_ACTIVE = "convectionFan2Active";
+    public static final String CONVECTION_FAN2_LEVEL = "convectionFan2Level";
+    public static final String CONVECTION_FAN2_AREA = "convectionFan2Area";
+    public static final String FROST_PROTECTION_ACTIVE = "frostProtectionActive";
+    public static final String FROST_PROTECTION_TEMPERATURE = "frostProtectionTemperature";
+    public static final String ON_OFF = "onOff";
+  }
 }

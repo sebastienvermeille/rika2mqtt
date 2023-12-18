@@ -1,4 +1,4 @@
-package dev.cookiecode.rika2mqtt.plugins.api;
+package dev.cookiecode.rika2mqtt.plugins.api.v1;
 
 import org.pf4j.Plugin;
 

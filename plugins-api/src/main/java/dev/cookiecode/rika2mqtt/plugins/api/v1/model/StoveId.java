@@ -20,7 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.plugins.api.model;
+package dev.cookiecode.rika2mqtt.plugins.api.v1.model;
 
 /**
  * @author Sebastien Vermeille

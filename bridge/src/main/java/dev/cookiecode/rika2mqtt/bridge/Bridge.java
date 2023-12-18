@@ -25,9 +25,9 @@ package dev.cookiecode.rika2mqtt.bridge;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import dev.cookiecode.rika2mqtt.bridge.misc.EmailObfuscator;
-import dev.cookiecode.rika2mqtt.plugins.internal.Rika2MqttPluginManager;
-import dev.cookiecode.rika2mqtt.plugins.internal.event.PolledStoveStatusEvent;
-import dev.cookiecode.rika2mqtt.plugins.internal.mapper.StoveStatusMapper;
+import dev.cookiecode.rika2mqtt.plugins.internal.v1.Rika2MqttPluginManager;
+import dev.cookiecode.rika2mqtt.plugins.internal.v1.event.PolledStoveStatusEvent;
+import dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper.StoveStatusMapper;
 import dev.cookiecode.rika2mqtt.rika.firenet.RikaFirenetService;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.CouldNotAuthenticateToRikaFirenetException;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.InvalidStoveIdException;
@@ -138,19 +138,7 @@ public class Bridge {
 
             applicationEventPublisher.publishEvent(
                 PolledStoveStatusEvent.builder()
-                    .stoveStatus(
-                        stoveStatusMapper.toApiStoveStatus(status)
-                        // RIKA API data structure has some drawback, the mapper address
-                        // it by adding some convenience for plugin developers. (i.e:
-                        // error0 error1 -> errors[])
-                        //                        gson.fromJson(
-                        //                            jsonStatus,
-                        //
-                        // dev.cookiecode.rika2mqtt.plugins.api.model.StoveStatus
-                        //                                .class) // TODO: a bit a hack mapstruct
-                        // would help having something
-                        //                        // nicer I believe
-                        )
+                    .stoveStatus(stoveStatusMapper.toApiStoveStatus(status))
                     .build());
           } catch (InvalidStoveIdException e) {
             // TODO: could occurs if a stove is added later (after deployment of this rika2mqtt
