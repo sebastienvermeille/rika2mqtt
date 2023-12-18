@@ -32,6 +32,6 @@ class ExampleHookTest {
   void dummyTest() {
     assertThat(true)
         .isTrue(); // TODO: add more complexity to the example plugin so that we can write real
-                   // tests
+    // tests
   }
 }
