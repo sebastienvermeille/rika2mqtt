@@ -31,6 +31,7 @@ import lombok.NoArgsConstructor;
 public class UpdatableControls {
 
   private Long revision;
+
   /** Fields below (some, or all) can be sent using MQTT command to pilot RIKA. */
   private Integer operatingMode;
 
