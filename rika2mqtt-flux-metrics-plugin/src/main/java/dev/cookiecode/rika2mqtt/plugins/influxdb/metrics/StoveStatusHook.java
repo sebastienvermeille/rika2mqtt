@@ -22,8 +22,9 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.influxdb.metrics;
 
-import static dev.cookiecode.rika2mqtt.plugins.influxdb.metrics.reflection.ReflectionUtils.isBooleanProperty;
+import static dev.cookiecode.rika2mqtt.plugins.influxdb.metrics.reflection.ReflectionUtils.*;
 import static java.lang.Boolean.TRUE;
+import static java.util.Optional.ofNullable;
 import static java.util.concurrent.TimeUnit.HOURS;
 
 import dev.cookiecode.rika2mqtt.plugins.api.v1.StoveStatusExtension;
@@ -60,6 +61,101 @@ public class StoveStatusHook implements StoveStatusExtension {
 
     exportProperty(stoveStatus, "lastSeenMinutes", Long.class);
     exportProperty(stoveStatus, "lastConfirmedRevision", Long.class);
+  }
+
+  private void exportSensorsMetrics(@NonNull final StoveStatus stoveStatus) {
+
+    exportProperty(stoveStatus, "sensors.inputRoomTemperature", Double.class);
+    exportProperty(stoveStatus, "sensors.inputFlameTemperature", Integer.class);
+    exportProperty(stoveStatus, "sensors.inputBakeTemperature", Integer.class);
+    exportProperty(stoveStatus, "sensors.statusError", Integer.class);
+    exportProperty(stoveStatus, "sensors.statusSubError", Integer.class);
+    exportProperty(stoveStatus, "sensors.statusWarning", Integer.class);
+    exportProperty(stoveStatus, "sensors.statusService", Integer.class);
+    exportProperty(stoveStatus, "sensors.outputDischargeMotor", Integer.class);
+    exportProperty(stoveStatus, "sensors.outputDischargeCurrent", Integer.class);
+    exportProperty(stoveStatus, "sensors.outputIdFan", Integer.class);
+    exportProperty(stoveStatus, "sensors.outputIdFanTarget", Integer.class);
+    exportProperty(stoveStatus, "sensors.outputInsertionMotor", Integer.class);
+    exportProperty(stoveStatus, "sensors.outputInsertionCurrent", Integer.class);
+    exportProperty(stoveStatus, "sensors.outputAirFlaps", Integer.class);
+    exportProperty(stoveStatus, "sensors.outputAirFlapsTargetPosition", Integer.class);
+    exportProperty(stoveStatus, "sensors.outputBurnBackFlapMagnet", Boolean.class);
+    exportProperty(stoveStatus, "sensors.outputGridMotor", Boolean.class);
+    exportProperty(stoveStatus, "sensors.outputIgnition", Boolean.class);
+    exportProperty(stoveStatus, "sensors.inputUpperTemperatureLimiter", Boolean.class);
+    exportProperty(stoveStatus, "sensors.inputPressureSwitch", Boolean.class);
+    exportProperty(stoveStatus, "sensors.inputPressureSensor", Integer.class);
+    exportProperty(stoveStatus, "sensors.inputGridContact", Boolean.class);
+    exportProperty(stoveStatus, "sensors.inputDoor", Boolean.class);
+    exportProperty(stoveStatus, "sensors.inputCover", Boolean.class);
+    exportProperty(stoveStatus, "sensors.inputExternalRequest", Boolean.class);
+    exportProperty(stoveStatus, "sensors.inputBurnBackFlapSwitch", Boolean.class);
+    exportProperty(stoveStatus, "sensors.inputFlueGasFlapSwitch", Boolean.class);
+    exportProperty(stoveStatus, "sensors.inputBoardTemperature", Double.class);
+    exportProperty(stoveStatus, "sensors.inputCurrentStage", Integer.class);
+    exportProperty(stoveStatus, "sensors.inputTargetStagePid", Integer.class);
+    exportProperty(stoveStatus, "sensors.inputCurrentStagePid", Integer.class);
+
+    exportProperty(stoveStatus, "sensors.statusMainState", Integer.class);
+    exportProperty(stoveStatus, "sensors.statusSubState", Integer.class);
+    exportProperty(stoveStatus, "sensors.statusWifiStrength", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterEcoModePossible", Boolean.class);
+    exportProperty(stoveStatus, "sensors.parameterFabricationNumber", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterStoveTypeNumber", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterLanguageNumber", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterVersionMainBoard", Integer.class);
+
+    exportProperty(stoveStatus, "sensors.parameterVersionTft", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterVersionWifi", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterVersionMainBoardBootLoader", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterVersionTftBootLoader", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterVersionWifiBootLoader", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterVersionMainBoardSub", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterVersionTftSub", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterVersionWifiSub", Integer.class);
+
+    exportProperty(stoveStatus, "sensors.parameterRuntimePellets", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterRuntimeLogs", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterFeedRateTotal", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterFeedRateService", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterServiceCountdownKg", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterServiceCountdownTime", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterIgnitionCount", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterOnOffCycleCount", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterFlameSensorOffset", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterPressureSensorOffset", Integer.class);
+
+    exportProperty(stoveStatus, "sensors.statusHeatingTimesNotProgrammed", Boolean.class);
+    exportProperty(stoveStatus, "sensors.statusFrostStarted", Boolean.class);
+    exportProperty(stoveStatus, "sensors.parameterSpiralMotorsTuning", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterIdFanTuning", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterCleanIntervalBig", Integer.class);
+    exportProperty(stoveStatus, "sensors.parameterKgTillCleaning", Integer.class);
+
+    // following metrics are requiring special treatment
+    stoveStatus
+            .getSensors()
+            .getParametersErrorCount()
+            .forEach(
+                    parameterErrorCount ->
+                            Kamon.gauge("sensors.parameterErrorCount")
+                                    .withTag(STOVE_ID, stoveStatus.getStoveId())
+                                    .withTag(STOVE_NAME, stoveStatus.getName())
+                                    .withTag(ERROR_NUMBER, parameterErrorCount.getNumber()) // extra tag
+                                    .update(parameterErrorCount.getValue()));
+
+    stoveStatus
+            .getSensors()
+            .getParametersDebug()
+            .forEach(
+                    parameterDebug -> {
+                      Kamon.gauge("sensors.parameterDebug")
+                              .withTag(STOVE_ID, stoveStatus.getStoveId())
+                              .withTag(STOVE_NAME, stoveStatus.getName())
+                              .withTag(DEBUG_NUMBER, parameterDebug.getNumber()) // extra tag
+                              .update(parameterDebug.getValue());
+                    });
   }
 
   private void exportControlsMetrics(@NonNull StoveStatus stoveStatus) {
@@ -223,62 +319,31 @@ public class StoveStatusHook implements StoveStatusExtension {
       @NonNull StoveStatus stoveStatus, @NonNull final String propertyName) {
     if (propertyName.startsWith("sensors.")) {
       try {
-
-        Class<?> clazz = Sensors.class;
         final var shortName = propertyName.replace("sensors.", "");
-        String getterMethodName;
-        if (isBooleanProperty(clazz, shortName)) {
-          getterMethodName =
-              "is" + shortName.substring(0, 1).toUpperCase() + shortName.substring(1);
-        } else {
-          getterMethodName =
-              "get" + shortName.substring(0, 1).toUpperCase() + shortName.substring(1);
-        }
-        // Get a reference to the append() method
-        var getterMethod = clazz.getMethod(getterMethodName);
+        final var getterMethod = getPropertyGetterMethod(Sensors.class, shortName);
 
         var result = getterMethod.invoke(stoveStatus.getSensors());
-        return Optional.ofNullable(result.toString());
+        return ofNullable(result.toString());
       } catch (Exception ex) {
         log.atSevere().withCause(ex).log("Could not get property %s", propertyName);
         return Optional.empty();
       }
     } else if (propertyName.startsWith("controls.")) {
       try {
-
         final var shortName = propertyName.replace("controls.", "");
-
-        Class<?> clazz = Controls.class;
-
-        String getterMethodName;
-        if (isBooleanProperty(clazz, shortName)) {
-          getterMethodName =
-              "is" + shortName.substring(0, 1).toUpperCase() + shortName.substring(1);
-        } else {
-          getterMethodName =
-              "get" + shortName.substring(0, 1).toUpperCase() + shortName.substring(1);
-        }
-
-        // Get a reference to the append() method
-        var getterMethod = clazz.getMethod(getterMethodName);
-        var result = Optional.ofNullable(getterMethod.invoke(stoveStatus.getControls()));
-        return result.map(Object::toString);
+        var getterMethod = getPropertyGetterMethod(Controls.class, shortName);
+        return ofNullable(getterMethod.invoke(stoveStatus.getControls())).map(Object::toString);
       } catch (Exception ex) {
         log.atSevere().withCause(ex).log("Could not get property %s", propertyName);
         return Optional.empty();
       }
     } else {
       try {
-
-        Class<?> clazz = StoveStatus.class;
-
-        // Get a reference to the append() method
-        var getterMethodName =
-            "get" + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
-        var getterMethod = clazz.getMethod(getterMethodName);
+        final var shortName = propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
+        final var getterMethod = getPropertyGetterMethod(StoveStatus.class, shortName);
 
         var result = getterMethod.invoke(stoveStatus);
-        return Optional.ofNullable(result.toString());
+        return ofNullable(result.toString());
       } catch (Exception ex) {
         log.atSevere().withCause(ex).log("Could not get property %s", propertyName);
         return Optional.empty();
@@ -304,100 +369,5 @@ public class StoveStatusHook implements StoveStatusExtension {
   private Optional<Boolean> getBooleanPropertyValue(
       @NonNull StoveStatus stoveStatus, @NonNull final String propertyName) {
     return getPropertyValue(stoveStatus, propertyName).map(Boolean::valueOf);
-  }
-
-  private void exportSensorsMetrics(@NonNull final StoveStatus stoveStatus) {
-
-    exportProperty(stoveStatus, "sensors.inputRoomTemperature", Double.class);
-    exportProperty(stoveStatus, "sensors.inputFlameTemperature", Integer.class);
-    exportProperty(stoveStatus, "sensors.inputBakeTemperature", Integer.class);
-    exportProperty(stoveStatus, "sensors.statusError", Integer.class);
-    exportProperty(stoveStatus, "sensors.statusSubError", Integer.class);
-    exportProperty(stoveStatus, "sensors.statusWarning", Integer.class);
-    exportProperty(stoveStatus, "sensors.statusService", Integer.class);
-    exportProperty(stoveStatus, "sensors.outputDischargeMotor", Integer.class);
-    exportProperty(stoveStatus, "sensors.outputDischargeCurrent", Integer.class);
-    exportProperty(stoveStatus, "sensors.outputIdFan", Integer.class);
-    exportProperty(stoveStatus, "sensors.outputIdFanTarget", Integer.class);
-    exportProperty(stoveStatus, "sensors.outputInsertionMotor", Integer.class);
-    exportProperty(stoveStatus, "sensors.outputInsertionCurrent", Integer.class);
-    exportProperty(stoveStatus, "sensors.outputAirFlaps", Integer.class);
-    exportProperty(stoveStatus, "sensors.outputAirFlapsTargetPosition", Integer.class);
-    exportProperty(stoveStatus, "sensors.outputBurnBackFlapMagnet", Boolean.class);
-    exportProperty(stoveStatus, "sensors.outputGridMotor", Boolean.class);
-    exportProperty(stoveStatus, "sensors.outputIgnition", Boolean.class);
-    exportProperty(stoveStatus, "sensors.inputUpperTemperatureLimiter", Boolean.class);
-    exportProperty(stoveStatus, "sensors.inputPressureSwitch", Boolean.class);
-    exportProperty(stoveStatus, "sensors.inputPressureSensor", Integer.class);
-    exportProperty(stoveStatus, "sensors.inputGridContact", Boolean.class);
-    exportProperty(stoveStatus, "sensors.inputDoor", Boolean.class);
-    exportProperty(stoveStatus, "sensors.inputCover", Boolean.class);
-    exportProperty(stoveStatus, "sensors.inputExternalRequest", Boolean.class);
-    exportProperty(stoveStatus, "sensors.inputBurnBackFlapSwitch", Boolean.class);
-    exportProperty(stoveStatus, "sensors.inputFlueGasFlapSwitch", Boolean.class);
-    exportProperty(stoveStatus, "sensors.inputBoardTemperature", Double.class);
-    exportProperty(stoveStatus, "sensors.inputCurrentStage", Integer.class);
-    exportProperty(stoveStatus, "sensors.inputTargetStagePid", Integer.class);
-    exportProperty(stoveStatus, "sensors.inputCurrentStagePid", Integer.class);
-
-    exportProperty(stoveStatus, "sensors.statusMainState", Integer.class);
-    exportProperty(stoveStatus, "sensors.statusSubState", Integer.class);
-    exportProperty(stoveStatus, "sensors.statusWifiStrength", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterEcoModePossible", Boolean.class);
-    exportProperty(stoveStatus, "sensors.parameterFabricationNumber", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterStoveTypeNumber", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterLanguageNumber", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterVersionMainBoard", Integer.class);
-
-    exportProperty(stoveStatus, "sensors.parameterVersionTft", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterVersionWifi", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterVersionMainBoardBootLoader", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterVersionTftBootLoader", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterVersionWifiBootLoader", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterVersionMainBoardSub", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterVersionTftSub", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterVersionWifiSub", Integer.class);
-
-    exportProperty(stoveStatus, "sensors.parameterRuntimePellets", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterRuntimeLogs", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterFeedRateTotal", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterFeedRateService", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterServiceCountdownKg", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterServiceCountdownTime", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterIgnitionCount", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterOnOffCycleCount", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterFlameSensorOffset", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterPressureSensorOffset", Integer.class);
-
-    exportProperty(stoveStatus, "sensors.statusHeatingTimesNotProgrammed", Boolean.class);
-    exportProperty(stoveStatus, "sensors.statusFrostStarted", Boolean.class);
-    exportProperty(stoveStatus, "sensors.parameterSpiralMotorsTuning", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterIdFanTuning", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterCleanIntervalBig", Integer.class);
-    exportProperty(stoveStatus, "sensors.parameterKgTillCleaning", Integer.class);
-
-    // following metrics are requiring special treatment
-    stoveStatus
-        .getSensors()
-        .getParametersErrorCount()
-        .forEach(
-            parameterErrorCount ->
-                Kamon.gauge("sensors.parameterErrorCount")
-                    .withTag(STOVE_ID, stoveStatus.getStoveId())
-                    .withTag(STOVE_NAME, stoveStatus.getName())
-                    .withTag(ERROR_NUMBER, parameterErrorCount.getNumber()) // extra tag
-                    .update(parameterErrorCount.getValue()));
-
-    stoveStatus
-        .getSensors()
-        .getParametersDebug()
-        .forEach(
-            parameterDebug -> {
-              Kamon.gauge("sensors.parameterDebug")
-                  .withTag(STOVE_ID, stoveStatus.getStoveId())
-                  .withTag(STOVE_NAME, stoveStatus.getName())
-                  .withTag(DEBUG_NUMBER, parameterDebug.getNumber()) // extra tag
-                  .update(parameterDebug.getValue());
-            });
   }
 }

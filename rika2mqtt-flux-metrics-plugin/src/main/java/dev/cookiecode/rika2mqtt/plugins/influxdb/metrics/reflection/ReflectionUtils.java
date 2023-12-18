@@ -22,16 +22,49 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.influxdb.metrics.reflection;
 
+import lombok.NonNull;
+
+import java.lang.reflect.Method;
+
 public class ReflectionUtils {
 
-  public static boolean isBooleanProperty(Class<?> clazz, String propertyName) {
-    String booleanGetterMethodName =
+  /**
+   * @param clazz the class owning the property
+   * @param propertyName the property name
+   * @return true when the property of the class is a primitive boolean type
+   */
+  public static boolean isBooleanPrimitiveProperty(@NonNull Class<?> clazz, @NonNull String propertyName) {
+    final var booleanGetterMethodName =
         "is" + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
     try {
+      // TODO: exception driven code... code smell (more elegant solution should be privileged)
       clazz.getMethod(booleanGetterMethodName);
       return true;
     } catch (NoSuchMethodException e) {
       return false;
     }
+  }
+
+  public static String getPropertyGetterMethodName(@NonNull Class<?> clazz, @NonNull String propertyName){
+    if(propertyName.isEmpty()){
+      throw new IllegalArgumentException("propertyName is empty. Please provide a valid propertyName.");
+    }
+    String getterMethodName;
+
+    if (isBooleanPrimitiveProperty(clazz, propertyName)) {
+      getterMethodName =
+              "is" + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
+    } else {
+      getterMethodName =
+              "get" + propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
+    }
+
+    return getterMethodName;
+  }
+
+  public static Method getPropertyGetterMethod(@NonNull Class<?> clazz, @NonNull String propertyName) throws NoSuchMethodException {
+      final var propertyGetterMethodName = getPropertyGetterMethodName(clazz, propertyName);
+
+    return clazz.getMethod(propertyGetterMethodName);
   }
 }
