@@ -22,8 +22,8 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper;
 
-import static com.google.common.collect.ImmutableList.of;
 import static java.time.DayOfWeek.*;
+import static java.util.List.of;
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
 import com.google.common.collect.ImmutableMap;
@@ -115,7 +115,7 @@ public interface ControlsMapper {
 
     // debugs API Object Oriented way
     var debugs =
-        List.of(
+        of(
             source.getDebug0(),
             source.getDebug1(),
             source.getDebug2(),

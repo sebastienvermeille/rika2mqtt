@@ -52,6 +52,7 @@ public class StoveStatusHook implements StoveStatusExtension {
   private static final String DEBUG_NUMBER = "DEBUG_NUMBER";
   private static final String COULD_NOT_EXPORT_PROPERTY_S_IT_COULD_NOT_BE_RETRIEVED =
       "Could not export property %s, it could not be retrieved.";
+  private static final String COULD_NOT_GET_PROPERTY_S = "Could not get property %s";
 
   @Override
   public void onPollStoveStatusSucceed(StoveStatus stoveStatus) {
@@ -325,7 +326,7 @@ public class StoveStatusHook implements StoveStatusExtension {
         var result = getterMethod.invoke(stoveStatus.getSensors());
         return ofNullable(result.toString());
       } catch (Exception ex) {
-        log.atSevere().withCause(ex).log("Could not get property %s", propertyName);
+        log.atSevere().withCause(ex).log(COULD_NOT_GET_PROPERTY_S, propertyName);
         return Optional.empty();
       }
     } else if (propertyName.startsWith("controls.")) {
@@ -334,7 +335,7 @@ public class StoveStatusHook implements StoveStatusExtension {
         var getterMethod = getPropertyGetterMethod(Controls.class, shortName);
         return ofNullable(getterMethod.invoke(stoveStatus.getControls())).map(Object::toString);
       } catch (Exception ex) {
-        log.atSevere().withCause(ex).log("Could not get property %s", propertyName);
+        log.atSevere().withCause(ex).log(COULD_NOT_GET_PROPERTY_S, propertyName);
         return Optional.empty();
       }
     } else {
@@ -346,7 +347,7 @@ public class StoveStatusHook implements StoveStatusExtension {
         var result = getterMethod.invoke(stoveStatus);
         return ofNullable(result.toString());
       } catch (Exception ex) {
-        log.atSevere().withCause(ex).log("Could not get property %s", propertyName);
+        log.atSevere().withCause(ex).log(COULD_NOT_GET_PROPERTY_S, propertyName);
         return Optional.empty();
       }
     }
