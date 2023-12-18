@@ -22,12 +22,12 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.example;
 
+import static dev.cookiecode.rika2mqtt.plugins.example.ExamplePlugin.PLUGIN_NAME;
+
 import dev.cookiecode.rika2mqtt.plugins.api.v1.StoveStatusExtension;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveStatus;
 import lombok.extern.flogger.Flogger;
 import org.pf4j.Extension;
-
-import static dev.cookiecode.rika2mqtt.plugins.example.ExamplePlugin.PLUGIN_NAME;
 
 @Extension
 @Flogger
@@ -35,12 +35,10 @@ public class ExampleHook implements StoveStatusExtension {
 
   @Override
   public void onPollStoveStatusSucceed(StoveStatus stoveStatus) {
-    log.atInfo()
-            .log("%s >> onPollStoveStatusSucceed invoked", PLUGIN_NAME);
+    log.atInfo().log("%s >> onPollStoveStatusSucceed invoked", PLUGIN_NAME);
   }
 
   public void stop() {
-    log.atInfo()
-            .log("%s >> %s stopped", PLUGIN_NAME, ExampleHook.class.getSimpleName());
+    log.atInfo().log("%s >> %s stopped", PLUGIN_NAME, ExampleHook.class.getSimpleName());
   }
 }

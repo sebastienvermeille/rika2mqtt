@@ -135,27 +135,27 @@ public class StoveStatusHook implements StoveStatusExtension {
 
     // following metrics are requiring special treatment
     stoveStatus
-            .getSensors()
-            .getParametersErrorCount()
-            .forEach(
-                    parameterErrorCount ->
-                            Kamon.gauge("sensors.parameterErrorCount")
-                                    .withTag(STOVE_ID, stoveStatus.getStoveId())
-                                    .withTag(STOVE_NAME, stoveStatus.getName())
-                                    .withTag(ERROR_NUMBER, parameterErrorCount.getNumber()) // extra tag
-                                    .update(parameterErrorCount.getValue()));
+        .getSensors()
+        .getParametersErrorCount()
+        .forEach(
+            parameterErrorCount ->
+                Kamon.gauge("sensors.parameterErrorCount")
+                    .withTag(STOVE_ID, stoveStatus.getStoveId())
+                    .withTag(STOVE_NAME, stoveStatus.getName())
+                    .withTag(ERROR_NUMBER, parameterErrorCount.getNumber()) // extra tag
+                    .update(parameterErrorCount.getValue()));
 
     stoveStatus
-            .getSensors()
-            .getParametersDebug()
-            .forEach(
-                    parameterDebug -> {
-                      Kamon.gauge("sensors.parameterDebug")
-                              .withTag(STOVE_ID, stoveStatus.getStoveId())
-                              .withTag(STOVE_NAME, stoveStatus.getName())
-                              .withTag(DEBUG_NUMBER, parameterDebug.getNumber()) // extra tag
-                              .update(parameterDebug.getValue());
-                    });
+        .getSensors()
+        .getParametersDebug()
+        .forEach(
+            parameterDebug -> {
+              Kamon.gauge("sensors.parameterDebug")
+                  .withTag(STOVE_ID, stoveStatus.getStoveId())
+                  .withTag(STOVE_NAME, stoveStatus.getName())
+                  .withTag(DEBUG_NUMBER, parameterDebug.getNumber()) // extra tag
+                  .update(parameterDebug.getValue());
+            });
   }
 
   private void exportControlsMetrics(@NonNull StoveStatus stoveStatus) {
@@ -339,7 +339,8 @@ public class StoveStatusHook implements StoveStatusExtension {
       }
     } else {
       try {
-        final var shortName = propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
+        final var shortName =
+            propertyName.substring(0, 1).toUpperCase() + propertyName.substring(1);
         final var getterMethod = getPropertyGetterMethod(StoveStatus.class, shortName);
 
         var result = getterMethod.invoke(stoveStatus);
