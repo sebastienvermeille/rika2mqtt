@@ -25,12 +25,6 @@
             <version>1.1.0</version>
             <scope>provided</scope> <!-- VERY IMPORTANT: cf: https://github.com/pf4j/pf4j/issues/230 -->
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>com.typesafe</groupId>-->
-<!--            <artifactId>config</artifactId>-->
-<!--            <version>1.4.1</version>-->
-<!--            <scope>compile</scope>-->
-<!--        </dependency>-->
         <dependency>
             <groupId>io.kamon</groupId>
             <artifactId>kamon-bundle_2.13</artifactId>
@@ -47,21 +41,6 @@
 
     <build>
         <plugins>
-<!--            <plugin>-->
-<!--                &lt;!&ndash; workaround to disable this plugin because we are in a plugin and want to have a "fatjar" built with maven-assembly-plugin instead &ndash;&gt;-->
-<!--                <artifactId>maven-jar-plugin</artifactId>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>default-jar</id>-->
-<!--                        <phase>none</phase>-->
-<!--                        <configuration>-->
-<!--                            <finalName>unwanted</finalName>-->
-<!--                            <classifier>unwanted</classifier>-->
-<!--                        </configuration>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -95,48 +74,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-assembly-plugin</artifactId>-->
-<!--                <version>3.6.0</version>-->
-<!--                <configuration>-->
-<!--                    <descriptorRefs>-->
-<!--                        <descriptorRef>jar-with-dependencies</descriptorRef>-->
-<!--                    </descriptorRefs>-->
-<!--                    <finalName>${project.artifactId}-${project.version}</finalName>-->
-<!--                    <appendAssemblyId>false</appendAssemblyId>-->
-<!--                    <attach>false</attach>-->
-<!--                    <archive>-->
-<!--                        <manifest>-->
-<!--                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>-->
-<!--                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>-->
-<!--                        </manifest>-->
-<!--                        <manifestEntries>-->
-<!--                            <Plugin-Class>dev.cookiecode.rika2mqtt.plugins.influxdb.metrics.Rika2MqttInfluxMetricsPlugin</Plugin-Class>-->
-<!--                            <Plugin-Id>influx-metrics-plugin</Plugin-Id>-->
-<!--                            <Plugin-Version>0.0.1</Plugin-Version>-->
-<!--                            <Plugin-Requires>2.0.0</Plugin-Requires>-->
-<!--                            <Plugin-Description>Export RIKA stoves values to InfluxDB.</Plugin-Description>-->
-<!--                            <Plugin-Provider>Sebastien Vermeille</Plugin-Provider>-->
-<!--                            <Plugin-License>MIT</Plugin-License>-->
-<!--                            <Plugin-Dependencies></Plugin-Dependencies>&lt;!&ndash; atm forced to declare this due to an issue in PF4J&ndash;&gt;-->
-<!--                        </manifestEntries>-->
-<!--                    </archive>-->
-
-<!--                </configuration>-->
-<!--                <executions>-->
-<!--                    <execution>-->
-<!--                        <id>make-assembly</id>-->
-<!--                        <phase>package</phase>-->
-<!--                        <goals>-->
-<!--                            <goal>single</goal>-->
-<!--                        </goals>-->
-<!--                    </execution>-->
-<!--                </executions>-->
-<!--            </plugin>-->
-
-
             <plugin>
                 <artifactId>maven-antrun-plugin</artifactId>
                 <version>3.1.0</version>
