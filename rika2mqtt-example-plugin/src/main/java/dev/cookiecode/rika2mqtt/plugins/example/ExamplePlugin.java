@@ -23,19 +23,24 @@
 package dev.cookiecode.rika2mqtt.plugins.example;
 
 import dev.cookiecode.rika2mqtt.plugins.api.v1.Rika2MqttPlugin;
+import lombok.extern.flogger.Flogger;
 
+@Flogger
 public class ExamplePlugin extends Rika2MqttPlugin {
 
-  ExampleHook hook;
+  static final String PLUGIN_NAME = "ExamplePlugin";
+
+  private ExampleHook hook;
 
   @Override
   public void start() {
-    System.out.println("EXAMPLE PLUGIN >> STARTED");
-    hook = new ExampleHook();
+    log.atInfo().log("%s >> STARTED", PLUGIN_NAME);
+    hook = new ExampleHook(); // instantiate/register hook (otherwise it won't be triggered)
   }
 
   @Override
   public void stop() {
-    System.out.println("EXAMPLE PLUGIN >> STOPPED");
+    log.atInfo().log("%s >> STOPPED", PLUGIN_NAME);
+    hook.stop();
   }
 }
