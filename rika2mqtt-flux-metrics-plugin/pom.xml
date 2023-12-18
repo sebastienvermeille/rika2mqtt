@@ -41,6 +41,8 @@
         <maven.compiler.target>${java.sdk.version}</maven.compiler.target>
         <project.build.sourceEncoding>${source.encoding}</project.build.sourceEncoding>
         <kamon.version>2.5.9</kamon.version>
+        <!-- sonar analysis -->
+        <sonar.projectKey>${project.sonar.root.projectKey}-${project.groupId}-${project.artifactId}</sonar.projectKey>
     </properties>
     <dependencies>
         <dependency>
