@@ -116,7 +116,7 @@ public interface ControlsMapper {
 
     // debugs API Object Oriented way
     var debugs =
-        ImmutableList.of(
+        List.of(
             source.getDebug0(),
             source.getDebug1(),
             source.getDebug2(),

@@ -24,7 +24,9 @@ package dev.cookiecode.rika2mqtt.plugins.influxdb.metrics.reflection;
 
 import java.lang.reflect.Method;
 import lombok.NonNull;
+import lombok.experimental.UtilityClass;
 
+@UtilityClass
 public class ReflectionUtils {
 
   /**
