@@ -50,7 +50,8 @@ public class StoveStatusHook implements StoveStatusExtension {
   private static final String TIME_RANGE_INDEX = "TIME_RANGE_INDEX";
   private static final String ERROR_NUMBER = "ERROR_NUMBER";
   private static final String DEBUG_NUMBER = "DEBUG_NUMBER";
-  private static final String COULD_NOT_EXPORT_PROPERTY_S_IT_COULD_NOT_BE_RETRIEVED = "Could not export property %s, it could not be retrieved.";
+  private static final String COULD_NOT_EXPORT_PROPERTY_S_IT_COULD_NOT_BE_RETRIEVED =
+      "Could not export property %s, it could not be retrieved.";
 
   @Override
   public void onPollStoveStatusSucceed(StoveStatus stoveStatus) {
@@ -275,7 +276,7 @@ public class StoveStatusHook implements StoveStatusExtension {
                       .update(value),
               () ->
                   log.atWarning().log(
-                          COULD_NOT_EXPORT_PROPERTY_S_IT_COULD_NOT_BE_RETRIEVED, propertyName));
+                      COULD_NOT_EXPORT_PROPERTY_S_IT_COULD_NOT_BE_RETRIEVED, propertyName));
     } else if (returnType == Integer.class) {
       getIntegerPropertyValue(stoveStatus, propertyName)
           .ifPresentOrElse(
@@ -286,7 +287,7 @@ public class StoveStatusHook implements StoveStatusExtension {
                       .update(value),
               () ->
                   log.atWarning().log(
-                          COULD_NOT_EXPORT_PROPERTY_S_IT_COULD_NOT_BE_RETRIEVED, propertyName));
+                      COULD_NOT_EXPORT_PROPERTY_S_IT_COULD_NOT_BE_RETRIEVED, propertyName));
     } else if (returnType == Long.class) {
       getLongPropertyValue(stoveStatus, propertyName)
           .ifPresentOrElse(
@@ -297,7 +298,7 @@ public class StoveStatusHook implements StoveStatusExtension {
                       .update(value),
               () ->
                   log.atWarning().log(
-                          COULD_NOT_EXPORT_PROPERTY_S_IT_COULD_NOT_BE_RETRIEVED, propertyName));
+                      COULD_NOT_EXPORT_PROPERTY_S_IT_COULD_NOT_BE_RETRIEVED, propertyName));
     } else if (returnType == Boolean.class) {
       getBooleanPropertyValue(stoveStatus, propertyName)
           .map(value -> value == TRUE ? 1 : 0)

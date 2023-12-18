@@ -86,9 +86,7 @@ class ReflectionUtilsTest {
     final var result = getPropertyGetterMethodName(clazz, primitiveBooleanPropertyName);
 
     // THEN
-    assertThat(result)
-        .startsWith("is")
-        .isEqualTo("isDisabled");
+    assertThat(result).startsWith("is").isEqualTo("isDisabled");
   }
 
   @Test
@@ -102,9 +100,7 @@ class ReflectionUtilsTest {
     final var result = getPropertyGetterMethodName(clazz, objectBooleanPropertyName);
 
     // THEN
-    assertThat(result)
-        .startsWith("get")
-        .isEqualTo("getEnabled");
+    assertThat(result).startsWith("get").isEqualTo("getEnabled");
   }
 
   @Test
