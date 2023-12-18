@@ -366,7 +366,7 @@
                 <exclude>src/main/resources/**</exclude>
                 <exclude>Makefile</exclude>
                 <exclude>lombok.config</exclude>
-                <exclude>disabled.txt</exclude>
+                <exclude>plugins/disabled.txt</exclude>
               </excludes>
             </licenseSet>
           </licenseSets>
