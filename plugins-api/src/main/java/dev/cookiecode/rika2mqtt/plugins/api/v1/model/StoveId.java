@@ -22,9 +22,12 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.api.v1.model;
 
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
+
 /**
  * @author Sebastien Vermeille
  */
+@Beta
 public record StoveId(Long id) {
 
   public static StoveId of(Long id) {

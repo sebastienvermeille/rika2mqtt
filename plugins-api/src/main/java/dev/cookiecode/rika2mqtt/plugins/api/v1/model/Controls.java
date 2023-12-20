@@ -27,6 +27,8 @@ import static lombok.AccessLevel.NONE;
 import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Map;
+
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -36,6 +38,7 @@ import lombok.Getter;
  */
 @Data
 @Builder
+@Beta
 public class Controls {
 
   private long revision;

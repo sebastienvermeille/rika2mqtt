@@ -22,11 +22,13 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.api.v1.model;
 
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import lombok.Builder;
 import lombok.Data;
 
 @Data
 @Builder
+@Beta
 public class ParameterDebug {
 
   private int number;

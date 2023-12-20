@@ -22,6 +22,7 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.api.v1.model;
 
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -29,6 +30,7 @@ import lombok.Getter;
 @Builder
 @Getter
 @EqualsAndHashCode
+@Beta
 public class TimeRange {
   private final TimeDefinition from;
   private final TimeDefinition to;

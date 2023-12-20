@@ -25,6 +25,8 @@ package dev.cookiecode.rika2mqtt.plugins.api.v1.model;
 import static lombok.AccessLevel.NONE;
 
 import java.util.List;
+
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
@@ -34,6 +36,7 @@ import lombok.Getter;
  */
 @Data
 @Builder
+@Beta
 public class Sensors {
 
   private Double inputRoomTemperature;

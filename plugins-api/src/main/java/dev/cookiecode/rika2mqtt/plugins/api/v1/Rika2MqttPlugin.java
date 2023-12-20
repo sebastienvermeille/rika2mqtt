@@ -22,6 +22,11 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.api.v1;
 
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import org.pf4j.Plugin;
 
+/**
+ * Base class for Rika2Mqtt plugins
+ */
+@Beta
 public class Rika2MqttPlugin extends Plugin {}

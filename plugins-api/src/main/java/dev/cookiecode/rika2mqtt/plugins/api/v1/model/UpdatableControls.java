@@ -24,10 +24,13 @@ package dev.cookiecode.rika2mqtt.plugins.api.v1.model;
 
 import static lombok.AccessLevel.NONE;
 
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
+@Beta
+// TODO: check if this is the way we want (no usage yet)
 public class UpdatableControls {
 
   private Long revision;

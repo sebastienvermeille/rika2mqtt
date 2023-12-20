@@ -22,10 +22,12 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.api.v1.model;
 
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import lombok.*;
 
 @Data
 @Builder
+@Beta
 public class ConvectionFan {
   private int identifier;
   private boolean active;
