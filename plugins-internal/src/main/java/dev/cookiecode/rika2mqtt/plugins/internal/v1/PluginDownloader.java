@@ -25,6 +25,7 @@ package dev.cookiecode.rika2mqtt.plugins.internal.v1;
 import static java.net.HttpURLConnection.HTTP_OK;
 import static java.util.stream.Collectors.toList;
 
+import com.google.common.annotations.VisibleForTesting;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.exceptions.UnableToDownloadPluginException;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -34,16 +35,22 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.flogger.Flogger;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 @Service
 @Flogger
+@RequiredArgsConstructor
 public class PluginDownloader {
 
-  private static final String PLUGINS_ENV_VAR_NAME = "PLUGINS";
-  private static final String PLUGINS_DIR_ENV_VAR_NAME = "PLUGINS_DIR";
-  private static final String PLUGINS_SEPARATOR = ";";
+  static final String PLUGINS_ENV_VAR_NAME = "PLUGINS";
+  static final String PLUGINS_DIR_ENV_VAR_NAME = "PLUGINS_DIR";
+  static final String PLUGINS_SEPARATOR = ";";
+  static final String DEFAULT_PLUGINS_DIR = "plugins";
+
+  private final Environment environment;
 
   /**
    * sync plugins dir with PLUGINS environment variable. each plugin url has to be provided in
@@ -67,13 +74,16 @@ public class PluginDownloader {
     log.atInfo().log("Plugins synchronization: done.");
   }
 
-  private String getPluginsDir() {
-    return Optional.ofNullable(System.getenv(PLUGINS_DIR_ENV_VAR_NAME)).orElse("plugins");
+  @VisibleForTesting
+  String getPluginsDir() {
+    return Optional.ofNullable(environment.getProperty(PLUGINS_DIR_ENV_VAR_NAME))
+        .orElse(DEFAULT_PLUGINS_DIR);
   }
 
-  private List<URL> getDeclaredPlugins() {
+  @VisibleForTesting
+  List<URL> getDeclaredPlugins() {
     final var concatenatedString =
-        Optional.ofNullable(System.getenv(PLUGINS_ENV_VAR_NAME)).orElse("");
+        Optional.ofNullable(environment.getProperty(PLUGINS_ENV_VAR_NAME)).orElse("");
     return Arrays.stream(concatenatedString.split(PLUGINS_SEPARATOR))
         .map(String::trim) // Trim each URL string
         .filter(urlStr -> !urlStr.isEmpty()) // Filter out empty or null strings
@@ -90,7 +100,8 @@ public class PluginDownloader {
         .collect(toList());
   }
 
-  public void downloadPlugin(@NonNull URL jarUrl, @NonNull String pluginsDir)
+  @VisibleForTesting
+  void downloadPlugin(@NonNull URL jarUrl, @NonNull String pluginsDir)
       throws UnableToDownloadPluginException {
     try {
       final var httpConn = (HttpURLConnection) jarUrl.openConnection();
