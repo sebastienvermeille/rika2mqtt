@@ -59,6 +59,7 @@ jobs:
             plugins-api/target
             plugins-internal/target
             rika2mqtt-example-plugin/target
+            rika2mqtt-example-plugin-using-config/target
             rika2mqtt-flux-metrics-plugin/target
           retention-days: 1
           if-no-files-found: error
