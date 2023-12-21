@@ -41,8 +41,6 @@ public class Rika2MqttInfluxMetricsPlugin extends Rika2MqttPlugin implements Con
   private static final String INFLUXDB_PROTOCOL = "INFLUXDB_PROTOCOL";
   private static final String INFLUXDB_AUTHENTICATION_TOKEN = "INFLUXDB_AUTHENTICATION_TOKEN";
 
-  //  private StoveStatusHook hook;
-
   @Override
   public void start() {
     Kamon.init();

@@ -36,7 +36,7 @@ public class Rika2MqttPluginManager extends DefaultPluginManager {
 
   @Override
   public void startPlugins() {
-    System.out.println("START PLUGINS");
+    log.atInfo().log("Start plugins");
     for (PluginWrapper pluginWrapper : resolvedPlugins) {
       PluginState pluginState = pluginWrapper.getPluginState();
       if ((PluginState.DISABLED != pluginState) && (PluginState.STARTED != pluginState)) {
@@ -47,17 +47,10 @@ public class Rika2MqttPluginManager extends DefaultPluginManager {
 
           // configurable plugins
           if (pluginWrapper.getPlugin() instanceof ConfigurablePlugin configurablePlugin) {
-            final var pluginName = getPluginLabel(pluginWrapper.getDescriptor());
-            log.atInfo().log("Check plugin '%s' configuration", pluginName);
             if (isPluginConfigurationValid(configurablePlugin, pluginConfiguration)) {
-              log.atInfo().log("Start configurable plugin '%s'", pluginName);
-              ((Rika2MqttPlugin) pluginWrapper.getPlugin()).preStart(pluginConfiguration);
-              // todo: this line kills everything
-              pluginWrapper.getPlugin().start();
-              pluginWrapper.setPluginState(PluginState.STARTED);
-              pluginWrapper.setFailedException(null);
-              startedPlugins.add(pluginWrapper);
+              startPlugin(pluginWrapper, pluginConfiguration);
             } else {
+              final var pluginName = getPluginLabel(pluginWrapper.getDescriptor());
               log.atSevere().log(
                   "Plugin '%s' configuration is invalid. Aborting load of the plugin", pluginName);
               stopPlugin(pluginWrapper.getPluginId());
@@ -69,12 +62,7 @@ public class Rika2MqttPluginManager extends DefaultPluginManager {
                           pluginName)));
             }
           } else {
-            log.atInfo().log("Start plugin '%s'", getPluginLabel(pluginWrapper.getDescriptor()));
-            ((Rika2MqttPlugin) pluginWrapper.getPlugin()).preStart(pluginConfiguration);
-            pluginWrapper.getPlugin().start();
-            pluginWrapper.setPluginState(PluginState.STARTED);
-            pluginWrapper.setFailedException(null);
-            startedPlugins.add(pluginWrapper);
+            startPlugin(pluginWrapper, pluginConfiguration);
           }
         } catch (Exception | LinkageError e) {
           pluginWrapper.setPluginState(PluginState.FAILED);
@@ -86,6 +74,15 @@ public class Rika2MqttPluginManager extends DefaultPluginManager {
         }
       }
     }
+  }
+
+  private void startPlugin(PluginWrapper pluginWrapper, PluginConfiguration pluginConfiguration){
+    log.atInfo().log("Start plugin '%s'", getPluginLabel(pluginWrapper.getDescriptor()));
+    ((Rika2MqttPlugin) pluginWrapper.getPlugin()).preStart(pluginConfiguration);
+    pluginWrapper.getPlugin().start();
+    pluginWrapper.setPluginState(PluginState.STARTED);
+    pluginWrapper.setFailedException(null);
+    startedPlugins.add(pluginWrapper);
   }
 
   private boolean isPluginConfigurationValid(

@@ -152,13 +152,11 @@ public class StoveStatusHook implements StoveStatusExtension {
         .getSensors()
         .getParametersDebug()
         .forEach(
-            parameterDebug -> {
-              Kamon.gauge("sensors.parameterDebug")
-                  .withTag(STOVE_ID, stoveStatus.getStoveId())
-                  .withTag(STOVE_NAME, stoveStatus.getName())
-                  .withTag(DEBUG_NUMBER, parameterDebug.getNumber()) // extra tag
-                  .update(parameterDebug.getValue());
-            });
+            parameterDebug -> Kamon.gauge("sensors.parameterDebug")
+                .withTag(STOVE_ID, stoveStatus.getStoveId())
+                .withTag(STOVE_NAME, stoveStatus.getName())
+                .withTag(DEBUG_NUMBER, parameterDebug.getNumber()) // extra tag
+                .update(parameterDebug.getValue()));
   }
 
   private void exportControlsMetrics(@NonNull StoveStatus stoveStatus) {

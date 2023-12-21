@@ -30,13 +30,6 @@ import org.pf4j.Plugin;
 @Beta
 public abstract class Rika2MqttPlugin extends Plugin {
 
-  //  protected final PluginContext pluginContext;
-  //
-  //  protected Rika2MqttPlugin(PluginContext pluginContext) {
-  //    super();
-  //    this.pluginContext = pluginContext;
-  //  }
-
   private PluginConfiguration pluginConfiguration;
 
   public void preStart(@NonNull PluginConfiguration pluginConfiguration) {

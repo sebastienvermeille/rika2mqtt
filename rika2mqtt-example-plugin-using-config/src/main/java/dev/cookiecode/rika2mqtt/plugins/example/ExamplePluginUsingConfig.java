@@ -36,10 +36,6 @@ public class ExamplePluginUsingConfig extends Rika2MqttPlugin implements Configu
 
   static final String PLUGIN_NAME = "ExamplePlugin";
 
-  //  protected ExamplePluginUsingConfig(PluginContext pluginContext) {
-  //    super(pluginContext);
-  //  }
-
   @Override
   public void start() {
     log.atInfo().log("%s >> STARTED", PLUGIN_NAME);
