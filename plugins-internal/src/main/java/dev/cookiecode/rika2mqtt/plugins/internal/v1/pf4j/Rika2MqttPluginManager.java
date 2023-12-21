@@ -76,7 +76,7 @@ public class Rika2MqttPluginManager extends DefaultPluginManager {
     }
   }
 
-  private void startPlugin(PluginWrapper pluginWrapper, PluginConfiguration pluginConfiguration){
+  private void startPlugin(PluginWrapper pluginWrapper, PluginConfiguration pluginConfiguration) {
     log.atInfo().log("Start plugin '%s'", getPluginLabel(pluginWrapper.getDescriptor()));
     ((Rika2MqttPlugin) pluginWrapper.getPlugin()).preStart(pluginConfiguration);
     pluginWrapper.getPlugin().start();
