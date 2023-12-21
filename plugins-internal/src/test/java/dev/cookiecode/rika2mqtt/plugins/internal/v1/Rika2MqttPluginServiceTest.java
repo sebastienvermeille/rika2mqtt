@@ -42,6 +42,20 @@ class Rika2MqttPluginServiceTest {
   @InjectMocks private Rika2MqttPluginService rika2MqttPluginService;
 
   @Mock private PluginManager pluginManager;
+  @Mock private PluginDownloader pluginDownloader;
+
+  @Test
+  void startShouldInvokeSynchronizePlugins() {
+
+    // GIVEN
+    // nothing particular
+
+    // WHEN
+    rika2MqttPluginService.start();
+
+    // THEN
+    verify(pluginDownloader, times(1)).synchronize();
+  }
 
   @Test
   void startShouldInvokeLoadPlugins() {

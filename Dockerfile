@@ -23,7 +23,7 @@
 
 FROM eclipse-temurin:21.0.1_12-jre-jammy
 
-RUN mkdir -p /opt/rika2mqtt
+RUN mkdir -p /opt/rika2mqtt/plugins
 
 WORKDIR /opt/rika2mqtt
 COPY .docker/ .

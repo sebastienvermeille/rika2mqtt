@@ -41,8 +41,12 @@ import org.springframework.stereotype.Service;
 public class Rika2MqttPluginService {
 
   private final PluginManager pluginManager;
+  private final PluginDownloader pluginDownloader;
 
   public void start() {
+    log.atInfo().log("Fetch plugins ...");
+    pluginDownloader.synchronize();
+
     log.atInfo().log("Plugin manager starting ...");
     pluginManager.loadPlugins();
     pluginManager.startPlugins();
