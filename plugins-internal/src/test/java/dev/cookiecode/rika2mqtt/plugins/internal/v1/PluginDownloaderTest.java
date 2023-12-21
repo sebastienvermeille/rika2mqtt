@@ -23,11 +23,14 @@
 package dev.cookiecode.rika2mqtt.plugins.internal.v1;
 
 import static dev.cookiecode.rika2mqtt.plugins.internal.v1.PluginDownloader.*;
+import static java.net.URI.create;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import java.net.URL;
+import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.api.io.TempDir;
@@ -106,7 +109,7 @@ class PluginDownloaderTest {
     final var urls = pluginDownloader.getDeclaredPlugins();
 
     // THEN
-    assertThat(urls).isNotEmpty().hasSize(1).containsExactly(new URL(wellformedUrl));
+    assertThat(urls).isNotEmpty().hasSize(1).containsExactly(create(wellformedUrl).toURL());
   }
 
   @Test
@@ -127,7 +130,7 @@ class PluginDownloaderTest {
     assertThat(urls)
         .isNotEmpty()
         .hasSize(2)
-        .containsExactly(new URL(pluginAUrl), new URL(pluginBUrl));
+        .containsExactly(create(pluginAUrl).toURL(), create(pluginBUrl).toURL());
   }
 
   @Test
@@ -175,5 +178,19 @@ class PluginDownloaderTest {
 
     // THEN
     verify(pluginDownloader, times(2)).downloadPlugin(any(URL.class), anyString());
+  }
+
+  @Test
+  void downloadPluginShouldDownloadTheFileGivenItExists() throws Exception {
+    // GIVEN
+    final var pluginUrl = "https://repo.maven.apache.org/maven2/dev/cookiecode/maven-metadata.xml";
+
+    // WHEN
+    pluginDownloader.downloadPlugin(
+        create(pluginUrl).toURL(), pluginDir.toAbsolutePath().toString());
+
+    // THEN
+    final var expectedFile = Paths.get(pluginDir.toAbsolutePath().toString(), "maven-metadata.xml");
+    assertThat(Files.exists(expectedFile)).as("File has been downloaded").isTrue();
   }
 }

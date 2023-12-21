@@ -23,7 +23,7 @@
 package dev.cookiecode.rika2mqtt.plugins.internal.v1;
 
 import static java.net.HttpURLConnection.HTTP_OK;
-import static java.util.stream.Collectors.toList;
+import static java.net.URI.create;
 
 import com.google.common.annotations.VisibleForTesting;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.exceptions.UnableToDownloadPluginException;
@@ -90,14 +90,14 @@ public class PluginDownloader {
         .map(
             pluginUrlStr -> {
               try {
-                return new URL(pluginUrlStr);
+                return create(pluginUrlStr).toURL();
               } catch (MalformedURLException e) {
                 log.atSevere().withCause(e).log("Ignore the following url: %s", pluginUrlStr);
                 return null;
               }
             })
         .filter(Objects::nonNull) // Remove the null URLs from the list
-        .collect(toList());
+        .toList();
   }
 
   @VisibleForTesting

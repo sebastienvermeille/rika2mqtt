@@ -44,26 +44,22 @@ public class Rika2MqttPluginManager extends DefaultPluginManager {
 
           final var pluginConfiguration =
               loadPluginConfiguration((Rika2MqttPlugin) pluginWrapper.getPlugin());
-
-          // configurable plugins
-          if (pluginWrapper.getPlugin() instanceof ConfigurablePlugin configurablePlugin) {
-            if (isPluginConfigurationValid(configurablePlugin, pluginConfiguration)) {
-              startPlugin(pluginWrapper, pluginConfiguration);
-            } else {
-              final var pluginName = getPluginLabel(pluginWrapper.getDescriptor());
-              log.atSevere().log(
-                  "Plugin '%s' configuration is invalid. Aborting load of the plugin", pluginName);
-              stopPlugin(pluginWrapper.getPluginId());
-              pluginWrapper.setPluginState(PluginState.FAILED);
-              pluginWrapper.setFailedException(
-                  new InvalidPluginConfigurationException(
-                      String.format(
-                          "Plugin '%s' configuration is invalid. Aborting load of the plugin",
-                          pluginName)));
-            }
-          } else {
+          if (isPluginConfigurationValid(
+              (Rika2MqttPlugin) pluginWrapper.getPlugin(), pluginConfiguration)) {
             startPlugin(pluginWrapper, pluginConfiguration);
+          } else {
+            final var pluginName = getPluginLabel(pluginWrapper.getDescriptor());
+            log.atSevere().log(
+                "Plugin '%s' configuration is invalid. Aborting load of the plugin", pluginName);
+            stopPlugin(pluginWrapper.getPluginId());
+            pluginWrapper.setPluginState(PluginState.FAILED);
+            pluginWrapper.setFailedException(
+                new InvalidPluginConfigurationException(
+                    String.format(
+                        "Plugin '%s' configuration is invalid. Aborting load of the plugin",
+                        pluginName)));
           }
+
         } catch (Exception | LinkageError e) {
           pluginWrapper.setPluginState(PluginState.FAILED);
           pluginWrapper.setFailedException(e);
@@ -86,29 +82,35 @@ public class Rika2MqttPluginManager extends DefaultPluginManager {
   }
 
   private boolean isPluginConfigurationValid(
-      @NonNull ConfigurablePlugin configurablePlugin,
-      @NonNull PluginConfiguration pluginConfiguration) {
+      @NonNull Rika2MqttPlugin plugin, @NonNull PluginConfiguration pluginConfiguration) {
 
-    final var parameters = configurablePlugin.declarePluginConfigurationParameters();
+    // configurable plugins
+    if (plugin instanceof ConfigurablePlugin configurablePlugin) {
 
-    final List<String> errors = new ArrayList<>();
+      final var parameters = configurablePlugin.declarePluginConfigurationParameters();
 
-    for (final var param : parameters) {
-      // check required params are provided
-      if (param.isRequired()
-          && pluginConfiguration.getParameter(param.getParameterName()).isEmpty()) {
-        errors.add(
-            String.format(
-                "Parameter '%s' is required for this plugin to work properly. However unable to find any ENV named: 'PLUGIN_%s' declaring any value",
-                param.getParameterName(), param.getParameterName()));
+      final List<String> errors = new ArrayList<>();
+
+      for (final var param : parameters) {
+        // check required params are provided
+        if (param.isRequired()
+            && pluginConfiguration.getParameter(param.getParameterName()).isEmpty()) {
+          errors.add(
+              String.format(
+                  "Parameter '%s' is required for this plugin to work properly. However unable to find any ENV named: 'PLUGIN_%s' declaring any value",
+                  param.getParameterName(), param.getParameterName()));
+        }
       }
-    }
 
-    if (errors.isEmpty()) {
-      return true;
+      if (errors.isEmpty()) {
+        return true;
+      } else {
+        log.atSevere().log("%s", errors);
+        return false;
+      }
+
     } else {
-      log.atSevere().log("%s", errors);
-      return false;
+      return true;
     }
   }
 
