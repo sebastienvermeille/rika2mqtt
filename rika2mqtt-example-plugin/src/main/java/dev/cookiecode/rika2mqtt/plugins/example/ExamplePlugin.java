@@ -32,10 +32,6 @@ public class ExamplePlugin extends Rika2MqttPlugin {
 
   private ExampleHook hook;
 
-  //  protected ExamplePlugin(PluginContext pluginContext) {
-  //    super(pluginContext);
-  //  }
-
   @Override
   public void start() {
     log.atInfo().log("%s >> STARTED", PLUGIN_NAME);

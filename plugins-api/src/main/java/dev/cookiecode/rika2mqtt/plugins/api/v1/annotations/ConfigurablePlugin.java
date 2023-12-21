@@ -22,7 +22,6 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.api.v1.annotations;
 
-import dev.cookiecode.rika2mqtt.plugins.api.v1.PluginConfiguration;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.plugins.OptionalPluginConfigurationParameter;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.plugins.PluginConfigurationParameter;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.plugins.RequiredPluginConfigurationParameter;
@@ -42,6 +41,4 @@ public interface ConfigurablePlugin {
    * @return a list of plugin configuration parameters
    */
   List<PluginConfigurationParameter> declarePluginConfigurationParameters();
-
-  void onConfigurationLoaded(PluginConfiguration pluginConfiguration);
 }

@@ -23,6 +23,7 @@
 package dev.cookiecode.rika2mqtt.plugins.api.v1;
 
 import dev.cookiecode.rika2mqtt.plugins.api.Beta;
+import lombok.NonNull;
 import org.pf4j.Plugin;
 
 /** Base class for Rika2Mqtt plugins */
@@ -36,4 +37,13 @@ public abstract class Rika2MqttPlugin extends Plugin {
   //    this.pluginContext = pluginContext;
   //  }
 
+  private PluginConfiguration pluginConfiguration;
+
+  public void preStart(@NonNull PluginConfiguration pluginConfiguration) {
+    this.pluginConfiguration = pluginConfiguration;
+  }
+
+  public String getPluginConfigurationParameter(@NonNull String parameterName) {
+    return pluginConfiguration.getParameter(parameterName);
+  }
 }

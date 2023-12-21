@@ -23,7 +23,6 @@ package dev.cookiecode.rika2mqtt.plugins.example;
  * THE SOFTWARE.
  */
 
-import dev.cookiecode.rika2mqtt.plugins.api.v1.PluginConfiguration;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.Rika2MqttPlugin;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.annotations.ConfigurablePlugin;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.plugins.OptionalPluginConfigurationParameter;
@@ -88,10 +87,5 @@ public class ExamplePluginUsingConfig extends Rika2MqttPlugin implements Configu
             .withDescription("Postgres database name")
             .withValueType(String.class)
             .build());
-  }
-
-  @Override
-  public void onConfigurationLoaded(PluginConfiguration pluginConfiguration) {
-    // config loaded
   }
 }

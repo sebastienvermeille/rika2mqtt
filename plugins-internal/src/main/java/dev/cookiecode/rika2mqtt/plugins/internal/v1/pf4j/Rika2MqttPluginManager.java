@@ -1,6 +1,7 @@
 package dev.cookiecode.rika2mqtt.plugins.internal.v1.pf4j;
 
 import dev.cookiecode.rika2mqtt.plugins.api.v1.PluginConfiguration;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.Rika2MqttPlugin;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.annotations.ConfigurablePlugin;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.exceptions.InvalidPluginConfigurationException;
 import java.util.*;
@@ -10,10 +11,6 @@ import org.pf4j.*;
 
 @Flogger
 public class Rika2MqttPluginManager extends DefaultPluginManager {
-  //  @Override
-  //  protected PluginFactory createPluginFactory() {
-  //    return new Rika2MqttPluginFactory();
-  //  }
 
   @Override
   public void startPlugins() {
@@ -22,16 +19,17 @@ public class Rika2MqttPluginManager extends DefaultPluginManager {
       PluginState pluginState = pluginWrapper.getPluginState();
       if ((PluginState.DISABLED != pluginState) && (PluginState.STARTED != pluginState)) {
         try {
+
+          final var pluginConfiguration =
+              loadPluginConfiguration((Rika2MqttPlugin) pluginWrapper.getPlugin());
+
           // configurable plugins
           if (pluginWrapper.getPlugin() instanceof ConfigurablePlugin configurablePlugin) {
             final var pluginName = getPluginLabel(pluginWrapper.getDescriptor());
             log.atInfo().log("Check plugin '%s' configuration", pluginName);
-            final var pluginConfiguration = loadPluginConfiguration(configurablePlugin);
             if (isPluginConfigurationValid(configurablePlugin, pluginConfiguration)) {
               log.atInfo().log("Start configurable plugin '%s'", pluginName);
-              //              configurablePlugin.onConfigurationLoaded(pluginConfiguration);
-              ((ConfigurablePlugin) pluginWrapper.getPlugin())
-                  .onConfigurationLoaded(pluginConfiguration);
+              ((Rika2MqttPlugin) pluginWrapper.getPlugin()).preStart(pluginConfiguration);
               // todo: this line kills everything
               pluginWrapper.getPlugin().start();
               pluginWrapper.setPluginState(PluginState.STARTED);
@@ -50,6 +48,7 @@ public class Rika2MqttPluginManager extends DefaultPluginManager {
             }
           } else {
             log.atInfo().log("Start plugin '%s'", getPluginLabel(pluginWrapper.getDescriptor()));
+            ((Rika2MqttPlugin) pluginWrapper.getPlugin()).preStart(pluginConfiguration);
             pluginWrapper.getPlugin().start();
             pluginWrapper.setPluginState(PluginState.STARTED);
             pluginWrapper.setFailedException(null);
@@ -94,23 +93,25 @@ public class Rika2MqttPluginManager extends DefaultPluginManager {
     }
   }
 
-  private PluginConfiguration loadPluginConfiguration(ConfigurablePlugin configurablePlugin) {
+  private PluginConfiguration loadPluginConfiguration(@NonNull Rika2MqttPlugin plugin) {
 
     Map<String, String> configuration = new HashMap<>();
 
-    for (var parameter : configurablePlugin.declarePluginConfigurationParameters()) {
+    if (plugin instanceof ConfigurablePlugin configurablePlugin) {
+      for (var parameter : configurablePlugin.declarePluginConfigurationParameters()) {
 
-      var value =
-          getEnvironmentVariable("PLUGIN_" + parameter.getParameterName())
-              .orElseGet(
-                  () -> {
-                    if (parameter.isOptional() && parameter.getDefaultValue().isPresent()) {
-                      return parameter.getDefaultValue().get().toString();
-                    } else {
-                      return null;
-                    }
-                  });
-      configuration.put(parameter.getParameterName(), value);
+        var value =
+            getEnvironmentVariable("PLUGIN_" + parameter.getParameterName())
+                .orElseGet(
+                    () -> {
+                      if (parameter.isOptional() && parameter.getDefaultValue().isPresent()) {
+                        return parameter.getDefaultValue().get().toString();
+                      } else {
+                        return null;
+                      }
+                    });
+        configuration.put(parameter.getParameterName(), value);
+      }
     }
 
     return PluginConfiguration.builder().parameters(configuration).build();

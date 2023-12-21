@@ -24,7 +24,6 @@ package dev.cookiecode.rika2mqtt.plugins.influxdb.metrics;
 
 import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
-import dev.cookiecode.rika2mqtt.plugins.api.v1.PluginConfiguration;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.Rika2MqttPlugin;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.annotations.ConfigurablePlugin;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.plugins.OptionalPluginConfigurationParameter;
@@ -42,9 +41,7 @@ public class Rika2MqttInfluxMetricsPlugin extends Rika2MqttPlugin implements Con
   private static final String INFLUXDB_PROTOCOL = "INFLUXDB_PROTOCOL";
   private static final String INFLUXDB_AUTHENTICATION_TOKEN = "INFLUXDB_AUTHENTICATION_TOKEN";
 
-  private PluginConfiguration pluginConfiguration;
-
-  private StoveStatusHook hook;
+  //  private StoveStatusHook hook;
 
   @Override
   public void start() {
@@ -52,7 +49,7 @@ public class Rika2MqttInfluxMetricsPlugin extends Rika2MqttPlugin implements Con
     Kamon.reconfigure(loadConfig());
     Kamon.loadModules();
 
-    hook = new StoveStatusHook(); // need a field otherwise it doesnt work (TODO: check why)
+    new StoveStatusHook();
   }
 
   @Override
@@ -64,19 +61,17 @@ public class Rika2MqttInfluxMetricsPlugin extends Rika2MqttPlugin implements Con
   Config loadConfig() {
     var defaultConfig = Kamon.config();
 
-    // TODO: have to be customizable
     var props = new HashMap<String, Object>();
-    props.put("kamon.influxdb.port", pluginConfiguration.getParameter(INFLUXDB_PORT));
-    props.put("kamon.influxdb.hostname", pluginConfiguration.getParameter(INFLUXDB_HOSTNAME));
-    props.put("kamon.influxdb.database", pluginConfiguration.getParameter(INFLUXDB_DATABASE));
-    props.put("kamon.influxdb.protocol", pluginConfiguration.getParameter(INFLUXDB_PROTOCOL));
+    props.put("kamon.influxdb.port", getPluginConfigurationParameter(INFLUXDB_PORT));
+    props.put("kamon.influxdb.hostname", getPluginConfigurationParameter(INFLUXDB_HOSTNAME));
+    props.put("kamon.influxdb.database", getPluginConfigurationParameter(INFLUXDB_DATABASE));
+    props.put("kamon.influxdb.protocol", getPluginConfigurationParameter(INFLUXDB_PROTOCOL));
     props.put(
         "kamon.influxdb.authentication.token",
-        pluginConfiguration.getParameter(INFLUXDB_AUTHENTICATION_TOKEN));
+        getPluginConfigurationParameter(INFLUXDB_AUTHENTICATION_TOKEN));
 
     var codeConfig = ConfigFactory.parseMap(props);
-    var newConfig = codeConfig.withFallback(defaultConfig);
-    return newConfig;
+    return codeConfig.withFallback(defaultConfig);
   }
 
   @Override
@@ -113,20 +108,5 @@ public class Rika2MqttInfluxMetricsPlugin extends Rika2MqttPlugin implements Con
             .withDescription("Auth token for influxdb database")
             .withValueType(String.class)
             .build());
-  }
-
-  @Override
-  public void onConfigurationLoaded(PluginConfiguration pluginConfiguration) {
-    //    log.atInfo().log(pluginConfiguration.toString());
-    this.pluginConfiguration = pluginConfiguration;
-    System.out.println("aaaaaa");
-    System.out.println("aaaaaa");
-    System.out.println("aaaaaa");
-    System.out.println("aaaaaa");
-    System.out.println("aaaaaa");
-    System.out.println("aaaaaa");
-    System.out.println("aaaaaa");
-    System.out.println("aaaaaa");
-    System.out.println("aaaaaa");
   }
 }
