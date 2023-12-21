@@ -13,7 +13,8 @@
       ["Getting Started", [
         ["Overview", "/"],
         ["Getting Started", "/getting-started"],
-        ["Configuration", "/configuration"]
+        ["Configuration", "/configuration"],
+        ["Plugin development", "/write-a-plugin"]
       ]],
       ["Examples", [
         ["Publish stove status to MQTT", "/example-telemetry-mqtt"],

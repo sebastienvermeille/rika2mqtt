@@ -94,6 +94,7 @@
     <module>rika2mqtt-flux-metrics-plugin</module>
       <module>plugins-internal</module>
     <module>rika2mqtt-example-plugin</module>
+    <module>rika2mqtt-example-plugin-using-config</module>
   </modules>
 
   <dependencies>

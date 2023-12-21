@@ -20,10 +20,7 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.plugins.api;
+package dev.cookiecode.rika2mqtt.plugins.api.v1.annotations;
 
-/**
- * Document beta features that might be removed/updated with breaking changes use it carefully being
- * aware of this
- */
-public @interface Beta {}
+/** Explicitly document that a parameter can be null */
+public @interface Nullable {}

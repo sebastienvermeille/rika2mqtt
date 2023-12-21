@@ -37,9 +37,9 @@ import org.pf4j.PluginManager;
 
 /** Test class */
 @ExtendWith(MockitoExtension.class)
-class Rika2MqttPluginManagerTest {
+class Rika2MqttPluginServiceTest {
 
-  @InjectMocks private Rika2MqttPluginManager rika2MqttPluginManager;
+  @InjectMocks private Rika2MqttPluginService rika2MqttPluginService;
 
   @Mock private PluginManager pluginManager;
 
@@ -50,7 +50,7 @@ class Rika2MqttPluginManagerTest {
     // nothing particular
 
     // WHEN
-    rika2MqttPluginManager.start();
+    rika2MqttPluginService.start();
 
     // THEN
     verify(pluginManager, times(1)).loadPlugins();
@@ -63,7 +63,7 @@ class Rika2MqttPluginManagerTest {
     // nothing particular
 
     // WHEN
-    rika2MqttPluginManager.start();
+    rika2MqttPluginService.start();
 
     // THEN
     verify(pluginManager, times(1)).startPlugins();
@@ -85,7 +85,7 @@ class Rika2MqttPluginManagerTest {
     when(pluginManager.getExtensions(StoveStatusExtension.class)).thenReturn(extensions);
 
     // WHEN
-    rika2MqttPluginManager.handlePolledStoveStatusEvent(event);
+    rika2MqttPluginService.handlePolledStoveStatusEvent(event);
 
     // THEN
     verify(extensionAlpha, times(1)).onPollStoveStatusSucceed(stoveStatus);

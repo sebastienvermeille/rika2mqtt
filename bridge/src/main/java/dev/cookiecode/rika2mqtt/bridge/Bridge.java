@@ -25,7 +25,7 @@ package dev.cookiecode.rika2mqtt.bridge;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import dev.cookiecode.rika2mqtt.bridge.misc.EmailObfuscator;
-import dev.cookiecode.rika2mqtt.plugins.internal.v1.Rika2MqttPluginManager;
+import dev.cookiecode.rika2mqtt.plugins.internal.v1.Rika2MqttPluginService;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.event.PolledStoveStatusEvent;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper.StoveStatusMapper;
 import dev.cookiecode.rika2mqtt.rika.firenet.RikaFirenetService;
@@ -82,7 +82,7 @@ public class Bridge {
   private final Gson gson;
   private final StoveStatusMapper stoveStatusMapper;
 
-  private final Rika2MqttPluginManager pluginManager;
+  private final Rika2MqttPluginService pluginManager;
 
   private final ApplicationEventPublisher applicationEventPublisher;
 

@@ -24,11 +24,10 @@ package dev.cookiecode.rika2mqtt.plugins.api.v1.model;
 
 import static lombok.AccessLevel.NONE;
 
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import java.time.DayOfWeek;
 import java.util.List;
 import java.util.Map;
-
-import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;

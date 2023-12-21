@@ -20,10 +20,50 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.plugins.api;
+package dev.cookiecode.rika2mqtt.plugins.api.v1.model.plugins;
 
-/**
- * Document beta features that might be removed/updated with breaking changes use it carefully being
- * aware of this
- */
-public @interface Beta {}
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.ToString;
+
+@Getter
+@ToString
+@EqualsAndHashCode
+@Beta
+public class PluginConfigurationParameterBuilder {
+
+  private final boolean required;
+
+  PluginConfigurationParameterBuilder(Builder builder) {
+    required = builder.required;
+  }
+
+  public static IRequired builder() {
+    return new Builder();
+  }
+
+  public interface IBuild {
+    PluginConfigurationParameterBuilder build();
+  }
+
+  public interface IRequired {
+    IBuild withRequired(boolean val);
+  }
+
+  public static final class Builder implements IRequired, IBuild {
+    private boolean required;
+
+    private Builder() {}
+
+    @Override
+    public IBuild withRequired(boolean val) {
+      required = val;
+      return this;
+    }
+
+    public PluginConfigurationParameterBuilder build() {
+      return new PluginConfigurationParameterBuilder(this);
+    }
+  }
+}

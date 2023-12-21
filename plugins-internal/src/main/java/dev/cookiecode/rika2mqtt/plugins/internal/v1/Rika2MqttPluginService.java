@@ -38,7 +38,7 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 @Flogger
-public class Rika2MqttPluginManager {
+public class Rika2MqttPluginService {
 
   private final PluginManager pluginManager;
 

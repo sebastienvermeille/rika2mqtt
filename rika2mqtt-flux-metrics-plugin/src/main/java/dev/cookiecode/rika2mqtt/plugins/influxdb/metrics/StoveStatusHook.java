@@ -168,7 +168,7 @@ public class StoveStatusHook implements StoveStatusExtension {
     exportProperty(stoveStatus, "controls.heatingPower", Integer.class);
     exportProperty(stoveStatus, "controls.targetTemperature", Integer.class);
     exportProperty(stoveStatus, "controls.bakeTemperature", Integer.class);
-    exportProperty(stoveStatus, "controls.ecoMode", Boolean.class);
+    exportProperty(stoveStatus, "controls.ecoModeEnabled", Boolean.class);
     exportProperty(stoveStatus, "controls.heatingTimesActiveForComfort", Boolean.class);
     exportProperty(stoveStatus, "controls.setBackTemperature", Integer.class);
     exportProperty(stoveStatus, "controls.frostProtectionActive", Boolean.class);

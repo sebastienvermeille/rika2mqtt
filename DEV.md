@@ -50,7 +50,7 @@ Then you can run the project and enjoy :)
 If you want to run the project in pure CLI there is a `Makefile` available.
 
 You can run:
-
+* `make codestyle`
 * `make jar`
 * `make test`
 * `make docker`
