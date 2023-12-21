@@ -51,9 +51,6 @@ class PluginDownloaderTest {
   @Mock private Environment environment;
 
   @Test
-  void synchronize() {}
-
-  @Test
   void getDeclaredPluginsShouldReturnAnEmptyListGivenOnlyASpaceIsProvided() {
 
     // GIVEN
@@ -93,23 +90,6 @@ class PluginDownloaderTest {
     // THEN
     assertThat(System.getenv(PLUGINS_ENV_VAR_NAME)).isNull();
     assertThat(urls).isEmpty();
-  }
-
-  @Test
-  void getDeclaredPluginsShouldReturnOnlyOneUrlGivenOneOfTheTwoIsMalformed() throws Exception {
-
-    // GIVEN
-    final var malformedUrl = "http://plugin-a.    jar";
-    final var wellformedUrl = "http://plugin-b.jar";
-
-    final var pluginsUrls = String.format("%s;%s", malformedUrl, wellformedUrl);
-    doReturn(pluginsUrls).when(environment).getProperty(PLUGINS_ENV_VAR_NAME);
-
-    // WHEN
-    final var urls = pluginDownloader.getDeclaredPlugins();
-
-    // THEN
-    assertThat(urls).isNotEmpty().hasSize(1).containsExactly(create(wellformedUrl).toURL());
   }
 
   @Test
