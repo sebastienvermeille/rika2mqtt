@@ -29,6 +29,7 @@ import static org.mockito.Mockito.*;
 import static org.pf4j.PluginState.*;
 
 import dev.cookiecode.rika2mqtt.plugins.api.v1.PluginConfiguration;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.exceptions.InvalidPluginConfigurationException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -290,6 +291,148 @@ class Rika2MqttPluginManagerTest {
     // THEN
     verify(pluginWrapper, times(1)).setPluginState(STARTED);
     verify(pluginWrapper, times(1)).setFailedException(null);
+  }
+
+  @Test
+  void handleInvalidPluginConfigurationShouldInvokeStopAndFailPlugin() {
+
+    // GIVEN
+    final var pluginWrapper = mock(PluginWrapper.class);
+    final var pluginDescriptor = mock(PluginDescriptor.class);
+    doReturn(pluginDescriptor).when(pluginWrapper).getDescriptor();
+    doNothing().when(rika2MqttPluginManager).stopAndFailPlugin(any(), anyString());
+
+    // WHEN
+    rika2MqttPluginManager.handleInvalidPluginConfiguration(pluginWrapper);
+
+    // THEN
+    verify(rika2MqttPluginManager, times(1)).stopAndFailPlugin(any(), anyString());
+  }
+
+  @Test
+  void handlePluginStartFailureShouldUpdatePluginState() {
+
+    // GIVEN
+    final var pluginWrapper = mock(PluginWrapper.class);
+    final var pluginDescriptor = mock(PluginDescriptor.class);
+    doReturn(pluginDescriptor).when(pluginWrapper).getDescriptor();
+    final var exception = mock(Exception.class);
+
+    // WHEN
+    rika2MqttPluginManager.handlePluginStartFailure(pluginWrapper, exception);
+
+    // THEN
+    verify(pluginWrapper, times(1)).setPluginState(FAILED);
+    verify(pluginWrapper, times(1)).setFailedException(exception);
+  }
+
+  @Test
+  void stopAndFailPluginShouldUpdatePluginStateAccordingly() {
+
+    // GIVEN
+    final var pluginWrapper = mock(PluginWrapper.class);
+    final var pluginId = "plugin-id";
+    when(pluginWrapper.getPluginId()).thenReturn(pluginId);
+    doReturn(null).when(rika2MqttPluginManager).stopPlugin(anyString());
+    final var pluginName = "plugin-a";
+
+    // WHEN
+    rika2MqttPluginManager.stopAndFailPlugin(pluginWrapper, pluginName);
+
+    // THEN
+    verify(pluginWrapper, times(1)).setPluginState(FAILED);
+    verify(pluginWrapper, times(1))
+        .setFailedException(any(InvalidPluginConfigurationException.class));
+  }
+
+  @Test
+  void handlePluginShouldInvokeStartPluginGivenTheConfigurationIsValid() {
+
+    // GIVEN
+    final var pluginWrapper = mock(PluginWrapper.class);
+    final var rika2mqttPlugin = new DummyConfigurablePlugin();
+    when(pluginWrapper.getPlugin()).thenReturn(rika2mqttPlugin);
+    final var pluginDescriptor = mock(PluginDescriptor.class);
+    doReturn(pluginDescriptor).when(pluginWrapper).getDescriptor();
+    doReturn(true).when(rika2MqttPluginManager).isPluginConfigurationValid(any(), any());
+
+    // WHEN
+    rika2MqttPluginManager.handlePlugin(pluginWrapper);
+
+    // THEN
+    verify(rika2MqttPluginManager, times(1)).startPlugin(any(), any());
+  }
+
+  @Test
+  void handlePluginShouldInvokeHandleInvalidPluginConfigurationGivenTheConfigurationIsInvalid() {
+
+    // GIVEN
+    final var pluginWrapper = mock(PluginWrapper.class);
+    final var rika2mqttPlugin = new DummyConfigurablePlugin();
+    when(pluginWrapper.getPlugin()).thenReturn(rika2mqttPlugin);
+    final var pluginDescriptor = mock(PluginDescriptor.class);
+    doReturn(pluginDescriptor).when(pluginWrapper).getDescriptor();
+    doReturn(false).when(rika2MqttPluginManager).isPluginConfigurationValid(any(), any());
+
+    // WHEN
+    rika2MqttPluginManager.handlePlugin(pluginWrapper);
+
+    // THEN
+    verify(rika2MqttPluginManager, times(1)).handleInvalidPluginConfiguration(any());
+  }
+
+  @Test
+  void
+      isPluginConfigurationValidShouldReturnTrueGivenThePluginIsNotImplementingConfigurablePlugin() {
+
+    // GIVEN
+    final var plugin = new NotConfigurablePlugin();
+    final var pluginConfiguration = mock(PluginConfiguration.class);
+
+    // WHEN
+    final var valid =
+        rika2MqttPluginManager.isPluginConfigurationValid(plugin, pluginConfiguration);
+
+    // THEN
+    assertThat(valid).isTrue();
+  }
+
+  @Test
+  void
+      isPluginConfigurationValidShouldReturnFalseGivenTheConfigurablePluginDeclaresARequiredParameterAndItIsNotProvided() {
+
+    // GIVEN
+    // intentionally do not define a password ENV
+
+    final var plugin = new DummyConfigurablePlugin();
+    when(rika2MqttPluginManager.loadPluginConfiguration(plugin)).thenCallRealMethod();
+    final var pluginConfiguration = rika2MqttPluginManager.loadPluginConfiguration(plugin);
+
+    // WHEN
+    final var valid =
+        rika2MqttPluginManager.isPluginConfigurationValid(plugin, pluginConfiguration);
+
+    // THEN
+    assertThat(valid).isFalse();
+  }
+
+  @Test
+  void
+      isPluginConfigurationValidShouldReturnTrueGivenTheConfigurablePluginDeclaresARequiredParameterAndIsProvided() {
+
+    // GIVEN
+    mockPluginEnv("password", "p4ssw0rd");
+
+    final var plugin = new DummyConfigurablePlugin();
+    when(rika2MqttPluginManager.loadPluginConfiguration(plugin)).thenCallRealMethod();
+    final var pluginConfiguration = rika2MqttPluginManager.loadPluginConfiguration(plugin);
+
+    // WHEN
+    final var valid =
+        rika2MqttPluginManager.isPluginConfigurationValid(plugin, pluginConfiguration);
+
+    // THEN
+    assertThat(valid).isTrue();
   }
 
   /** Helper method for testing plugin configurations */

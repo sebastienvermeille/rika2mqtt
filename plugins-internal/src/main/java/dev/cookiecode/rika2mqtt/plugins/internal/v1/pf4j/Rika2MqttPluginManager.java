@@ -22,8 +22,7 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.internal.v1.pf4j;
 
-import static org.pf4j.PluginState.DISABLED;
-import static org.pf4j.PluginState.STARTED;
+import static org.pf4j.PluginState.*;
 
 import com.google.common.annotations.VisibleForTesting;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.PluginConfiguration;
@@ -75,25 +74,28 @@ public class Rika2MqttPluginManager extends DefaultPluginManager {
     }
   }
 
-  private void handleInvalidPluginConfiguration(@NonNull final PluginWrapper pluginWrapper) {
+  @VisibleForTesting
+  void handleInvalidPluginConfiguration(@NonNull final PluginWrapper pluginWrapper) {
     final var pluginName = getPluginLabel(pluginWrapper.getDescriptor());
     log.atSevere().log(
         "Plugin '%s' configuration is invalid. Aborting load of the plugin", pluginName);
     stopAndFailPlugin(pluginWrapper, pluginName);
   }
 
-  private void handlePluginStartFailure(
+  @VisibleForTesting
+  void handlePluginStartFailure(
       @NonNull final PluginWrapper pluginWrapper, @NonNull final Throwable exception) {
-    pluginWrapper.setPluginState(PluginState.FAILED);
+    pluginWrapper.setPluginState(FAILED);
     pluginWrapper.setFailedException(exception);
     log.atSevere().withCause(pluginWrapper.getFailedException()).log(
         "Unable to start plugin '%s'", getPluginLabel(pluginWrapper.getDescriptor()));
   }
 
-  private void stopAndFailPlugin(
+  @VisibleForTesting
+  void stopAndFailPlugin(
       @NonNull final PluginWrapper pluginWrapper, @NonNull final String pluginName) {
     stopPlugin(pluginWrapper.getPluginId());
-    pluginWrapper.setPluginState(PluginState.FAILED);
+    pluginWrapper.setPluginState(FAILED);
     pluginWrapper.setFailedException(
         new InvalidPluginConfigurationException(
             String.format(
@@ -112,7 +114,8 @@ public class Rika2MqttPluginManager extends DefaultPluginManager {
     startedPlugins.add(pluginWrapper);
   }
 
-  private boolean isPluginConfigurationValid(
+  @VisibleForTesting
+  boolean isPluginConfigurationValid(
       @NonNull final Rika2MqttPlugin plugin,
       @NonNull final PluginConfiguration pluginConfiguration) {
 
