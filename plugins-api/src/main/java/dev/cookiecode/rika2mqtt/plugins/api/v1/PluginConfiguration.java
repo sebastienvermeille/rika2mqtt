@@ -39,8 +39,8 @@ public class PluginConfiguration {
   public String getParameter(@NonNull String parameter) {
     return getOptionalParameter(parameter)
         .orElseThrow(); // TODO: if this happens it's at plugin side :/ the config should have been
-                        // pre validated by rika2mqtt earlier should we keep this method or not ?
-                        // provide more context to devs ?
+    // pre validated by rika2mqtt earlier should we keep this method or not ?
+    // provide more context to devs ?
   }
 
   public Optional<String> getOptionalParameter(@NonNull String parameter) {
