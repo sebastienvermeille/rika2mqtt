@@ -20,30 +20,11 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.plugins.api.v1;
+package dev.cookiecode.rika2mqtt.plugins.internal.v1.pf4j;
 
-import static java.util.Optional.ofNullable;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.Rika2MqttPlugin;
 
-import java.util.Map;
-import java.util.Optional;
-import lombok.*;
-
-@Builder
-@Getter
-@ToString
-@EqualsAndHashCode
-public class PluginConfiguration {
-
-  private Map<String, String> parameters; // paramName, value
-
-  public String getParameter(@NonNull String parameter) {
-    return getOptionalParameter(parameter)
-        .orElseThrow(); // TODO: if this happens it's at plugin side :/ the config should have been
-                        // pre validated by rika2mqtt earlier should we keep this method or not ?
-                        // provide more context to devs ?
-  }
-
-  public Optional<String> getOptionalParameter(@NonNull String parameter) {
-    return ofNullable(parameters.get(parameter));
-  }
-}
+/**
+ * Test class An example of plugin not implementing ConfigurablePlugin used for testing a behaviour
+ */
+public class NotConfigurablePlugin extends Rika2MqttPlugin {}

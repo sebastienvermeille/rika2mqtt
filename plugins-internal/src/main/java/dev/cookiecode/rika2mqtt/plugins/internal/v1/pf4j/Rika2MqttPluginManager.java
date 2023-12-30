@@ -22,6 +22,10 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.internal.v1.pf4j;
 
+import static org.pf4j.PluginState.DISABLED;
+import static org.pf4j.PluginState.STARTED;
+
+import com.google.common.annotations.VisibleForTesting;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.PluginConfiguration;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.Rika2MqttPlugin;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.annotations.ConfigurablePlugin;
@@ -34,55 +38,83 @@ import org.pf4j.*;
 @Flogger
 public class Rika2MqttPluginManager extends DefaultPluginManager {
 
+  @VisibleForTesting
+  static final EnumSet<PluginState> PLUGIN_STATES_PREVENTING_START = EnumSet.of(DISABLED, STARTED);
+
+  @VisibleForTesting static final String PLUGIN_ENV_NAME_PREFIX = "PLUGIN_";
+
   @Override
   public void startPlugins() {
     log.atInfo().log("Start plugins");
-    for (PluginWrapper pluginWrapper : resolvedPlugins) {
-      PluginState pluginState = pluginWrapper.getPluginState();
-      if ((PluginState.DISABLED != pluginState) && (PluginState.STARTED != pluginState)) {
-        try {
+    getResolvedPlugins().stream()
+        .filter(pluginWrapper -> shouldStartPlugin(pluginWrapper.getPluginState()))
+        .forEach(this::handlePlugin);
+  }
 
-          final var pluginConfiguration =
-              loadPluginConfiguration((Rika2MqttPlugin) pluginWrapper.getPlugin());
-          if (isPluginConfigurationValid(
-              (Rika2MqttPlugin) pluginWrapper.getPlugin(), pluginConfiguration)) {
-            startPlugin(pluginWrapper, pluginConfiguration);
-          } else {
-            final var pluginName = getPluginLabel(pluginWrapper.getDescriptor());
-            log.atSevere().log(
-                "Plugin '%s' configuration is invalid. Aborting load of the plugin", pluginName);
-            stopPlugin(pluginWrapper.getPluginId());
-            pluginWrapper.setPluginState(PluginState.FAILED);
-            pluginWrapper.setFailedException(
-                new InvalidPluginConfigurationException(
-                    String.format(
-                        "Plugin '%s' configuration is invalid. Aborting load of the plugin",
-                        pluginName)));
-          }
+  @VisibleForTesting
+  boolean shouldStartPlugin(@NonNull final PluginState pluginState) {
+    return !PLUGIN_STATES_PREVENTING_START.contains(pluginState);
+  }
 
-        } catch (Exception | LinkageError e) {
-          pluginWrapper.setPluginState(PluginState.FAILED);
-          pluginWrapper.setFailedException(e);
-          log.atSevere().withCause(e).log(
-              "Unable to start plugin '%s'", getPluginLabel(pluginWrapper.getDescriptor()));
-        } finally {
-          firePluginStateEvent(new PluginStateEvent(this, pluginWrapper, pluginState));
-        }
+  @VisibleForTesting
+  void handlePlugin(@NonNull final PluginWrapper pluginWrapper) {
+    try {
+      final var rika2MqttPlugin = (Rika2MqttPlugin) pluginWrapper.getPlugin();
+      final var pluginConfiguration = loadPluginConfiguration(rika2MqttPlugin);
+
+      if (isPluginConfigurationValid(rika2MqttPlugin, pluginConfiguration)) {
+        startPlugin(pluginWrapper, pluginConfiguration);
+      } else {
+        handleInvalidPluginConfiguration(pluginWrapper);
       }
+    } catch (Exception | LinkageError e) {
+      handlePluginStartFailure(pluginWrapper, e);
+    } finally {
+      firePluginStateEvent(
+          new PluginStateEvent(this, pluginWrapper, pluginWrapper.getPluginState()));
     }
   }
 
-  private void startPlugin(PluginWrapper pluginWrapper, PluginConfiguration pluginConfiguration) {
+  private void handleInvalidPluginConfiguration(@NonNull final PluginWrapper pluginWrapper) {
+    final var pluginName = getPluginLabel(pluginWrapper.getDescriptor());
+    log.atSevere().log(
+        "Plugin '%s' configuration is invalid. Aborting load of the plugin", pluginName);
+    stopAndFailPlugin(pluginWrapper, pluginName);
+  }
+
+  private void handlePluginStartFailure(
+      @NonNull final PluginWrapper pluginWrapper, @NonNull final Throwable exception) {
+    pluginWrapper.setPluginState(PluginState.FAILED);
+    pluginWrapper.setFailedException(exception);
+    log.atSevere().withCause(pluginWrapper.getFailedException()).log(
+        "Unable to start plugin '%s'", getPluginLabel(pluginWrapper.getDescriptor()));
+  }
+
+  private void stopAndFailPlugin(
+      @NonNull final PluginWrapper pluginWrapper, @NonNull final String pluginName) {
+    stopPlugin(pluginWrapper.getPluginId());
+    pluginWrapper.setPluginState(PluginState.FAILED);
+    pluginWrapper.setFailedException(
+        new InvalidPluginConfigurationException(
+            String.format(
+                "Plugin '%s' configuration is invalid. Aborting load of the plugin", pluginName)));
+  }
+
+  @VisibleForTesting
+  void startPlugin(
+      @NonNull final PluginWrapper pluginWrapper,
+      @NonNull final PluginConfiguration pluginConfiguration) {
     log.atInfo().log("Start plugin '%s'", getPluginLabel(pluginWrapper.getDescriptor()));
     ((Rika2MqttPlugin) pluginWrapper.getPlugin()).preStart(pluginConfiguration);
     pluginWrapper.getPlugin().start();
-    pluginWrapper.setPluginState(PluginState.STARTED);
+    pluginWrapper.setPluginState(STARTED);
     pluginWrapper.setFailedException(null);
     startedPlugins.add(pluginWrapper);
   }
 
   private boolean isPluginConfigurationValid(
-      @NonNull Rika2MqttPlugin plugin, @NonNull PluginConfiguration pluginConfiguration) {
+      @NonNull final Rika2MqttPlugin plugin,
+      @NonNull final PluginConfiguration pluginConfiguration) {
 
     // configurable plugins
     if (plugin instanceof ConfigurablePlugin configurablePlugin) {
@@ -94,11 +126,11 @@ public class Rika2MqttPluginManager extends DefaultPluginManager {
       for (final var param : parameters) {
         // check required params are provided
         if (param.isRequired()
-            && pluginConfiguration.getParameter(param.getParameterName()).isEmpty()) {
+            && pluginConfiguration.getOptionalParameter(param.getParameterName()).isEmpty()) {
           errors.add(
               String.format(
-                  "Parameter '%s' is required for this plugin to work properly. However unable to find any ENV named: 'PLUGIN_%s' declaring any value",
-                  param.getParameterName(), param.getParameterName()));
+                  "Parameter '%s' is required for this plugin to work properly. However unable to find any ENV named: '%s%s' declaring any value",
+                  param.getParameterName(), PLUGIN_ENV_NAME_PREFIX, param.getParameterName()));
         }
       }
 
@@ -114,15 +146,16 @@ public class Rika2MqttPluginManager extends DefaultPluginManager {
     }
   }
 
-  private PluginConfiguration loadPluginConfiguration(@NonNull Rika2MqttPlugin plugin) {
+  @VisibleForTesting
+  PluginConfiguration loadPluginConfiguration(@NonNull final Rika2MqttPlugin plugin) {
 
-    Map<String, String> configuration = new HashMap<>();
+    final Map<String, String> configuration = new HashMap<>();
 
     if (plugin instanceof ConfigurablePlugin configurablePlugin) {
-      for (var parameter : configurablePlugin.declarePluginConfigurationParameters()) {
+      for (final var parameter : configurablePlugin.declarePluginConfigurationParameters()) {
 
         var value =
-            getEnvironmentVariable("PLUGIN_" + parameter.getParameterName())
+            getEnvironmentVariable(PLUGIN_ENV_NAME_PREFIX + parameter.getParameterName())
                 .orElseGet(
                     () -> {
                       if (parameter.isOptional() && parameter.getDefaultValue().isPresent()) {
@@ -138,7 +171,8 @@ public class Rika2MqttPluginManager extends DefaultPluginManager {
     return PluginConfiguration.builder().parameters(configuration).build();
   }
 
-  private Optional<String> getEnvironmentVariable(@NonNull String environmentVariableName) {
+  @VisibleForTesting
+  Optional<String> getEnvironmentVariable(@NonNull String environmentVariableName) {
     return Optional.ofNullable(System.getenv(environmentVariableName));
   }
 }
