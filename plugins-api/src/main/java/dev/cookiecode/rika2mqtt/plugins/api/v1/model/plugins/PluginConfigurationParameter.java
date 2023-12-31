@@ -24,11 +24,16 @@ package dev.cookiecode.rika2mqtt.plugins.api.v1.model.plugins;
 
 import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import java.util.Optional;
+import javax.annotation.processing.Generated;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 
+@Generated(
+    value = "Step Builder generator Idea Plugin",
+    date = "2023-12-31T09:40:55+0100",
+    comments = "parsely adapted by hands to handle optional props")
 @Getter
 @ToString
 @EqualsAndHashCode

@@ -23,8 +23,13 @@
 package dev.cookiecode.rika2mqtt.plugins.api.v1.model.plugins;
 
 import java.util.Optional;
+import javax.annotation.processing.Generated;
 import lombok.Getter;
 
+@Generated(
+    value = "Step Builder generator Idea Plugin",
+    date = "2023-12-31T09:40:55+0100",
+    comments = "parsely adapted by hands to handle optional props")
 @Getter
 public class OptionalPluginConfigurationParameter {
   private final String parameterName;

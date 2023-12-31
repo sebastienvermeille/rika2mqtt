@@ -23,10 +23,12 @@
 package dev.cookiecode.rika2mqtt.plugins.api.v1;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -58,6 +60,21 @@ class PluginConfigurationTest {
   }
 
   @Test
+  void getParameterShouldThrowAnExceptionGivenTheOptionalIsEmpty() {
+    // GIVEN
+    final var parameterName = "something";
+    doReturn(Optional.empty()).when(pluginConfiguration).getOptionalParameter(anyString());
+
+    // THEN
+    assertThrows(
+        NoSuchElementException.class,
+        () -> {
+          // WHEN
+          pluginConfiguration.getParameter(parameterName);
+        });
+  }
+
+  @Test
   void getOptionalParameterShouldReturnAnEmptyOptionalGivenTheRequestedParameterIsNotProvided() {
     // GIVEN
     final var parameterName = "somethingThatDoNotExists";
@@ -84,5 +101,25 @@ class PluginConfigurationTest {
 
     // THEN
     assertThat(result).isPresent().isEqualTo(Optional.of(parameterValue));
+  }
+
+  @Test
+  void getOptionalParameterShouldThrowAnNullPointerExceptionGivenNoParameterIsPassed() {
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          // WHEN
+          pluginConfiguration.getOptionalParameter(null);
+        });
+  }
+
+  @Test
+  void getParameterShouldThrowAnNullPointerExceptionGivenNoParameterIsPassed() {
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          // WHEN
+          pluginConfiguration.getParameter(null);
+        });
   }
 }
