@@ -22,5 +22,9 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.api.v1.annotations;
 
-/** Explicitly document that a parameter can be null */
+/**
+ * Explicitly document that a parameter can be null
+ *
+ * @author Sebastien Vermeille
+ */
 public @interface Nullable {}

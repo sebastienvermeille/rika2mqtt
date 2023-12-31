@@ -30,6 +30,9 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.ToString;
 
+/**
+ * @author Sebastien Vermeille
+ */
 @Generated(
     value = "Step Builder generator Idea Plugin",
     date = "2023-12-31T09:40:55+0100",

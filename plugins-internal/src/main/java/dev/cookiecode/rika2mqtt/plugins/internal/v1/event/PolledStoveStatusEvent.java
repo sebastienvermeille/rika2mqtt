@@ -22,14 +22,19 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.internal.v1.event;
 
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveStatus;
 import lombok.*;
 
+/**
+ * @author Sebastien Vermeille
+ */
 @RequiredArgsConstructor
 @Getter
 @ToString
 @EqualsAndHashCode
 @Builder
+@Beta
 public class PolledStoveStatusEvent implements Rika2MqttPluginEvent {
   private final StoveStatus stoveStatus;
 }

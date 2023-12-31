@@ -40,7 +40,11 @@ import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.env.Environment;
 
-/** Test class */
+/**
+ * Test class
+ *
+ * @author Sebastien Vermeille
+ */
 @ExtendWith(MockitoExtension.class)
 class PluginDownloaderTest {
 

@@ -27,6 +27,9 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+/**
+ * @author Sebastien Vermeille
+ */
 @Builder
 @Getter
 @EqualsAndHashCode

@@ -27,6 +27,13 @@ import dev.cookiecode.rika2mqtt.plugins.api.v1.model.plugins.PluginConfiguration
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.plugins.RequiredPluginConfigurationParameter;
 import java.util.List;
 
+/**
+ * Plugins that require external configuration should implement this interface. This way, they
+ * benefit from Rika2Mqtt configuration check at startup time. The bridge will verify that the
+ * required parameters are provided and then only start the plugin.
+ *
+ * @author Sebastien Vermeille
+ */
 public interface ConfigurablePlugin {
 
   /**

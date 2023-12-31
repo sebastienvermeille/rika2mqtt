@@ -31,6 +31,11 @@ import dev.cookiecode.rika2mqtt.plugins.api.v1.model.plugins.RequiredPluginConfi
 import java.util.List;
 import lombok.extern.flogger.Flogger;
 
+/**
+ * Example of a plugin class that declares requiring some configuration
+ *
+ * @author Sebastien Vermeille
+ */
 @Flogger
 public class ExamplePluginUsingConfig extends Rika2MqttPlugin implements ConfigurablePlugin {
 
@@ -48,6 +53,9 @@ public class ExamplePluginUsingConfig extends Rika2MqttPlugin implements Configu
 
   @Override
   public List<PluginConfigurationParameter> declarePluginConfigurationParameters() {
+
+    // Here the plugin declares what it needs access to
+
     return List.of(
         // Optional Parameters
 

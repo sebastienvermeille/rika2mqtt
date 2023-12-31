@@ -27,7 +27,11 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-/** Class to represent time schedules such as : 10:00 - 12:30 */
+/**
+ * Class to represent time schedules such as : 10:00 - 12:30
+ *
+ * @author Sebastien Vermeille
+ */
 @Builder
 @Getter
 @EqualsAndHashCode

@@ -26,6 +26,9 @@ import java.util.Optional;
 import javax.annotation.processing.Generated;
 import lombok.Getter;
 
+/**
+ * @author Sebastien Vermeille
+ */
 @Generated(
     value = "Step Builder generator Idea Plugin",
     date = "2023-12-31T09:40:55+0100",

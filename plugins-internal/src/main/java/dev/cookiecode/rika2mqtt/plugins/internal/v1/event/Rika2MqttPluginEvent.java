@@ -22,4 +22,10 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.internal.v1.event;
 
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
+
+/**
+ * @author Sebastien Vermeille
+ */
+@Beta
 public interface Rika2MqttPluginEvent {}

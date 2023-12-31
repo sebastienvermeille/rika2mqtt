@@ -26,6 +26,9 @@ import org.pf4j.PluginManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author Sebastien Vermeille
+ */
 @Configuration
 public class Pf4jPluginManagerConfig {
 

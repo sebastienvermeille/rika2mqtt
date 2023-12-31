@@ -25,6 +25,7 @@ package dev.cookiecode.rika2mqtt.plugins.internal.v1.pf4j;
 import static org.pf4j.PluginState.*;
 
 import com.google.common.annotations.VisibleForTesting;
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.PluginConfiguration;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.Rika2MqttPlugin;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.annotations.ConfigurablePlugin;
@@ -34,6 +35,10 @@ import lombok.NonNull;
 import lombok.extern.flogger.Flogger;
 import org.pf4j.*;
 
+/**
+ * @author Sebastien Vermeille
+ */
+@Beta
 @Flogger
 public class Rika2MqttPluginManager extends DefaultPluginManager {
 

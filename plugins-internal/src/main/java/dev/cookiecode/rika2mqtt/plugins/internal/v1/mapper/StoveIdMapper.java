@@ -24,6 +24,7 @@ package dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper;
 
 import static org.mapstruct.ReportingPolicy.ERROR;
 
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveId;
 import lombok.NonNull;
 import org.mapstruct.Mapper;
@@ -33,6 +34,7 @@ import org.mapstruct.Mapper;
  *
  * @author Sebastien Vermeille
  */
+@Beta
 @Mapper(unmappedTargetPolicy = ERROR) // ignore as we are using a map
 public interface StoveIdMapper {
   default StoveId map(@NonNull Long stoveId) {

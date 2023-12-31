@@ -26,6 +26,7 @@ import static java.net.HttpURLConnection.HTTP_OK;
 import static java.net.URI.create;
 
 import com.google.common.annotations.VisibleForTesting;
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.exceptions.UnableToDownloadPluginException;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -40,6 +41,12 @@ import lombok.extern.flogger.Flogger;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
+/**
+ * Service class responsible to download rika2mqtt plugins and synchronize them at startup.
+ *
+ * @author Sebastien Vermeille
+ */
+@Beta
 @Service
 @Flogger
 @RequiredArgsConstructor

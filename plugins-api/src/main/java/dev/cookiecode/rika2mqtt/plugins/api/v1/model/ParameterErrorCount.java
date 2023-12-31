@@ -26,6 +26,9 @@ import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * @author Sebastien Vermeille
+ */
 @Data
 @Builder
 @Beta

@@ -29,6 +29,11 @@ import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveStatus;
 import lombok.extern.flogger.Flogger;
 import org.pf4j.Extension;
 
+/**
+ * A sample hook (or listener) class
+ *
+ * @author Sebastien Vermeille
+ */
 @Extension
 @Flogger
 public class ExampleHook implements StoveStatusExtension {

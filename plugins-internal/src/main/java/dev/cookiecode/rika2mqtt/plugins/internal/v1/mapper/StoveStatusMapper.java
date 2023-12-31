@@ -22,11 +22,16 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper;
 
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveStatus;
 import lombok.NonNull;
 import org.mapstruct.Mapper;
 import org.mapstruct.ReportingPolicy;
 
+/**
+ * @author Sebastien Vermeille
+ */
+@Beta
 @Mapper(
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
     uses = {

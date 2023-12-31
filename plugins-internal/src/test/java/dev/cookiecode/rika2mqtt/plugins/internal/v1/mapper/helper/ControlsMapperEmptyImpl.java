@@ -28,8 +28,10 @@ import lombok.NonNull;
 import org.springframework.stereotype.Component;
 
 /**
- * This class is intentionally very empty (It allows to keep tests valuable and not repeating
- * themselves)
+ * Test class This class is intentionally very empty (It allows to keep tests valuable and not
+ * repeating themselves)
+ *
+ * @author Sebastien Vermeille
  */
 @Component
 public class ControlsMapperEmptyImpl implements ControlsMapper {

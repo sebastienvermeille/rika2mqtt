@@ -25,6 +25,11 @@ package dev.cookiecode.rika2mqtt.plugins.example;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.Rika2MqttPlugin;
 import lombok.extern.flogger.Flogger;
 
+/**
+ * A sample plugin class
+ *
+ * @author Sebastien Vermeille
+ */
 @Flogger
 public class ExamplePlugin extends Rika2MqttPlugin {
 

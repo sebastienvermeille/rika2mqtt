@@ -35,7 +35,11 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.pf4j.PluginManager;
 
-/** Test class */
+/**
+ * Test class
+ *
+ * @author Sebastien Vermeille
+ */
 @ExtendWith(MockitoExtension.class)
 class Rika2MqttPluginServiceTest {
 

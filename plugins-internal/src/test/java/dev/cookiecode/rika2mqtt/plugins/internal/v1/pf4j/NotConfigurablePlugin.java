@@ -26,5 +26,7 @@ import dev.cookiecode.rika2mqtt.plugins.api.v1.Rika2MqttPlugin;
 
 /**
  * Test class An example of plugin not implementing ConfigurablePlugin used for testing a behaviour
+ *
+ * @author Sebastien Vermeille
  */
 public class NotConfigurablePlugin extends Rika2MqttPlugin {}

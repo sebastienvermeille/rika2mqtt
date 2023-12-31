@@ -28,6 +28,9 @@ import java.util.Map;
 import java.util.Optional;
 import lombok.*;
 
+/**
+ * @author Sebastien Vermeille
+ */
 @Builder
 @Getter
 @ToString

@@ -27,6 +27,7 @@ import static java.util.List.of;
 import static org.mapstruct.ReportingPolicy.IGNORE;
 
 import com.google.common.collect.ImmutableMap;
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.Controls;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.TimeRange;
 import java.time.DayOfWeek;
@@ -37,6 +38,10 @@ import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
 
+/**
+ * @author Sebastien Vermeille
+ */
+@Beta
 @Mapper(
     unmappedTargetPolicy = IGNORE,
     uses = {TimeRangeMapper.class, ConvectionFanMapper.class}) // ignore as we are using a map

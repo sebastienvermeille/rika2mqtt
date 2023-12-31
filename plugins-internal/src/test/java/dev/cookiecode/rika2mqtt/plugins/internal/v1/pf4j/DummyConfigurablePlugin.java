@@ -31,6 +31,8 @@ import java.util.List;
 
 /**
  * Test class An example of plugin not implementing ConfigurablePlugin used for testing a behaviour
+ *
+ * @author Sebastien Vermeille
  */
 public class DummyConfigurablePlugin extends Rika2MqttPlugin implements ConfigurablePlugin {
   @Override

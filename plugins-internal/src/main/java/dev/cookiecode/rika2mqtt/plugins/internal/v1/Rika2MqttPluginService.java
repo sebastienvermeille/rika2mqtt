@@ -31,7 +31,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 /**
- * Manage plugin loading, start etc.
+ * Service responsible to orchestrate the whole plugins lifecycle: loading, start etc.
  *
  * @author Sebastien Vermeille
  */

@@ -26,7 +26,11 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-/** Test class */
+/**
+ * Test class
+ *
+ * @author Sebastien Vermeille
+ */
 class TimeRangeTest {
 
   @Test

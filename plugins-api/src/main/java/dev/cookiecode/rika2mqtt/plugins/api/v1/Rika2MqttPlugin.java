@@ -27,7 +27,11 @@ import lombok.Getter;
 import lombok.NonNull;
 import org.pf4j.Plugin;
 
-/** Base class for Rika2Mqtt plugins */
+/**
+ * Base class for Rika2Mqtt plugins
+ *
+ * @author Sebastien Vermeille
+ */
 @Beta
 @Getter
 public abstract class Rika2MqttPlugin extends Plugin {

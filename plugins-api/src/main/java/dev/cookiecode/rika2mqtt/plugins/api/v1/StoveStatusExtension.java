@@ -26,6 +26,9 @@ import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveStatus;
 import org.pf4j.ExtensionPoint;
 
+/**
+ * @author Sebastien Vermeille
+ */
 @Beta
 public interface StoveStatusExtension extends ExtensionPoint {
 

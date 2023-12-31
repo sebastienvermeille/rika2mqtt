@@ -25,11 +25,16 @@ package dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper;
 import static java.lang.Integer.parseInt;
 import static org.mapstruct.ReportingPolicy.ERROR;
 
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.TimeDefinition;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.TimeRange;
 import lombok.NonNull;
 import org.mapstruct.Mapper;
 
+/**
+ * @author Sebastien Vermeille
+ */
+@Beta
 @Mapper(unmappedTargetPolicy = ERROR)
 public interface TimeRangeMapper {
   /**
