@@ -22,12 +22,10 @@
  */
 package dev.cookiecode.rika2mqtt.rika.firenet.exception;
 
+import lombok.experimental.StandardException;
+
 /**
  * @author Sebastien Vermeille
  */
-public class InvalidStoveIdException extends RikaFirenetException {
-
-  public InvalidStoveIdException(final String message) {
-    super(message);
-  }
-}
+@StandardException
+public class InvalidStoveIdException extends RikaFirenetException {}

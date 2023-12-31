@@ -23,6 +23,7 @@
 #
 
 # Init script for rika2mqtt
+export PLUGINS_DIR=/opt/rika2mqtt/plugins
 
 # Run it
 java --add-opens=java.base/java.net=ALL-UNNAMED \

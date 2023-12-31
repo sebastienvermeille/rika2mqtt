@@ -1,0 +1,1 @@
+rika2mqtt-flux-metrics-plugin-1.1.0.jar

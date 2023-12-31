@@ -680,7 +680,7 @@ class RikaFirenetServiceTest {
                                 "convectionFan2Area": 7,
                                 "frostProtectionActive": true,
                                 "frostProtectionTemperature": "4",
-                                "temperatureOffset": "0",
+                                "temperatureOffset": "-0.5",
                                 "RoomPowerRequest": 3,
                                 "debug0": 0,
                                 "debug1": 0,

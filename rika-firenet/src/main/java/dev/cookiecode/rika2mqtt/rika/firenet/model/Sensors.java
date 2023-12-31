@@ -23,12 +23,14 @@
 package dev.cookiecode.rika2mqtt.rika.firenet.model;
 
 import com.google.gson.annotations.SerializedName;
+import lombok.Builder;
 import lombok.Data;
 
 /**
  * @author Sebastien Vermeille
  */
 @Data
+@Builder
 public class Sensors {
 
   private Double inputRoomTemperature;

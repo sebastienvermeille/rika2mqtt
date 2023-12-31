@@ -22,16 +22,10 @@
  */
 package dev.cookiecode.rika2mqtt.rika.firenet.exception;
 
+import lombok.experimental.StandardException;
+
 /**
  * @author Sebastien Vermeille
  */
-public class UnableToControlRikaFirenetException extends RikaFirenetException {
-
-  public UnableToControlRikaFirenetException(final String message) {
-    super(message);
-  }
-
-  public UnableToControlRikaFirenetException(final String message, final Throwable cause) {
-    super(message, cause);
-  }
-}
+@StandardException
+public class UnableToControlRikaFirenetException extends RikaFirenetException {}

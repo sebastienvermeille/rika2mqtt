@@ -40,6 +40,8 @@ public class Controls {
   private Integer targetTemperature;
   private Integer bakeTemperature;
   private Boolean ecoMode;
+
+  // Heating time format: heatingTimeWed2: "13302200" (13:30 - 22:00)
   private String heatingTimeMon1;
   private String heatingTimeMon2;
   private String heatingTimeTue1;
@@ -54,6 +56,7 @@ public class Controls {
   private String heatingTimeSat2;
   private String heatingTimeSun1;
   private String heatingTimeSun2;
+
   private Boolean heatingTimesActiveForComfort;
   private Integer setBackTemperature;
   private Boolean convectionFan1Active;

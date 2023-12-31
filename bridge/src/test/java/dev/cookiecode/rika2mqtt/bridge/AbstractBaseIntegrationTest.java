@@ -69,13 +69,13 @@ public abstract class AbstractBaseIntegrationTest {
   }
 
   /**
-   * @implNote The DynamicPropertyRegistry overides application-test.properties in the resource
+   * @implNote The DynamicPropertyRegistry overrides application-test.properties in the resource
    *     folder, with value in the container static methods.
    */
   @DynamicPropertySource
   static void overrideTestProperties(DynamicPropertyRegistry registry) {
     registry.add("mqtt.host", MQTT_SERVER::getHost);
-    registry.add("mqtt.port", MQTT_SERVER::getFirstMappedPort); // TODO: not safe IMHO
+    registry.add("mqtt.port", MQTT_SERVER::getFirstMappedPort);
   }
 
   @DynamicPropertySource
@@ -269,7 +269,7 @@ public abstract class AbstractBaseIntegrationTest {
                                 "convectionFan2Area": 7,
                                 "frostProtectionActive": true,
                                 "frostProtectionTemperature": "4",
-                                "temperatureOffset": "0",
+                                "temperatureOffset": "-0.5",
                                 "RoomPowerRequest": 3,
                                 "debug0": 0,
                                 "debug1": 0,

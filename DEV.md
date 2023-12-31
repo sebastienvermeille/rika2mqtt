@@ -20,6 +20,11 @@ To ensure the code style is applied, mvn will automatically format the files at 
 
 You can if desired install the auto formatter in your IDE: https://github.com/google/google-java-format/blob/master/README.md#using-the-formatter
 
+A few useful command lines to run before opening a PR (otherwise the CI will fail):
+
+`mvn com.spotify.fmt:fmt-maven-plugin:format` - Autofix java files so that they follow google code style
+`mvn license:format` - Autofix missing headers in files
+
 ## Local run
 
 There is a docker-compose.yml
@@ -45,7 +50,7 @@ Then you can run the project and enjoy :)
 If you want to run the project in pure CLI there is a `Makefile` available.
 
 You can run:
-
+* `make codestyle`
 * `make jar`
 * `make test`
 * `make docker`

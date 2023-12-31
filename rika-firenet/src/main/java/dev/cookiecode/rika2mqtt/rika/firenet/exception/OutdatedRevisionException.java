@@ -22,12 +22,10 @@
  */
 package dev.cookiecode.rika2mqtt.rika.firenet.exception;
 
+import lombok.experimental.StandardException;
+
 /**
  * @author Sebastien Vermeille
  */
-public class OutdatedRevisionException extends RikaFirenetException {
-
-  public OutdatedRevisionException(final String message) {
-    super(message);
-  }
-}
+@StandardException
+public class OutdatedRevisionException extends RikaFirenetException {}
