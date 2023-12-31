@@ -25,6 +25,7 @@ package dev.cookiecode.rika2mqtt.plugins.internal.v1.pf4j;
 import static dev.cookiecode.rika2mqtt.plugins.internal.v1.pf4j.Rika2MqttPluginManager.PLUGIN_ENV_NAME_PREFIX;
 import static dev.cookiecode.rika2mqtt.plugins.internal.v1.pf4j.Rika2MqttPluginManager.PLUGIN_STATES_PREVENTING_START;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 import static org.mockito.Mockito.*;
 import static org.pf4j.PluginState.*;
 
@@ -447,5 +448,85 @@ class Rika2MqttPluginManagerTest {
             })
         .when(rika2MqttPluginManager)
         .getEnvironmentVariable(anyString());
+  }
+
+  @Test
+  void shouldStartPluginShouldThrowAnNullPointerExceptionGivenNoParameterIsPassed() {
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          // WHEN
+          rika2MqttPluginManager.shouldStartPlugin(null);
+        });
+  }
+
+  @Test
+  void handlePluginShouldThrowAnNullPointerExceptionGivenNoParameterIsPassed() {
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          // WHEN
+          rika2MqttPluginManager.handlePlugin(null);
+        });
+  }
+
+  @Test
+  void handleInvalidPluginConfigurationShouldThrowAnNullPointerExceptionGivenNoParameterIsPassed() {
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          // WHEN
+          rika2MqttPluginManager.handleInvalidPluginConfiguration(null);
+        });
+  }
+
+  @Test
+  void handlePluginStartFailureShouldThrowAnNullPointerExceptionGivenNoParameterIsPassed() {
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          // WHEN
+          rika2MqttPluginManager.handlePluginStartFailure(null, null);
+        });
+  }
+
+  @Test
+  void stopAndFailPluginShouldThrowAnNullPointerExceptionGivenNoParameterIsPassed() {
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          // WHEN
+          rika2MqttPluginManager.stopAndFailPlugin(null, null);
+        });
+  }
+
+  @Test
+  void isPluginConfigurationValidShouldThrowAnNullPointerExceptionGivenNoParameterIsPassed() {
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          // WHEN
+          rika2MqttPluginManager.isPluginConfigurationValid(null, null);
+        });
+  }
+
+  @Test
+  void loadPluginConfigurationShouldThrowAnNullPointerExceptionGivenNoParameterIsPassed() {
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          // WHEN
+          rika2MqttPluginManager.loadPluginConfiguration(null);
+        });
+  }
+
+  @Test
+  void getEnvironmentVariableShouldThrowAnNullPointerExceptionGivenNoParameterIsPassed() {
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          // WHEN
+          rika2MqttPluginManager.getEnvironmentVariable(null);
+        });
   }
 }
