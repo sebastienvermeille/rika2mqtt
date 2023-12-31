@@ -20,18 +20,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.plugins.api;
+package dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper;
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import static org.mapstruct.ReportingPolicy.ERROR;
+
+import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveId;
+import lombok.NonNull;
+import org.mapstruct.Mapper;
 
 /**
- * An instance of this class is provided to plugins in their constructor. This class facilitates
- * communication with Rika2Mqtt and plugin manager.
+ * Mapper for StoveId
+ *
+ * @author Sebastien Vermeille
  */
-@Getter
-@NoArgsConstructor
-public class PluginContext {
-
-  private String name = "test";
+@Mapper(unmappedTargetPolicy = ERROR) // ignore as we are using a map
+public interface StoveIdMapper {
+  default StoveId map(@NonNull Long stoveId) {
+    return StoveId.of(stoveId);
+  }
 }

@@ -22,12 +22,15 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.api.v1.exceptions;
 
-public class InvalidPluginConfigurationException extends PluginException {
-  public InvalidPluginConfigurationException(String message) {
-    super(message);
-  }
+import dev.cookiecode.rika2mqtt.plugins.api.v1.annotations.ConfigurablePlugin;
+import lombok.experimental.StandardException;
 
-  public InvalidPluginConfigurationException(String message, Throwable cause) {
-    super(message, cause);
-  }
-}
+/**
+ * Exception thrown by Rika2Mqtt when a plugin specify some configuration via {@link
+ * ConfigurablePlugin#declarePluginConfigurationParameters()} method and the provided configuration
+ * is not satisfying it.
+ *
+ * @author Sebastien Vermeille
+ */
+@StandardException
+public class InvalidPluginConfigurationException extends PluginException {}

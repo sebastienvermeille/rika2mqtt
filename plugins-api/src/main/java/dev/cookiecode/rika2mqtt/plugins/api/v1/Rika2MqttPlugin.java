@@ -23,11 +23,13 @@
 package dev.cookiecode.rika2mqtt.plugins.api.v1;
 
 import dev.cookiecode.rika2mqtt.plugins.api.Beta;
+import lombok.Getter;
 import lombok.NonNull;
 import org.pf4j.Plugin;
 
 /** Base class for Rika2Mqtt plugins */
 @Beta
+@Getter
 public abstract class Rika2MqttPlugin extends Plugin {
 
   private PluginConfiguration pluginConfiguration;

@@ -29,7 +29,11 @@ import org.mapstruct.ReportingPolicy;
 
 @Mapper(
     unmappedTargetPolicy = ReportingPolicy.IGNORE,
-    uses = {SensorsMapper.class, ControlsMapper.class}) // ignore as we are using a map
+    uses = {
+      SensorsMapper.class,
+      ControlsMapper.class,
+      StoveIdMapper.class
+    }) // ignore as we are using a map
 public interface StoveStatusMapper {
 
   StoveStatus toApiStoveStatus(

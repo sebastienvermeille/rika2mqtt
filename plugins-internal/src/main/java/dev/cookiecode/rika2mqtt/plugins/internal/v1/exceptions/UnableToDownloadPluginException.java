@@ -23,13 +23,12 @@
 package dev.cookiecode.rika2mqtt.plugins.internal.v1.exceptions;
 
 import dev.cookiecode.rika2mqtt.plugins.api.v1.exceptions.PluginException;
+import lombok.experimental.StandardException;
 
-public class UnableToDownloadPluginException extends PluginException {
-  public UnableToDownloadPluginException(String message) {
-    super(message);
-  }
-
-  public UnableToDownloadPluginException(String message, Throwable cause) {
-    super(message, cause);
-  }
-}
+/**
+ * Exception thrown by Rika2Mqtt when a plugin can not be downloaded for some reasons.
+ *
+ * @author Sebastien Vermeille
+ */
+@StandardException
+public class UnableToDownloadPluginException extends PluginException {}

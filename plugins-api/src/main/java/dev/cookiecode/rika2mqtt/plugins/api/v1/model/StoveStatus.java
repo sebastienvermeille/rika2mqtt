@@ -33,11 +33,7 @@ import lombok.Data;
 public class StoveStatus {
 
   private String name;
-
-  //  @SerializedName(
-  //      value = "stoveId",
-  //      alternate = {"stoveID"}) // for coherence (the rest of the api is using camelCase)
-  private Long stoveId;
+  private StoveId stoveId;
 
   private Long lastSeenMinutes;
   private Long lastConfirmedRevision;

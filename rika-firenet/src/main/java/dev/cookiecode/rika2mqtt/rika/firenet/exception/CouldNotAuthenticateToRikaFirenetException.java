@@ -22,12 +22,10 @@
  */
 package dev.cookiecode.rika2mqtt.rika.firenet.exception;
 
+import lombok.experimental.StandardException;
+
 /**
  * @author Sebastien Vermeille
  */
-public class CouldNotAuthenticateToRikaFirenetException extends RikaFirenetException {
-
-  public CouldNotAuthenticateToRikaFirenetException(final String message) {
-    super(message);
-  }
-}
+@StandardException
+public class CouldNotAuthenticateToRikaFirenetException extends RikaFirenetException {}

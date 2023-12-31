@@ -22,13 +22,12 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.api.v1.exceptions;
 
-public class PluginException extends Exception {
+import lombok.experimental.StandardException;
 
-  public PluginException(String message) {
-    super(message);
-  }
-
-  public PluginException(String message, Throwable cause) {
-    super(message, cause);
-  }
-}
+/**
+ * Base exception regarding to Rika2Mqtt plugins
+ *
+ * @author Sebastien Vermeille
+ */
+@StandardException
+public class PluginException extends Exception {}

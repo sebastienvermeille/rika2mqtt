@@ -38,7 +38,8 @@ import org.springframework.boot.test.context.SpringBootTest;
     classes = {
       StoveStatusMapperImpl.class,
       SensorsMapperEmptyImpl.class,
-      ControlsMapperEmptyImpl.class
+      ControlsMapperEmptyImpl.class,
+      StoveIdMapperImpl.class
     })
 class StoveStatusMapperTest {
 

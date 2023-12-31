@@ -20,12 +20,12 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.rika.firenet.exception;
-
-import lombok.experimental.StandardException;
+package dev.cookiecode.rika2mqtt.plugins.api.v1;
 
 /**
+ * Test class
+ *
  * @author Sebastien Vermeille
+ *     <p>This is a dummy implementation of abstract Rika2MqttPlugin which ease testing
  */
-@StandardException
-public class OutdatedRevisionException extends RikaFirenetException {}
+public class DummyPlugin extends Rika2MqttPlugin {}

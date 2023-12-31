@@ -143,7 +143,7 @@ public class StoveStatusHook implements StoveStatusExtension {
         .forEach(
             parameterErrorCount ->
                 Kamon.gauge("sensors.parameterErrorCount")
-                    .withTag(STOVE_ID, stoveStatus.getStoveId())
+                    .withTag(STOVE_ID, stoveStatus.getStoveId().id())
                     .withTag(STOVE_NAME, stoveStatus.getName())
                     .withTag(ERROR_NUMBER, parameterErrorCount.getNumber()) // extra tag
                     .update(parameterErrorCount.getValue()));
@@ -154,7 +154,7 @@ public class StoveStatusHook implements StoveStatusExtension {
         .forEach(
             parameterDebug ->
                 Kamon.gauge("sensors.parameterDebug")
-                    .withTag(STOVE_ID, stoveStatus.getStoveId())
+                    .withTag(STOVE_ID, stoveStatus.getStoveId().id())
                     .withTag(STOVE_NAME, stoveStatus.getName())
                     .withTag(DEBUG_NUMBER, parameterDebug.getNumber()) // extra tag
                     .update(parameterDebug.getValue()));
@@ -182,19 +182,19 @@ public class StoveStatusHook implements StoveStatusExtension {
         .forEach(
             convectionFan -> {
               Kamon.gauge("controls.convectionFan.area")
-                  .withTag(STOVE_ID, stoveStatus.getStoveId())
+                  .withTag(STOVE_ID, stoveStatus.getStoveId().id())
                   .withTag(STOVE_NAME, stoveStatus.getName())
                   .withTag(FAN_ID, convectionFan.getIdentifier()) // extra tag
                   .update(convectionFan.getArea());
 
               Kamon.gauge("controls.convectionFan.level")
-                  .withTag(STOVE_ID, stoveStatus.getStoveId())
+                  .withTag(STOVE_ID, stoveStatus.getStoveId().id())
                   .withTag(STOVE_NAME, stoveStatus.getName())
                   .withTag(FAN_ID, convectionFan.getIdentifier()) // extra tag
                   .update(convectionFan.getLevel());
 
               Kamon.gauge("controls.convectionFan.active")
-                  .withTag(STOVE_ID, stoveStatus.getStoveId())
+                  .withTag(STOVE_ID, stoveStatus.getStoveId().id())
                   .withTag(STOVE_NAME, stoveStatus.getName())
                   .withTag(FAN_ID, convectionFan.getIdentifier()) // extra tag
                   .update(convectionFan.isActive() ? 1 : 0);
@@ -211,19 +211,19 @@ public class StoveStatusHook implements StoveStatusExtension {
                           final var timeRange = timeRanges.get(index);
                           // from
                           Kamon.gauge("controls.heatingTime.from.hours")
-                              .withTag(STOVE_ID, stoveStatus.getStoveId())
+                              .withTag(STOVE_ID, stoveStatus.getStoveId().id())
                               .withTag(STOVE_NAME, stoveStatus.getName())
                               .withTag(DAY_OF_WEEK, dayOfWeek.name()) // extra tag
                               .withTag(TIME_RANGE_INDEX, index)
                               .update(timeRange.getFrom().getHours());
                           Kamon.gauge("controls.heatingTime.from.minutes")
-                              .withTag(STOVE_ID, stoveStatus.getStoveId())
+                              .withTag(STOVE_ID, stoveStatus.getStoveId().id())
                               .withTag(STOVE_NAME, stoveStatus.getName())
                               .withTag(DAY_OF_WEEK, dayOfWeek.name()) // extra tag
                               .withTag(TIME_RANGE_INDEX, index)
                               .update(timeRange.getFrom().getMinutes());
                           Kamon.gauge("controls.heatingTime.from.decimal")
-                              .withTag(STOVE_ID, stoveStatus.getStoveId())
+                              .withTag(STOVE_ID, stoveStatus.getStoveId().id())
                               .withTag(STOVE_NAME, stoveStatus.getName())
                               .withTag(DAY_OF_WEEK, dayOfWeek.name()) // extra tag
                               .withTag(TIME_RANGE_INDEX, index)
@@ -231,20 +231,20 @@ public class StoveStatusHook implements StoveStatusExtension {
 
                           // to
                           Kamon.gauge("controls.heatingTime.to.hours")
-                              .withTag(STOVE_ID, stoveStatus.getStoveId())
+                              .withTag(STOVE_ID, stoveStatus.getStoveId().id())
                               .withTag(STOVE_NAME, stoveStatus.getName())
                               .withTag(DAY_OF_WEEK, dayOfWeek.name()) // extra tag
                               .withTag(TIME_RANGE_INDEX, index)
                               .update(timeRange.getTo().getHours());
                           Kamon.gauge("controls.heatingTime.to.minutes")
-                              .withTag(STOVE_ID, stoveStatus.getStoveId())
+                              .withTag(STOVE_ID, stoveStatus.getStoveId().id())
                               .withTag(STOVE_NAME, stoveStatus.getName())
                               .withTag(DAY_OF_WEEK, dayOfWeek.name()) // extra tag
                               .withTag(TIME_RANGE_INDEX, index)
                               .update(timeRange.getTo().getMinutes());
 
                           Kamon.gauge("controls.heatingTime.to.decimal")
-                              .withTag(STOVE_ID, stoveStatus.getStoveId())
+                              .withTag(STOVE_ID, stoveStatus.getStoveId().id())
                               .withTag(STOVE_NAME, stoveStatus.getName())
                               .withTag(DAY_OF_WEEK, dayOfWeek.name()) // extra tag
                               .withTag(TIME_RANGE_INDEX, index)
@@ -257,7 +257,7 @@ public class StoveStatusHook implements StoveStatusExtension {
             index -> {
               final var debugValue = controlsDebugs.get(index);
               Kamon.gauge("controls.debug")
-                  .withTag(STOVE_ID, stoveStatus.getStoveId())
+                  .withTag(STOVE_ID, stoveStatus.getStoveId().id())
                   .withTag(STOVE_NAME, stoveStatus.getName())
                   .withTag(DEBUG_NUMBER, index) // extra tag
                   .update(debugValue);
@@ -271,7 +271,7 @@ public class StoveStatusHook implements StoveStatusExtension {
           .ifPresentOrElse(
               value ->
                   Kamon.gauge(propertyName)
-                      .withTag(STOVE_ID, stoveStatus.getStoveId())
+                      .withTag(STOVE_ID, stoveStatus.getStoveId().id())
                       .withTag(STOVE_NAME, stoveStatus.getName())
                       .update(value),
               () ->
@@ -282,7 +282,7 @@ public class StoveStatusHook implements StoveStatusExtension {
           .ifPresentOrElse(
               value ->
                   Kamon.gauge(propertyName)
-                      .withTag(STOVE_ID, stoveStatus.getStoveId())
+                      .withTag(STOVE_ID, stoveStatus.getStoveId().id())
                       .withTag(STOVE_NAME, stoveStatus.getName())
                       .update(value),
               () ->
@@ -293,7 +293,7 @@ public class StoveStatusHook implements StoveStatusExtension {
           .ifPresentOrElse(
               value ->
                   Kamon.gauge(propertyName)
-                      .withTag(STOVE_ID, stoveStatus.getStoveId())
+                      .withTag(STOVE_ID, stoveStatus.getStoveId().id())
                       .withTag(STOVE_NAME, stoveStatus.getName())
                       .update(value),
               () ->
@@ -305,7 +305,7 @@ public class StoveStatusHook implements StoveStatusExtension {
           .map(
               value ->
                   Kamon.gauge(propertyName)
-                      .withTag(STOVE_ID, stoveStatus.getStoveId())
+                      .withTag(STOVE_ID, stoveStatus.getStoveId().id())
                       .withTag(STOVE_NAME, stoveStatus.getName())
                       .update(value));
     } else {

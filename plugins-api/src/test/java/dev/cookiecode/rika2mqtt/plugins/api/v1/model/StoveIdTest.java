@@ -20,12 +20,28 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.rika.firenet.exception;
+package dev.cookiecode.rika2mqtt.plugins.api.v1.model;
 
-import lombok.experimental.StandardException;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import org.junit.jupiter.api.Test;
 
 /**
+ * Test class
+ *
  * @author Sebastien Vermeille
  */
-@StandardException
-public class OutdatedRevisionException extends RikaFirenetException {}
+class StoveIdTest {
+
+  @Test
+  void ofShouldBuildAStoveIdAsExpected() {
+    // GIVEN
+    final var stoveIdValue = 12321321L;
+
+    // WHEN
+    final var stoveId = StoveId.of(stoveIdValue);
+
+    // THEN
+    assertThat(stoveId.id()).isEqualTo(stoveIdValue);
+  }
+}

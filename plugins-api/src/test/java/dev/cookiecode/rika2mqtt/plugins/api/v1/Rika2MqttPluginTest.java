@@ -20,68 +20,51 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.plugins.influxdb.metrics;
+package dev.cookiecode.rika2mqtt.plugins.api.v1;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
-import com.typesafe.config.Config;
-import kamon.Kamon;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-/** Test class */
+/**
+ * Test class
+ *
+ * @author Sebastien Vermeille
+ */
 @ExtendWith(MockitoExtension.class)
-class Rika2MqttInfluxMetricsPluginTest {
-
-  private Rika2MqttInfluxMetricsPlugin plugin;
-
-  @BeforeEach
-  public void beforeEach() {
-    plugin = spy(new Rika2MqttInfluxMetricsPlugin());
-  }
-
-  @Mock private Config config;
+class Rika2MqttPluginTest {
 
   @Test
-  void startShouldInitKamon() {
+  void preStartShouldInitPluginConfigurationAsItIsTheWholePurposeOfIt() {
     // GIVEN
-    doReturn(config).when(plugin).loadConfig();
+    final var plugin = new DummyPlugin();
+    final var pluginConfiguration = mock(PluginConfiguration.class);
 
-    try (var mockedKamon = mockStatic(Kamon.class)) {
-      // WHEN
-      plugin.start();
+    // WHEN
+    plugin.preStart(pluginConfiguration);
 
-      // THEN
-      mockedKamon.verify(Kamon::init, times(1));
-    }
+    // THEN
+    assertThat(plugin.getPluginConfiguration()).isEqualTo(pluginConfiguration);
   }
 
   @Test
-  void startShouldLoadKamonModules() {
+  void
+      getPluginConfigurationParameterShouldInvokePluginConfigurationGetParameterMethodGivenItsAConvenienceWrapper() {
     // GIVEN
-    doReturn(config).when(plugin).loadConfig();
+    final var plugin = new DummyPlugin();
+    final var pluginConfiguration = mock(PluginConfiguration.class);
 
-    try (var mockedKamon = mockStatic(Kamon.class)) {
-      // WHEN
-      plugin.start();
+    plugin.preStart(pluginConfiguration);
 
-      // THEN
-      mockedKamon.verify(Kamon::loadModules, times(1));
-    }
-  }
+    final var parameterName = "something";
 
-  @Test
-  void stopShouldStopKamon() {
-    // GIVEN
-    try (var mockedKamon = mockStatic(Kamon.class)) {
-      // WHEN
-      plugin.stop();
+    // WHEN
+    plugin.getPluginConfigurationParameter(parameterName);
 
-      // THEN
-      mockedKamon.verify(Kamon::stop, times(1));
-    }
+    // THEN
+    verify(pluginConfiguration, times(1)).getParameter(parameterName);
   }
 }
