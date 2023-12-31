@@ -3,17 +3,17 @@ on:
   pull_request:
     types: [opened]
 
-permissions:
-  contents: read
+# permissions:
+#   contents: read
 
-jobs:
-  pr-notifier:
-    name: Notify on discord when a PR is created
-    runs-on: ubuntu-latest
-    steps:
-      - name: Discord notification
-        env:
-          DISCORD_WEBHOOK: ${{ secrets.DISCORD_PR_SEEKER_WEBHOOK }}
-        uses: Ilshidur/action-discord@master
-        with:
-          args: 'A new PR has been opened: https://github.com/sebastienvermeille/rika2mqtt/pull/{{ EVENT_PAYLOAD.pull_request.id }}'
+# jobs:
+  # pr-notifier:
+  #   name: Notify on discord when a PR is created
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Discord notification
+  #       env:
+  #         DISCORD_WEBHOOK: ${{ secrets.DISCORD_PR_SEEKER_WEBHOOK }}
+  #       uses: Ilshidur/action-discord@master
+  #       with:
+  #         args: 'A new PR has been opened: https://github.com/sebastienvermeille/rika2mqtt/pull/{{ EVENT_PAYLOAD.pull_request.id }}'
