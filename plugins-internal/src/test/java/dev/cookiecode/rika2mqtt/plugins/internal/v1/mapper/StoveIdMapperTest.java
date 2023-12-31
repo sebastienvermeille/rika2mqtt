@@ -29,11 +29,15 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-/** Test class */
-@SpringBootTest(classes = {ConvectionFanMapperImpl.class})
-class ConvectionFanMapperTest {
+/**
+ * Test class
+ *
+ * @author Sebastien Vermeille
+ */
+@SpringBootTest(classes = {StoveIdMapperImpl.class})
+class StoveIdMapperTest {
 
-  @Autowired private ConvectionFanMapper mapper;
+  @Autowired private StoveIdMapper mapper;
 
   @Test
   void mapShouldThrowAnNullPointerExceptionGivenNoParameterIsPassed() {
@@ -41,26 +45,19 @@ class ConvectionFanMapperTest {
         NullPointerException.class,
         () -> {
           // WHEN
-          mapper.map(null, null, null, null);
+          mapper.map(null);
         });
   }
 
   @Test
-  void mapShouldConvertSuccessfullyGivenFanProperties() {
-
+  void mapShouldConvertSuccessfullyGivenAStoveIdLongValueIsProvided() {
     // GIVEN
-    final var identifier = 1;
-    final var active = true;
-    final var level = 12;
-    final var area = 50;
+    final var stoveIdLongValue = 12321312L;
 
     // WHEN
-    final var result = mapper.map(identifier, active, level, area);
+    final var result = mapper.map(stoveIdLongValue);
 
     // THEN
-    assertThat(result.getIdentifier()).isEqualTo(identifier);
-    assertThat(result.isActive()).isEqualTo(active);
-    assertThat(result.getLevel()).isEqualTo(level);
-    assertThat(result.getArea()).isEqualTo(area);
+    assertThat(result.id()).isEqualTo(stoveIdLongValue);
   }
 }

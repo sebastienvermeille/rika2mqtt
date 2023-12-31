@@ -23,6 +23,7 @@
 package dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThrows;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +34,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 class TimeRangeMapperTest {
 
   @Autowired private TimeRangeMapper mapper;
+
+  @Test
+  void mapShouldThrowAnNullPointerExceptionGivenNoParameterIsPassed() {
+    assertThrows(
+        NullPointerException.class,
+        () -> {
+          // WHEN
+          mapper.map(null);
+        });
+  }
 
   @Test
   void mapShouldConvertSuccessfullyGivenAValidRikaTimeRangeInputGivenDoubleDigitTimes() {
