@@ -17,8 +17,8 @@ jobs:
         run: cd docs
       - uses: actions/setup-node@v3
         with:
-          node-version: 18
-          cache: yarn
+          node-version: 21
+          #cache: yarn
       - name: Install dependencies
         run: yarn install --frozen-lockfile
       - name: Build website
