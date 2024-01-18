@@ -1,0 +1,8 @@
+{
+  "label": "Misc.",
+  "position": 20,
+  "link": {
+    "type": "generated-index",
+    "description": "All what do not fit in other categories."
+  }
+}
