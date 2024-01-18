@@ -2,7 +2,6 @@ on:
   push:
     branches:
       - master
-      - 140-find-another-way-to-expose-the-doc-as-docspage-seems-to-be-an-abandoned-project
 
 permissions:
   contents: write
