@@ -16,9 +16,8 @@ const config: Config = {
   plugins: [require.resolve("docusaurus-plugin-image-zoom")],
 
   // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'sebastienvermeille', // Usually your GitHub org/user name.
-  projectName: 'rika2mqtt', // Usually your repo name.
+  organizationName: 'sebastienvermeille',
+  projectName: 'rika2mqtt',
   deploymentBranch: 'gh-pages',
 
   onBrokenLinks: 'throw',
@@ -37,15 +36,12 @@ const config: Config = {
       'classic',
       {
         docs: {
+          routeBasePath: '/',
           sidebarPath: './sidebars.ts',
           editUrl:
-            'https://github.com/sebastienvermeille/rika2mqtt/tree/main/packages/create-docusaurus/templates/shared/',
+            'https://github.com/sebastienvermeille/rika2mqtt/tree/master/docs/docs',
         },
-        blog: {
-          showReadingTime: true,
-          editUrl:
-            'https://github.com/sebastienvermeille/rika2mqtt/tree/main/packages/create-docusaurus/templates/shared/',
-        },
+        blog: false,
         theme: {
           customCss: './src/css/custom.css',
         },
@@ -54,8 +50,6 @@ const config: Config = {
   ],
 
   themeConfig: {
-    // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
     navbar: {
       title: 'RIKA2MQTT',
       logo: {
@@ -64,67 +58,30 @@ const config: Config = {
       },
       items: [
         {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
-          position: 'left',
-          label: 'Tutorial',
-        },
-        // {to: '/blog', label: 'Blog', position: 'left'},
-        {
           href: 'https://github.com/sebastienvermeille/rika2mqtt',
           label: 'GitHub',
           position: 'right',
         },
       ],
     },
-    footer: {
-      style: 'dark',
-      links: [
-        {
-          title: 'Docs',
-          items: [
-            {
-              label: 'Tutorial',
-              to: '/docs/intro',
-            },
-          ],
-        },
-        {
-          title: 'Community',
-          items: [
-            {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
-            },
-            {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
-            },
-            {
-              label: 'Twitter',
-              href: 'https://twitter.com/docusaurus',
-            },
-          ],
-        },
-        {
-          title: 'More',
-          items: [
-            {
-              label: 'Blog',
-              to: '/blog',
-            },
-            {
-              label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
-            },
-          ],
-        },
-      ],
-      copyright: `This doc is built using Docusaurus.`,
-    },
     prism: {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
+    },
+    algolia: {
+      appId: 'E1W6T35JS9',
+      apiKey: '98471285c8a136a9d660a78e4e523445',
+      indexName: 'rika2mqtt',
+
+      // Optional: see doc section below
+      contextualSearch: true,
+
+      // Optional: Algolia search parameters
+      searchParameters: {},
+
+      // Optional: path for search page that enabled by default (`false` to disable it)
+      searchPagePath: 'search',
+
     },
   } satisfies Preset.ThemeConfig,
 };

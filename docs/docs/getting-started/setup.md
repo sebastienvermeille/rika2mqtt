@@ -5,7 +5,7 @@ sidebar_position: 1
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-# Getting started
+# Setup
 
 RIKA2MQTT can be used on different platforms.
 
@@ -32,14 +32,12 @@ values={[
             -d --name rika2mqtt cookiecodedev/rika2mqtt:{{ versions.stable }}
         ```
 
-[//]: # (        <Info>)
 
-[//]: # (            Last stable version is: `2.0.0` or the tag `stable` &#40;point always to the last stable release&#41;)
+        Last stable version is: `2.0.0` or the tag `stable` (point always to the last stable release)
 
-[//]: # ()
-[//]: # (            If you prefer, you can use `latest` instead which can be unstable &#40;not recommended if you are not a rika2mqtt contributor&#41;)
 
-[//]: # (        </Info>)
+        If you prefer, you can use `latest` instead which can be unstable (not recommended if you are not a rika2mqtt contributor)
+    
 
         To know more about these env please read the configuration page.
     </TabItem>

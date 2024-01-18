@@ -1,8 +1,8 @@
 {
-  "label": "Examples",
-  "position": 3,
+  "label": "MQTT Examples",
+  "position": 7,
   "link": {
     "type": "generated-index",
-    "description": "5 minutes to learn the most important Docusaurus concepts."
+    "description": "Some examples to understand how you can receive on your MQTT broker and what command you can send via MQTT to controle your stove."
   }
 }

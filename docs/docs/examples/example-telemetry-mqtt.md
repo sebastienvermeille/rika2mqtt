@@ -2,7 +2,9 @@
 
 RIKA2MQTT bridge publish regularly the status of your stove to MQTT. You don't have to do anything special for that.
 
-<Info>By default the stove data will be published to the topic: `tele/rika2mqtt` (Or your custom topic defined in `MQTT_TELEMETRY_REPORT_TOPIC_NAME`.</Info>
+:::info
+By default the stove data will be published to the topic: `tele/rika2mqtt` (Or your custom topic defined in `MQTT_TELEMETRY_REPORT_TOPIC_NAME`.
+:::
 
 The payload is in JSON format :
 ```

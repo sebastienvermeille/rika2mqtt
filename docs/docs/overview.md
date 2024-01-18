@@ -1,4 +1,8 @@
-# RIKA2MQTT Documentation
+---
+slug: /
+sidebar_position: 1
+---
+# Overview
 
 ![rika2mqtt](/assets/rika2mqtt-128x128.png)
 
