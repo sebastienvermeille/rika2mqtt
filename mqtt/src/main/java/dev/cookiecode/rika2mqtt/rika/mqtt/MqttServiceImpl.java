@@ -39,9 +39,18 @@ public class MqttServiceImpl implements MqttService {
   @Qualifier("mqttConfiguration.MqttGateway")
   private final MqttConfiguration.MqttGateway mqttGateway;
 
+  @Qualifier("mqttConfiguration.MqttErrorGateway")
+  private final MqttConfiguration.MqttGateway mqttErrorGateway;
+
   @Override
   public void publish(final String message) {
     log.atInfo().log("Publish to mqtt:\n%s", message);
     mqttGateway.sendToMqtt(message);
+  }
+
+  @Override
+  public void publishError(String message) {
+    log.atInfo().log("Publish error to mqtt:\n%s", message);
+    mqttErrorGateway.sendToMqtt(message);
   }
 }
