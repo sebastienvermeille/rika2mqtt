@@ -37,9 +37,11 @@ import static org.mockito.Mockito.when;
 import com.google.gson.Gson;
 import dev.cookiecode.rika2mqtt.bridge.misc.EmailObfuscator;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.Rika2MqttPluginService;
+import dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper.StoveErrorMapper;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper.StoveStatusMapper;
 import dev.cookiecode.rika2mqtt.rika.firenet.RikaFirenetService;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
+import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveStatus;
 import dev.cookiecode.rika2mqtt.rika.mqtt.MqttService;
 import dev.cookiecode.rika2mqtt.rika.mqtt.event.MqttCommandEvent;
 import java.time.Duration;
@@ -70,6 +72,7 @@ class BridgeTest {
   @Mock EmailObfuscator emailObfuscator;
   @Mock Gson gson;
   @Mock StoveStatusMapper stoveStatusMapper;
+  @Mock StoveErrorMapper stoveErrorMapper;
 
   @Mock Rika2MqttPluginService pluginManager;
 
@@ -82,10 +85,11 @@ class BridgeTest {
   }
 
   @Test
-  void initShouldInitStovesWithRetrieveStovesFromRikaFirenet() {
+  void initShouldInitStovesWithRetrieveStovesFromRikaFirenet() throws Exception {
     // GIVEN
     List<StoveId> stoveIds = List.of(StoveId.of(15L));
     when(rikaFirenetService.getStoves()).thenReturn(stoveIds);
+    when(rikaFirenetService.getStatus(any())).thenReturn(mock(StoveStatus.class));
 
     // WHEN
     bridge.init();
@@ -96,9 +100,10 @@ class BridgeTest {
   }
 
   @Test
-  void initShouldInvokePrintStartupMessages() {
+  void initShouldInvokePrintStartupMessages() throws Exception {
     // GIVEN
     when(rikaFirenetService.getStoves()).thenReturn(List.of(StoveId.of(15L)));
+    when(rikaFirenetService.getStatus(any())).thenReturn(mock(StoveStatus.class));
 
     // WHEN
     bridge.init();
@@ -168,10 +173,11 @@ class BridgeTest {
   }
 
   @Test
-  void publishToMqttShouldInvokeMqttServicePublishForEachStove() {
+  void publishToMqttShouldInvokeMqttServicePublishForEachStove() throws Exception {
     // GIVEN
     final var stoves = List.of(StoveId.of(1L), StoveId.of(2L), StoveId.of(3L));
     bridge.initStoves(stoves);
+    when(rikaFirenetService.getStatus(any())).thenReturn(mock(StoveStatus.class));
 
     // WHEN
     bridge.publishToMqtt();
@@ -188,6 +194,7 @@ class BridgeTest {
     final var thirdStove = StoveId.of(3L);
     final var stoves = List.of(firstStove, secondStove, thirdStove);
     bridge.initStoves(stoves);
+    when(rikaFirenetService.getStatus(any())).thenReturn(mock(StoveStatus.class));
 
     // WHEN
     bridge.publishToMqtt();

@@ -90,6 +90,16 @@ public class MqttConfiguration {
     return messageHandler;
   }
 
+  @Bean
+  @ServiceActivator(inputChannel = "mqttOutboundErrorChannel", autoStartup = "true")
+  public MessageHandler mqttOutboundError() {
+    var messageHandler =
+        new MqttPahoMessageHandler(mqttConfigProperties.getClientName(), mqttClientFactory());
+    messageHandler.setAsync(true);
+    messageHandler.setDefaultTopic(mqttConfigProperties.getErrorTopicName());
+    return messageHandler;
+  }
+
   /**
    * @implNote this is using a workaround found <a
    *     href="https://stackoverflow.com/a/41241824">here</a> the doc simply mention to do: `return
@@ -102,8 +112,21 @@ public class MqttConfiguration {
     return dc;
   }
 
+  @Bean
+  public MessageChannel mqttOutboundErrorChannel() {
+    var dc = new DirectChannel();
+    dc.subscribe(mqttOutboundError());
+    return dc;
+  }
+
   @MessagingGateway(defaultRequestChannel = "mqttOutboundChannel")
   public interface MqttGateway {
+
+    void sendToMqtt(String data);
+  }
+
+  @MessagingGateway(defaultRequestChannel = "mqttOutboundErrorChannel")
+  public interface MqttErrorGateway extends MqttGateway {
 
     void sendToMqtt(String data);
   }
