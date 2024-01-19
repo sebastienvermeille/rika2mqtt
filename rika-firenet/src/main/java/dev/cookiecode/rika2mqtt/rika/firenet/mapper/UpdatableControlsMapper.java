@@ -60,6 +60,35 @@ public interface UpdatableControlsMapper {
         .ifPresent(
             value -> controlsToUpdate.setHeatingTimesActiveForComfort(Boolean.valueOf(value)));
 
+    ofNullable(diffs.getOrDefault(Fields.HEATING_TIME_MON1, null))
+        .ifPresent(controlsToUpdate::setHeatingTimeMon1);
+    ofNullable(diffs.getOrDefault(Fields.HEATING_TIME_MON2, null))
+        .ifPresent(controlsToUpdate::setHeatingTimeMon2);
+    ofNullable(diffs.getOrDefault(Fields.HEATING_TIME_TUE1, null))
+        .ifPresent(controlsToUpdate::setHeatingTimeTue1);
+    ofNullable(diffs.getOrDefault(Fields.HEATING_TIME_TUE2, null))
+        .ifPresent(controlsToUpdate::setHeatingTimeTue2);
+    ofNullable(diffs.getOrDefault(Fields.HEATING_TIME_WED1, null))
+        .ifPresent(controlsToUpdate::setHeatingTimeWed1);
+    ofNullable(diffs.getOrDefault(Fields.HEATING_TIME_WED2, null))
+        .ifPresent(controlsToUpdate::setHeatingTimeWed2);
+    ofNullable(diffs.getOrDefault(Fields.HEATING_TIME_THU1, null))
+        .ifPresent(controlsToUpdate::setHeatingTimeThu1);
+    ofNullable(diffs.getOrDefault(Fields.HEATING_TIME_THU2, null))
+        .ifPresent(controlsToUpdate::setHeatingTimeThu2);
+    ofNullable(diffs.getOrDefault(Fields.HEATING_TIME_FRI1, null))
+        .ifPresent(controlsToUpdate::setHeatingTimeFri1);
+    ofNullable(diffs.getOrDefault(Fields.HEATING_TIME_FRI2, null))
+        .ifPresent(controlsToUpdate::setHeatingTimeFri2);
+    ofNullable(diffs.getOrDefault(Fields.HEATING_TIME_SAT1, null))
+        .ifPresent(controlsToUpdate::setHeatingTimeSat1);
+    ofNullable(diffs.getOrDefault(Fields.HEATING_TIME_SAT2, null))
+        .ifPresent(controlsToUpdate::setHeatingTimeSat2);
+    ofNullable(diffs.getOrDefault(Fields.HEATING_TIME_SUN1, null))
+        .ifPresent(controlsToUpdate::setHeatingTimeSun1);
+    ofNullable(diffs.getOrDefault(Fields.HEATING_TIME_SUN2, null))
+        .ifPresent(controlsToUpdate::setHeatingTimeSun2);
+
     ofNullable(diffs.getOrDefault(Fields.SET_BACK_TEMPERATURE, null))
         .ifPresent(value -> controlsToUpdate.setSetBackTemperature(Integer.valueOf(value)));
 

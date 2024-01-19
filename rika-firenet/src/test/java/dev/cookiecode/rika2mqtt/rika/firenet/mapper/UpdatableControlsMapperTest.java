@@ -57,6 +57,20 @@ class UpdatableControlsMapperTest {
     final var frostProtectionActive = true;
     final var frostProtectionTemperature = 15;
     final var heatingTimesActiveForComfort = true;
+    final var heatingTimeMon1 = "12002200";
+    final var heatingTimeMon2 = "12002200";
+    final var heatingTimeTue1 = "12002200";
+    final var heatingTimeTue2 = "12002200";
+    final var heatingTimeWed1 = "12002200";
+    final var heatingTimeWed2 = "12002200";
+    final var heatingTimeThu1 = "12002200";
+    final var heatingTimeThu2 = "12002200";
+    final var heatingTimeFri1 = "12002200";
+    final var heatingTimeFri2 = "12002200";
+    final var heatingTimeSat1 = "12002200";
+    final var heatingTimeSat2 = "12002200";
+    final var heatingTimeSun1 = "12002200";
+    final var heatingTimeSun2 = "12002200";
     final var controls =
         Controls.builder()
             .revision(revision)
@@ -75,6 +89,20 @@ class UpdatableControlsMapperTest {
             .frostProtectionActive(frostProtectionActive)
             .frostProtectionTemperature(frostProtectionTemperature)
             .heatingTimesActiveForComfort(heatingTimesActiveForComfort)
+            .heatingTimeMon1(heatingTimeMon1)
+            .heatingTimeMon2(heatingTimeMon2)
+            .heatingTimeTue1(heatingTimeTue1)
+            .heatingTimeTue2(heatingTimeTue2)
+            .heatingTimeWed1(heatingTimeWed1)
+            .heatingTimeWed2(heatingTimeWed2)
+            .heatingTimeThu1(heatingTimeThu1)
+            .heatingTimeThu2(heatingTimeThu2)
+            .heatingTimeFri1(heatingTimeFri1)
+            .heatingTimeFri2(heatingTimeFri2)
+            .heatingTimeSat1(heatingTimeSat1)
+            .heatingTimeSat2(heatingTimeSat2)
+            .heatingTimeSun1(heatingTimeSun1)
+            .heatingTimeSun2(heatingTimeSun2)
             .build();
 
     // WHEN
