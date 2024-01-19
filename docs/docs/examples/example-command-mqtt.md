@@ -22,3 +22,11 @@ Publish an MQTT message to `cmnd/rika2mqtt`  with the following JSON payload:
 To retrieve your stove id, simply go to rika-firenet and display your stove. Then you can retrieve the stove id from the url of the browser: https://rika-firenet.com/web/stove/[your stove id]
 :::
 And voila! RIKA2MQTT will automatically do the necessary to forward this change to Rika-Firenet that will then forward it to your Rika stove.
+
+
+## Update convection fans status via MQTT
+```
+"stoveId": "your stove id",
+"convectionFan1Active": true,
+"convectionFan2Active": false
+```
