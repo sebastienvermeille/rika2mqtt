@@ -20,45 +20,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.rika.firenet.model;
+package dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper;
 
-import com.google.gson.annotations.SerializedName;
-import java.util.Optional;
-import lombok.Builder;
-import lombok.Data;
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveError;
+import lombok.NonNull;
+import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
 /**
  * @author Sebastien Vermeille
  */
-@Data
-@Builder
-public class StoveStatus {
+@Beta
+@Mapper(
+    unmappedTargetPolicy = ReportingPolicy.IGNORE,
+    uses = {StoveIdMapper.class}) // ignore as we are using a map
+public interface StoveErrorMapper {
 
-  private String name;
-
-  @SerializedName(
-      value = "stoveId",
-      alternate = {"stoveID"}) // for coherence (the rest of the api is using camelCase)
-  private Long stoveId;
-
-  private Long lastSeenMinutes;
-  private Long lastConfirmedRevision;
-  private String oem;
-  private String stoveType;
-  private Sensors sensors;
-  private Controls controls;
-
-  public Optional<StoveError> getError() {
-    final var statusError = Optional.ofNullable(sensors).map(Sensors::getStatusError);
-    final var statusSubError = Optional.ofNullable(sensors).map(Sensors::getStatusSubError);
-    if (statusError.isPresent() && statusSubError.isPresent()) {
-      return Optional.of(
-          StoveError.builder()
-              .statusError(statusError.get())
-              .statusSubError(statusSubError.get())
-              .build());
-    } else {
-      return Optional.empty();
-    }
+  default StoveError toApiStoveError(
+      @NonNull Long stoveId,
+      @NonNull dev.cookiecode.rika2mqtt.rika.firenet.model.StoveError stoveError) {
+    final var error = new StoveError();
+    error.setStoveId(new StoveIdMapperImpl().map(stoveId));
+    error.setErrorCode(stoveError.toString());
+    return error;
   }
 }

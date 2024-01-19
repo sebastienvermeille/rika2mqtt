@@ -20,45 +20,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.rika.firenet.model;
+package dev.cookiecode.rika2mqtt.plugins.internal.v1.event;
 
-import com.google.gson.annotations.SerializedName;
-import java.util.Optional;
-import lombok.Builder;
-import lombok.Data;
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveError;
+import lombok.*;
 
 /**
+ * Triggered when RIKA stove is printing an error
+ *
  * @author Sebastien Vermeille
  */
-@Data
+@RequiredArgsConstructor
+@Getter
+@ToString
+@EqualsAndHashCode
 @Builder
-public class StoveStatus {
-
-  private String name;
-
-  @SerializedName(
-      value = "stoveId",
-      alternate = {"stoveID"}) // for coherence (the rest of the api is using camelCase)
-  private Long stoveId;
-
-  private Long lastSeenMinutes;
-  private Long lastConfirmedRevision;
-  private String oem;
-  private String stoveType;
-  private Sensors sensors;
-  private Controls controls;
-
-  public Optional<StoveError> getError() {
-    final var statusError = Optional.ofNullable(sensors).map(Sensors::getStatusError);
-    final var statusSubError = Optional.ofNullable(sensors).map(Sensors::getStatusSubError);
-    if (statusError.isPresent() && statusSubError.isPresent()) {
-      return Optional.of(
-          StoveError.builder()
-              .statusError(statusError.get())
-              .statusSubError(statusSubError.get())
-              .build());
-    } else {
-      return Optional.empty();
-    }
-  }
+@Beta
+public class StoveErrorEvent implements Rika2MqttPluginEvent {
+  private final StoveError stoveError;
 }

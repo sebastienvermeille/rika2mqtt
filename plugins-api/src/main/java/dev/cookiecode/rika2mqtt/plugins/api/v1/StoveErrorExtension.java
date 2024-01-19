@@ -20,45 +20,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.rika.firenet.model;
+package dev.cookiecode.rika2mqtt.plugins.api.v1;
 
-import com.google.gson.annotations.SerializedName;
-import java.util.Optional;
-import lombok.Builder;
-import lombok.Data;
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveError;
+import org.pf4j.ExtensionPoint;
 
 /**
  * @author Sebastien Vermeille
  */
-@Data
-@Builder
-public class StoveStatus {
+@Beta
+public interface StoveErrorExtension extends ExtensionPoint {
 
-  private String name;
-
-  @SerializedName(
-      value = "stoveId",
-      alternate = {"stoveID"}) // for coherence (the rest of the api is using camelCase)
-  private Long stoveId;
-
-  private Long lastSeenMinutes;
-  private Long lastConfirmedRevision;
-  private String oem;
-  private String stoveType;
-  private Sensors sensors;
-  private Controls controls;
-
-  public Optional<StoveError> getError() {
-    final var statusError = Optional.ofNullable(sensors).map(Sensors::getStatusError);
-    final var statusSubError = Optional.ofNullable(sensors).map(Sensors::getStatusSubError);
-    if (statusError.isPresent() && statusSubError.isPresent()) {
-      return Optional.of(
-          StoveError.builder()
-              .statusError(statusError.get())
-              .statusSubError(statusSubError.get())
-              .build());
-    } else {
-      return Optional.empty();
-    }
-  }
+  /**
+   * When an error is displayed on the RIKA Stove screen, it is also triggered here
+   *
+   * @param stoveError the error triggered
+   */
+  void onStoveError(StoveError stoveError);
 }

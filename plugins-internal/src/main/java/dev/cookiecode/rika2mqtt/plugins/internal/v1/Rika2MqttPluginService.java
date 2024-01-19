@@ -22,8 +22,10 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.internal.v1;
 
+import dev.cookiecode.rika2mqtt.plugins.api.v1.StoveErrorExtension;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.StoveStatusExtension;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.event.PolledStoveStatusEvent;
+import dev.cookiecode.rika2mqtt.plugins.internal.v1.event.StoveErrorEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.flogger.Flogger;
 import org.pf4j.PluginManager;
@@ -61,9 +63,20 @@ public class Rika2MqttPluginService {
           "None of the %s plugin(s) registered a hook for extension %s, not forwarding stove status.",
           pluginManager.getPlugins().size(), StoveStatusExtension.class.getSimpleName());
     } else {
-      extensions.forEach(
-          stoveStatusExtension ->
-              stoveStatusExtension.onPollStoveStatusSucceed(event.getStoveStatus()));
+      extensions.forEach(extension -> extension.onPollStoveStatusSucceed(event.getStoveStatus()));
+    }
+  }
+
+  @EventListener
+  public void handleStoveErrorEvent(StoveErrorEvent event) {
+    var extensions = pluginManager.getExtensions(StoveErrorExtension.class);
+
+    if (extensions.isEmpty()) {
+      log.atFinest().log(
+          "None of the %s plugin(s) registered a hook for extension %s, not forwarding stove error.",
+          pluginManager.getPlugins().size(), StoveErrorExtension.class.getSimpleName());
+    } else {
+      extensions.forEach(extension -> extension.onStoveError(event.getStoveError()));
     }
   }
 }
