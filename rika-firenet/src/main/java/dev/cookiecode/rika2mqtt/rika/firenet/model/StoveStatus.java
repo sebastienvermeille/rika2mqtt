@@ -33,6 +33,7 @@ import lombok.Data;
 @Data
 @Builder
 public class StoveStatus {
+  static final int RIKA_NO_ERROR_VALUE = 0;
 
   private String name;
 
@@ -49,16 +50,19 @@ public class StoveStatus {
   private Controls controls;
 
   public Optional<StoveError> getError() {
-    final var statusError = Optional.ofNullable(sensors).map(Sensors::getStatusError);
-    final var statusSubError = Optional.ofNullable(sensors).map(Sensors::getStatusSubError);
-    if (statusError.isPresent() && statusSubError.isPresent()) {
-      return Optional.of(
-          StoveError.builder()
-              .statusError(statusError.get())
-              .statusSubError(statusSubError.get())
-              .build());
-    } else {
-      return Optional.empty();
-    }
+    final var statusError =
+        Optional.ofNullable(sensors)
+            .map(Sensors::getStatusError)
+            .filter(value -> value > RIKA_NO_ERROR_VALUE);
+    final var statusSubError =
+        Optional.ofNullable(sensors)
+            .map(Sensors::getStatusSubError)
+            .filter(value -> value > RIKA_NO_ERROR_VALUE);
+    return statusError.map(
+        integer ->
+            StoveError.builder()
+                .statusError(integer)
+                .statusSubError(statusSubError.orElse(RIKA_NO_ERROR_VALUE))
+                .build());
   }
 }
