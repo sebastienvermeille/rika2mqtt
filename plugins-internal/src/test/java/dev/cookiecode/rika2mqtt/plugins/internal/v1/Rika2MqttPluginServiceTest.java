@@ -24,9 +24,12 @@ package dev.cookiecode.rika2mqtt.plugins.internal.v1;
 
 import static org.mockito.Mockito.*;
 
+import dev.cookiecode.rika2mqtt.plugins.api.v1.StoveErrorExtension;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.StoveStatusExtension;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveError;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveStatus;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.event.PolledStoveStatusEvent;
+import dev.cookiecode.rika2mqtt.plugins.internal.v1.event.StoveErrorEvent;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -108,5 +111,27 @@ class Rika2MqttPluginServiceTest {
     // THEN
     verify(extensionAlpha, times(1)).onPollStoveStatusSucceed(stoveStatus);
     verify(extensionBeta, times(1)).onPollStoveStatusSucceed(stoveStatus);
+  }
+
+  @Test
+  void handleStoveErrorEventShouldPropagateTheEventToAllRegisteredExtensionsGivenThereAreTwo() {
+
+    // GIVEN
+    final var event = mock(StoveErrorEvent.class);
+    final var stoveError = mock(StoveError.class);
+    when(event.getStoveError()).thenReturn(stoveError);
+
+    // two plugins extensions
+    final var extensionAlpha = mock(StoveErrorExtension.class);
+    final var extensionBeta = mock(StoveErrorExtension.class);
+    final var extensions = List.of(extensionAlpha, extensionBeta);
+    when(pluginManager.getExtensions(StoveErrorExtension.class)).thenReturn(extensions);
+
+    // WHEN
+    rika2MqttPluginService.handleStoveErrorEvent(event);
+
+    // THEN
+    verify(extensionAlpha, times(1)).onStoveError(stoveError);
+    verify(extensionBeta, times(1)).onStoveError(stoveError);
   }
 }
