@@ -91,8 +91,8 @@ public class MqttConfiguration {
   }
 
   @Bean
-  @ServiceActivator(inputChannel = "mqttOutboundErrorChannel", autoStartup = "true")
-  public MessageHandler mqttOutboundError() {
+  @ServiceActivator(inputChannel = "mqttOutboundNotificationChannel", autoStartup = "true")
+  public MessageHandler mqttOutboundNotification() {
     var messageHandler =
         new MqttPahoMessageHandler(mqttConfigProperties.getClientName(), mqttClientFactory());
     messageHandler.setAsync(true);
@@ -113,9 +113,9 @@ public class MqttConfiguration {
   }
 
   @Bean
-  public MessageChannel mqttOutboundErrorChannel() {
+  public MessageChannel mqttOutboundNotificationChannel() {
     var dc = new DirectChannel();
-    dc.subscribe(mqttOutboundError());
+    dc.subscribe(mqttOutboundNotification());
     return dc;
   }
 
@@ -125,8 +125,8 @@ public class MqttConfiguration {
     void sendToMqtt(String data);
   }
 
-  @MessagingGateway(defaultRequestChannel = "mqttOutboundErrorChannel")
-  public interface MqttErrorGateway extends MqttGateway {
+  @MessagingGateway(defaultRequestChannel = "mqttOutboundNotificationChannel")
+  public interface MqttNotificationGateway extends MqttGateway {
 
     void sendToMqtt(String data);
   }

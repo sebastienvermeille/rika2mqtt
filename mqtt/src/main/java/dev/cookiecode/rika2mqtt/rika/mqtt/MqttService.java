@@ -29,5 +29,5 @@ public interface MqttService {
 
   void publish(String message);
 
-  void publishError(String message);
+  void publishNotification(String message);
 }

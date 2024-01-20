@@ -220,7 +220,7 @@ class BridgeTest {
     bridge.publishToMqtt();
 
     // THEN
-    verify(mqttService, times(stoves.size())).publishError(any());
+    verify(mqttService, times(stoves.size())).publishNotification(any());
   }
 
   @Test
@@ -238,7 +238,7 @@ class BridgeTest {
     bridge.publishToMqtt();
 
     // THEN
-    verify(mqttService, never()).publishError(any());
+    verify(mqttService, never()).publishNotification(any());
   }
 
   @Test

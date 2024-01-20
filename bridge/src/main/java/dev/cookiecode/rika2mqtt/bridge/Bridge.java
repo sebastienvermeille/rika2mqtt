@@ -151,7 +151,7 @@ public class Bridge {
                       final var enrichedStoveError =
                           stoveErrorMapper.toApiStoveError(stoveId.id(), stoveError);
                       final var jsonError = gson.toJson(enrichedStoveError);
-                      mqttService.publishError(jsonError);
+                      mqttService.publishNotification(jsonError);
 
                       applicationEventPublisher.publishEvent(
                           StoveErrorEvent.builder().stoveError(enrichedStoveError).build());

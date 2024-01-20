@@ -39,8 +39,8 @@ public class MqttServiceImpl implements MqttService {
   @Qualifier("mqttConfiguration.MqttGateway")
   private final MqttConfiguration.MqttGateway mqttGateway;
 
-  @Qualifier("mqttConfiguration.MqttErrorGateway")
-  private final MqttConfiguration.MqttGateway mqttErrorGateway;
+  @Qualifier("mqttConfiguration.MqttNotificationGateway")
+  private final MqttConfiguration.MqttGateway mqttNotificationGateway;
 
   @Override
   public void publish(final String message) {
@@ -49,8 +49,8 @@ public class MqttServiceImpl implements MqttService {
   }
 
   @Override
-  public void publishError(String message) {
+  public void publishNotification(String message) {
     log.atInfo().log("Publish error to mqtt:\n%s", message);
-    mqttErrorGateway.sendToMqtt(message);
+    mqttNotificationGateway.sendToMqtt(message);
   }
 }
