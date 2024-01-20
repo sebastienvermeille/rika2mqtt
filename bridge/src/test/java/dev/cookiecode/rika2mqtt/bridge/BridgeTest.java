@@ -46,7 +46,6 @@ import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -206,19 +205,14 @@ class BridgeTest {
   }
 
   @Test
-  void publishToMqttShouldInvokeMqttServicePublishErrorForEachStoveHavingAnError() throws Exception {
+  void publishToMqttShouldInvokeMqttServicePublishErrorForEachStoveHavingAnError()
+      throws Exception {
     // GIVEN
     final var stoves = List.of(StoveId.of(1L), StoveId.of(2L), StoveId.of(3L));
     bridge.initStoves(stoves);
     final var stoveStatus = mock(StoveStatus.class);
-    when(stoveStatus.getError()).thenReturn(
-            Optional.of(
-                    StoveError.builder()
-                            .statusError(1)
-                            .statusSubError(12)
-                    .build()
-            )
-    );
+    when(stoveStatus.getError())
+        .thenReturn(Optional.of(StoveError.builder().statusError(1).statusSubError(12).build()));
 
     when(rikaFirenetService.getStatus(any())).thenReturn(stoveStatus);
 
@@ -230,7 +224,8 @@ class BridgeTest {
   }
 
   @Test
-  void publishToMqttShouldNotInvokeMqttServicePublishErrorForEachStoveHavingNoError() throws Exception {
+  void publishToMqttShouldNotInvokeMqttServicePublishErrorForEachStoveHavingNoError()
+      throws Exception {
     // GIVEN
     final var stoves = List.of(StoveId.of(1L), StoveId.of(2L), StoveId.of(3L));
     bridge.initStoves(stoves);
