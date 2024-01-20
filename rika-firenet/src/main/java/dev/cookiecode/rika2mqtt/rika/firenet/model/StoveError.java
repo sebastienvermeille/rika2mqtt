@@ -20,14 +20,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.rika.mqtt;
+package dev.cookiecode.rika2mqtt.rika.firenet.model;
 
-/**
- * @author Sebastien Vermeille
- */
-public interface MqttService {
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-  void publish(String message);
+@Getter
+@Builder
+@EqualsAndHashCode
+public class StoveError {
 
-  void publishNotification(String message);
+  private final int statusError;
+  private final int statusSubError;
+
+  @Override
+  public String toString() {
+    return String.format("E%04d.%02d", statusError, statusSubError);
+  }
 }

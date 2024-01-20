@@ -27,6 +27,8 @@ import com.google.gson.Gson;
 import dev.cookiecode.rika2mqtt.bridge.misc.EmailObfuscator;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.Rika2MqttPluginService;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.event.PolledStoveStatusEvent;
+import dev.cookiecode.rika2mqtt.plugins.internal.v1.event.StoveErrorEvent;
+import dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper.StoveErrorMapper;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper.StoveStatusMapper;
 import dev.cookiecode.rika2mqtt.rika.firenet.RikaFirenetService;
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.CouldNotAuthenticateToRikaFirenetException;
@@ -81,6 +83,7 @@ public class Bridge {
   private final EmailObfuscator emailObfuscator;
   private final Gson gson;
   private final StoveStatusMapper stoveStatusMapper;
+  private final StoveErrorMapper stoveErrorMapper;
 
   private final Rika2MqttPluginService pluginManager;
 
@@ -140,6 +143,19 @@ public class Bridge {
                 PolledStoveStatusEvent.builder()
                     .stoveStatus(stoveStatusMapper.toApiStoveStatus(status))
                     .build());
+
+            status
+                .getError()
+                .ifPresent(
+                    stoveError -> {
+                      final var enrichedStoveError =
+                          stoveErrorMapper.toApiStoveError(stoveId.id(), stoveError);
+                      final var jsonError = gson.toJson(enrichedStoveError);
+                      mqttService.publishNotification(jsonError);
+
+                      applicationEventPublisher.publishEvent(
+                          StoveErrorEvent.builder().stoveError(enrichedStoveError).build());
+                    });
           } catch (InvalidStoveIdException e) {
             // TODO: could occurs if a stove is added later (after deployment of this rika2mqtt
             // instance, might be valuable to perform a reload of stoves "periodically") -> should

@@ -67,6 +67,20 @@ class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
             () -> mqttService.publish(message));
   }
 
+  @Test
+  void publishErrorMqttMessageFromBridgeShouldEffectivelyPublishAnErrorMessageToMqtt() {
+    String message = "some error";
+
+    // Here, another mqtt client connect to the telemetry topic
+    // after using the bridge mqttService to publish to mqtt,
+    // the MQTT test client (outside the rika2mqtt bridge) should be able to receive that message
+    getMqttTestClient()
+        .assertThatMessageWasPublishedToMqttTopic(
+            message,
+            mqttConfigProperties.getNotificationTopicName(),
+            () -> mqttService.publishNotification(message));
+  }
+
   private MqttTestClient getMqttTestClient() {
     try {
       var client = getRandomMqttClient();

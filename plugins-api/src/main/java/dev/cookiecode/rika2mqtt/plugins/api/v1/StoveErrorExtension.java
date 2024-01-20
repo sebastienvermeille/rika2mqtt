@@ -20,14 +20,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.rika.mqtt;
+package dev.cookiecode.rika2mqtt.plugins.api.v1;
+
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveError;
+import org.pf4j.ExtensionPoint;
 
 /**
  * @author Sebastien Vermeille
  */
-public interface MqttService {
+@Beta
+public interface StoveErrorExtension extends ExtensionPoint {
 
-  void publish(String message);
-
-  void publishNotification(String message);
+  /**
+   * When an error is displayed on the RIKA Stove screen, it is also triggered here
+   *
+   * @param stoveError the error triggered
+   */
+  void onStoveError(StoveError stoveError);
 }

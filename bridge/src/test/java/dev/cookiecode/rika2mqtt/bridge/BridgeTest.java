@@ -29,22 +29,23 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import com.google.gson.Gson;
 import dev.cookiecode.rika2mqtt.bridge.misc.EmailObfuscator;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.Rika2MqttPluginService;
+import dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper.StoveErrorMapper;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper.StoveStatusMapper;
 import dev.cookiecode.rika2mqtt.rika.firenet.RikaFirenetService;
+import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveError;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
+import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveStatus;
 import dev.cookiecode.rika2mqtt.rika.mqtt.MqttService;
 import dev.cookiecode.rika2mqtt.rika.mqtt.event.MqttCommandEvent;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -70,6 +71,7 @@ class BridgeTest {
   @Mock EmailObfuscator emailObfuscator;
   @Mock Gson gson;
   @Mock StoveStatusMapper stoveStatusMapper;
+  @Mock StoveErrorMapper stoveErrorMapper;
 
   @Mock Rika2MqttPluginService pluginManager;
 
@@ -82,10 +84,11 @@ class BridgeTest {
   }
 
   @Test
-  void initShouldInitStovesWithRetrieveStovesFromRikaFirenet() {
+  void initShouldInitStovesWithRetrieveStovesFromRikaFirenet() throws Exception {
     // GIVEN
     List<StoveId> stoveIds = List.of(StoveId.of(15L));
     when(rikaFirenetService.getStoves()).thenReturn(stoveIds);
+    when(rikaFirenetService.getStatus(any())).thenReturn(mock(StoveStatus.class));
 
     // WHEN
     bridge.init();
@@ -96,9 +99,10 @@ class BridgeTest {
   }
 
   @Test
-  void initShouldInvokePrintStartupMessages() {
+  void initShouldInvokePrintStartupMessages() throws Exception {
     // GIVEN
     when(rikaFirenetService.getStoves()).thenReturn(List.of(StoveId.of(15L)));
+    when(rikaFirenetService.getStatus(any())).thenReturn(mock(StoveStatus.class));
 
     // WHEN
     bridge.init();
@@ -168,10 +172,11 @@ class BridgeTest {
   }
 
   @Test
-  void publishToMqttShouldInvokeMqttServicePublishForEachStove() {
+  void publishToMqttShouldInvokeMqttServicePublishForEachStove() throws Exception {
     // GIVEN
     final var stoves = List.of(StoveId.of(1L), StoveId.of(2L), StoveId.of(3L));
     bridge.initStoves(stoves);
+    when(rikaFirenetService.getStatus(any())).thenReturn(mock(StoveStatus.class));
 
     // WHEN
     bridge.publishToMqtt();
@@ -188,6 +193,7 @@ class BridgeTest {
     final var thirdStove = StoveId.of(3L);
     final var stoves = List.of(firstStove, secondStove, thirdStove);
     bridge.initStoves(stoves);
+    when(rikaFirenetService.getStatus(any())).thenReturn(mock(StoveStatus.class));
 
     // WHEN
     bridge.publishToMqtt();
@@ -196,6 +202,43 @@ class BridgeTest {
     verify(rikaFirenetService).getStatus(firstStove);
     verify(rikaFirenetService).getStatus(secondStove);
     verify(rikaFirenetService).getStatus(thirdStove);
+  }
+
+  @Test
+  void publishToMqttShouldInvokeMqttServicePublishErrorForEachStoveHavingAnError()
+      throws Exception {
+    // GIVEN
+    final var stoves = List.of(StoveId.of(1L), StoveId.of(2L), StoveId.of(3L));
+    bridge.initStoves(stoves);
+    final var stoveStatus = mock(StoveStatus.class);
+    when(stoveStatus.getError())
+        .thenReturn(Optional.of(StoveError.builder().statusError(1).statusSubError(12).build()));
+
+    when(rikaFirenetService.getStatus(any())).thenReturn(stoveStatus);
+
+    // WHEN
+    bridge.publishToMqtt();
+
+    // THEN
+    verify(mqttService, times(stoves.size())).publishNotification(any());
+  }
+
+  @Test
+  void publishToMqttShouldNotInvokeMqttServicePublishErrorForEachStoveHavingNoError()
+      throws Exception {
+    // GIVEN
+    final var stoves = List.of(StoveId.of(1L), StoveId.of(2L), StoveId.of(3L));
+    bridge.initStoves(stoves);
+    final var stoveStatus = mock(StoveStatus.class);
+    when(stoveStatus.getError()).thenReturn(Optional.empty());
+
+    when(rikaFirenetService.getStatus(any())).thenReturn(stoveStatus);
+
+    // WHEN
+    bridge.publishToMqtt();
+
+    // THEN
+    verify(mqttService, never()).publishNotification(any());
   }
 
   @Test

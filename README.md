@@ -61,6 +61,10 @@ Default: `cmnd/rika2mqtt`
 The MQTT topic used by RIKA2MQTT to publish RIKA status
 Default: `tele/rika2mqtt`
 
+## MQTT_ERROR_TOPIC_NAME (Optional)
+The MQTT topic used by RIKA2MQTT to publish RIKA errors
+Default: `tele/rika2mqtt-errors`
+
 ## MQTT_PORT (Optional)
 
 The port of your MQTT instance

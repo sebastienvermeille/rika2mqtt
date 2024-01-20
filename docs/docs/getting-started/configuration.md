@@ -31,6 +31,10 @@ Default: `cmnd/rika2mqtt`
 The MQTT topic used by RIKA2MQTT to publish RIKA status
 Default: `tele/rika2mqtt`
 
+## MQTT_NOTIFICATION_TOPIC_NAME (Optional)
+The MQTT topic used by RIKA2MQTT to publish RIKA errors, warnings (i.e. Empty pellet container)
+Default: `tele/rika2mqtt-notifications`
+
 ## MQTT_URI_SCHEME (Optional)
 The uri scheme to be used with MQTT_HOST (i.e: `tcp://`, `ssl://`)
 Default: `tcp://`

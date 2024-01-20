@@ -23,6 +23,7 @@
 package dev.cookiecode.rika2mqtt.rika.firenet.model;
 
 import com.google.gson.annotations.SerializedName;
+import java.util.Optional;
 import lombok.Builder;
 import lombok.Data;
 
@@ -32,6 +33,7 @@ import lombok.Data;
 @Data
 @Builder
 public class StoveStatus {
+  static final int RIKA_NO_ERROR_VALUE = 0;
 
   private String name;
 
@@ -46,4 +48,21 @@ public class StoveStatus {
   private String stoveType;
   private Sensors sensors;
   private Controls controls;
+
+  public Optional<StoveError> getError() {
+    final var statusError =
+        Optional.ofNullable(sensors)
+            .map(Sensors::getStatusError)
+            .filter(value -> value > RIKA_NO_ERROR_VALUE);
+    final var statusSubError =
+        Optional.ofNullable(sensors)
+            .map(Sensors::getStatusSubError)
+            .filter(value -> value > RIKA_NO_ERROR_VALUE);
+    return statusError.map(
+        integer ->
+            StoveError.builder()
+                .statusError(integer)
+                .statusSubError(statusSubError.orElse(RIKA_NO_ERROR_VALUE))
+                .build());
+  }
 }

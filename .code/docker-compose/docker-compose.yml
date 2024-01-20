@@ -26,8 +26,9 @@ services:
 #optional properties
 #      - MQTT_URI_SCHEME=tcp://
 #      - MQTT_PORT=1883
-#      - MQTT_COMMAND_TOPIC_NAME=cmnd/rika2mqtt
-#      - MQTT_TELEMETRY_REPORT_TOPIC_NAME=tele/rika2mqtt
+#      - MQTT_COMMAND_TOPIC_NAME=rika2mqtt/commands
+#      - MQTT_TELEMETRY_REPORT_TOPIC_NAME=rika2mqtt/telemetry
+#      - MQTT_NOTIFICATION_TOPIC_NAME=rika2mqtt/notifications
 #      - PLUGINS=https://repo.maven.apache.org/maven2/org/apache/maven/wrapper/maven-wrapper/3.2.0/maven-wrapper-3.2.0.jar
 
 

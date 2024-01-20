@@ -52,5 +52,7 @@ public class MqttConfigProperties {
 
   private String telemetryReportTopicName = "tele/rika2mqtt";
 
+  private String notificationTopicName = "tele/rika2mqtt-notifications";
+
   private String commandTopicName = "cmnd/rika2mqtt";
 }

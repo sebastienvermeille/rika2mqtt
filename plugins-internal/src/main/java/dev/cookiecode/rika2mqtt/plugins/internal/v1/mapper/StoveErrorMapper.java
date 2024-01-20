@@ -20,14 +20,29 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.rika.mqtt;
+package dev.cookiecode.rika2mqtt.plugins.internal.v1.mapper;
+
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveError;
+import lombok.NonNull;
+import org.mapstruct.Mapper;
+import org.mapstruct.ReportingPolicy;
 
 /**
  * @author Sebastien Vermeille
  */
-public interface MqttService {
+@Beta
+@Mapper(
+    unmappedTargetPolicy = ReportingPolicy.IGNORE,
+    uses = {StoveIdMapper.class}) // ignore as we are using a map
+public interface StoveErrorMapper {
 
-  void publish(String message);
-
-  void publishNotification(String message);
+  default StoveError toApiStoveError(
+      @NonNull Long stoveId,
+      @NonNull dev.cookiecode.rika2mqtt.rika.firenet.model.StoveError stoveError) {
+    final var error = new StoveError();
+    error.setStoveId(new StoveIdMapperImpl().map(stoveId));
+    error.setErrorCode(stoveError.toString());
+    return error;
+  }
 }

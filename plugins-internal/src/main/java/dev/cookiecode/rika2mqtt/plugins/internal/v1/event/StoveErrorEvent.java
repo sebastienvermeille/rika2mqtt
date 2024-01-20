@@ -20,14 +20,23 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.rika.mqtt;
+package dev.cookiecode.rika2mqtt.plugins.internal.v1.event;
+
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
+import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveError;
+import lombok.*;
 
 /**
+ * Triggered when RIKA stove is printing an error
+ *
  * @author Sebastien Vermeille
  */
-public interface MqttService {
-
-  void publish(String message);
-
-  void publishNotification(String message);
+@RequiredArgsConstructor
+@Getter
+@ToString
+@EqualsAndHashCode
+@Builder
+@Beta
+public class StoveErrorEvent implements Rika2MqttPluginEvent {
+  private final StoveError stoveError;
 }

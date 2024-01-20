@@ -20,14 +20,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.rika.mqtt;
+package dev.cookiecode.rika2mqtt.plugins.api.v1.model;
+
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
+import lombok.Data;
 
 /**
  * @author Sebastien Vermeille
  */
-public interface MqttService {
+@Data
+@Beta
+public class StoveError {
 
-  void publish(String message);
-
-  void publishNotification(String message);
+  private StoveId stoveId;
+  private String errorCode;
 }
