@@ -77,7 +77,7 @@ class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
     getMqttTestClient()
         .assertThatMessageWasPublishedToMqttTopic(
             message,
-            mqttConfigProperties.getErrorTopicName(),
+            mqttConfigProperties.getNotificationTopicName(),
             () -> mqttService.publishError(message));
   }
 

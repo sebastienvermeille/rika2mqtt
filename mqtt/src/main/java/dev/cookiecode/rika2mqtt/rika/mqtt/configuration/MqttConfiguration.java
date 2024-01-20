@@ -96,7 +96,7 @@ public class MqttConfiguration {
     var messageHandler =
         new MqttPahoMessageHandler(mqttConfigProperties.getClientName(), mqttClientFactory());
     messageHandler.setAsync(true);
-    messageHandler.setDefaultTopic(mqttConfigProperties.getErrorTopicName());
+    messageHandler.setDefaultTopic(mqttConfigProperties.getNotificationTopicName());
     return messageHandler;
   }
 
