@@ -59,6 +59,20 @@ public class UpdatableControls {
   private Boolean frostProtectionActive;
   private Integer frostProtectionTemperature;
   private Boolean onOff;
+  private String heatingTimeMon1;
+  private String heatingTimeMon2;
+  private String heatingTimeTue1;
+  private String heatingTimeTue2;
+  private String heatingTimeWed1;
+  private String heatingTimeWed2;
+  private String heatingTimeThu1;
+  private String heatingTimeThu2;
+  private String heatingTimeFri1;
+  private String heatingTimeFri2;
+  private String heatingTimeSat1;
+  private String heatingTimeSat2;
+  private String heatingTimeSun1;
+  private String heatingTimeSun2;
 
   // @FieldNameConstants lombok annotation would generate this. Unfortunately at the moment it
   // generates issues to generate
@@ -81,5 +95,19 @@ public class UpdatableControls {
     public static final String FROST_PROTECTION_ACTIVE = "frostProtectionActive";
     public static final String FROST_PROTECTION_TEMPERATURE = "frostProtectionTemperature";
     public static final String ON_OFF = "onOff";
+    public static final String HEATING_TIME_MON1 = "heatingTimeMon1";
+    public static final String HEATING_TIME_MON2 = "heatingTimeMon2";
+    public static final String HEATING_TIME_TUE1 = "heatingTimeTue1";
+    public static final String HEATING_TIME_TUE2 = "heatingTimeTue2";
+    public static final String HEATING_TIME_WED1 = "heatingTimeWed1";
+    public static final String HEATING_TIME_WED2 = "heatingTimeWed2";
+    public static final String HEATING_TIME_THU1 = "heatingTimeThu1";
+    public static final String HEATING_TIME_THU2 = "heatingTimeThu2";
+    public static final String HEATING_TIME_FRI1 = "heatingTimeFri1";
+    public static final String HEATING_TIME_FRI2 = "heatingTimeFri2";
+    public static final String HEATING_TIME_SAT1 = "heatingTimeSat1";
+    public static final String HEATING_TIME_SAT2 = "heatingTimeSat2";
+    public static final String HEATING_TIME_SUN1 = "heatingTimeSun1";
+    public static final String HEATING_TIME_SUN2 = "heatingTimeSun2";
   }
 }
