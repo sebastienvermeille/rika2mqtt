@@ -10,8 +10,9 @@ By default the notifications are published to the topic: `tele/rika2mqtt-notific
 The payload is in JSON format :
 ```
 {
-  "stoveId": 42,
   "errorCode": "E0001.02",
+  "stoveId": 42,
+  "type": "ERROR"
 }
 ```
 

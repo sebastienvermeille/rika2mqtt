@@ -205,7 +205,7 @@ class BridgeTest {
   }
 
   @Test
-  void publishToMqttShouldInvokeMqttServicePublishErrorForEachStoveHavingAnError()
+  void publishToMqttShouldInvokeMqttServicePublishNotificationForEachStoveHavingAnError()
       throws Exception {
     // GIVEN
     final var stoves = List.of(StoveId.of(1L), StoveId.of(2L), StoveId.of(3L));
@@ -213,6 +213,9 @@ class BridgeTest {
     final var stoveStatus = mock(StoveStatus.class);
     when(stoveStatus.getError())
         .thenReturn(Optional.of(StoveError.builder().statusError(1).statusSubError(12).build()));
+
+    final var enrichedError = mock(dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveError.class);
+    when(stoveErrorMapper.toApiStoveError(anyLong(), any())).thenReturn(enrichedError);
 
     when(rikaFirenetService.getStatus(any())).thenReturn(stoveStatus);
 
