@@ -25,6 +25,7 @@ package dev.cookiecode.rika2mqtt.bridge;
 import com.google.common.annotations.VisibleForTesting;
 import com.google.gson.Gson;
 import dev.cookiecode.rika2mqtt.bridge.misc.EmailObfuscator;
+import dev.cookiecode.rika2mqtt.bridge.model.ErrorNotification;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.Rika2MqttPluginService;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.event.PolledStoveStatusEvent;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.event.StoveErrorEvent;
@@ -144,18 +145,7 @@ public class Bridge {
                     .stoveStatus(stoveStatusMapper.toApiStoveStatus(status))
                     .build());
 
-            status
-                .getError()
-                .ifPresent(
-                    stoveError -> {
-                      final var enrichedStoveError =
-                          stoveErrorMapper.toApiStoveError(stoveId.id(), stoveError);
-                      final var jsonError = gson.toJson(enrichedStoveError);
-                      mqttService.publishNotification(jsonError);
-
-                      applicationEventPublisher.publishEvent(
-                          StoveErrorEvent.builder().stoveError(enrichedStoveError).build());
-                    });
+            handleStoveErrors(status);
           } catch (InvalidStoveIdException e) {
             // TODO: could occurs if a stove is added later (after deployment of this rika2mqtt
             // instance, might be valuable to perform a reload of stoves "periodically") -> should
@@ -172,6 +162,26 @@ public class Bridge {
             log.atSevere().log(e.getMessage(), e);
           }
         });
+  }
+
+  private void handleStoveErrors(@NonNull StoveStatus status) {
+    status
+        .getError()
+        .ifPresent(
+            stoveError -> {
+              final var stoveId = status.getStoveId();
+
+              final var enrichedStoveError = stoveErrorMapper.toApiStoveError(stoveId, stoveError);
+
+              final var notification =
+                  new ErrorNotification(stoveId, enrichedStoveError.getErrorCode());
+
+              final var jsonNotification = gson.toJson(notification);
+              mqttService.publishNotification(jsonNotification);
+
+              applicationEventPublisher.publishEvent(
+                  StoveErrorEvent.builder().stoveError(enrichedStoveError).build());
+            });
   }
 
   /** Forward MQTT commands to rika-firenet */
