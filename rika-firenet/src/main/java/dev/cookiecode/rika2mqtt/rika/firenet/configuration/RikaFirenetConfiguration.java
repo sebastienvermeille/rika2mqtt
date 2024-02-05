@@ -24,6 +24,7 @@ package dev.cookiecode.rika2mqtt.rika.firenet.configuration;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.retry.annotation.EnableRetry;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 /**
@@ -31,5 +32,6 @@ import org.springframework.scheduling.annotation.EnableScheduling;
  */
 @Configuration
 @EnableScheduling
+@EnableRetry
 @EnableConfigurationProperties(RikaFirenetConfigProperties.class)
 public class RikaFirenetConfiguration {}

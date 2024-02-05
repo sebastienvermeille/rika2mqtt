@@ -55,6 +55,8 @@ import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.http.HttpStatus;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import retrofit2.Response;
@@ -180,7 +182,18 @@ public class RikaFirenetServiceImpl implements RikaFirenetService {
   }
 
   @Override
+  @Retryable(
+      retryFor = {OutdatedRevisionException.class, UnableToControlRikaFirenetException.class},
+      maxAttempts = 3,
+      backoff = @Backoff(delay = 1000, maxDelay = 5000, multiplier = 2))
   public void updateControls(@NonNull StoveId stoveId, Map<String, String> fields)
+      throws UnableToControlRikaFirenetException,
+          InvalidStoveIdException,
+          OutdatedRevisionException {
+    attemptToUpdateControls(stoveId, fields);
+  }
+
+  private void attemptToUpdateControls(@NonNull StoveId stoveId, Map<String, String> fields)
       throws UnableToControlRikaFirenetException,
           InvalidStoveIdException,
           OutdatedRevisionException {
