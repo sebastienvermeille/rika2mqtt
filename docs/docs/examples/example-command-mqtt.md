@@ -14,8 +14,10 @@ Here are some example of commands that can be sent to your RIKA stove via MQTT u
 Publish an MQTT message to `cmnd/rika2mqtt`  with the following JSON payload:
 
 ```
-"stoveId": "your stove id",
-"targetTemperature": 20
+{
+    "stoveId": "your stove id",
+    "targetTemperature": 20
+}
 ```
 
 :::info
@@ -26,28 +28,32 @@ And voila! RIKA2MQTT will automatically do the necessary to forward this change 
 
 ## Update convection fans status via MQTT
 ```json
-"stoveId": "your stove id",
-"convectionFan1Active": true,
-"convectionFan2Active": false
+{
+  "stoveId": "your stove id", 
+  "convectionFan1Active": true,
+  "convectionFan2Active": false
+}
 ```
 
 ## Update heating times via MQTT
 ```
-"stoveId": "your stove id",
-"heatingTimeMon1": "<timerange>",
-"heatingTimeMon2": "<timerange>",
-"heatingTimeTue1": "<timerange>",
-"heatingTimeTue2": "<timerange>",
-"heatingTimeWed1": "<timerange>",
-"heatingTimeWed2": "<timerange>",
-"heatingTimeThu1": "<timerange>",
-"heatingTimeThu2": "<timerange>",
-"heatingTimeFri1": "<timerange>",
-"heatingTimeFri2": "<timerange>",
-"heatingTimeSat1": "<timerange>",
-"heatingTimeSat2": "<timerange>",
-"heatingTimeSun1": "<timerange>",
-"heatingTimeSun2": "<timerange>",
+{
+    "stoveId": "your stove id",
+    "heatingTimeMon1": "<timerange>",
+    "heatingTimeMon2": "<timerange>",
+    "heatingTimeTue1": "<timerange>",
+    "heatingTimeTue2": "<timerange>",
+    "heatingTimeWed1": "<timerange>",
+    "heatingTimeWed2": "<timerange>",
+    "heatingTimeThu1": "<timerange>",
+    "heatingTimeThu2": "<timerange>",
+    "heatingTimeFri1": "<timerange>",
+    "heatingTimeFri2": "<timerange>",
+    "heatingTimeSat1": "<timerange>",
+    "heatingTimeSat2": "<timerange>",
+    "heatingTimeSun1": "<timerange>",
+    "heatingTimeSun2": "<timerange>",
+}
 ```
 
 :::info

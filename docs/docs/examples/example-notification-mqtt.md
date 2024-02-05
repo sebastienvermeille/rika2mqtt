@@ -18,6 +18,7 @@ The payload is in JSON format :
 
 ## Known error codes
 
-| Code       | Description                 |
-|------------|-----------------------------|
-| E0001.02   | Pellet container: empty     |
+| Code     | Description                 |
+|----------|-----------------------------|
+| E0001.02 | Pellet container: empty     |
+| E0008.16 | Ignition: Stove not ignited |
