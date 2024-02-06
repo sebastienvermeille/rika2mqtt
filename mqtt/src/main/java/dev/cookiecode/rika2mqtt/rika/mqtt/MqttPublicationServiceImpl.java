@@ -22,14 +22,36 @@
  */
 package dev.cookiecode.rika2mqtt.rika.mqtt;
 
+import dev.cookiecode.rika2mqtt.rika.mqtt.configuration.MqttConfiguration;
 import lombok.NonNull;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.flogger.Flogger;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 /**
  * @author Sebastien Vermeille
  */
-public interface MqttService {
+@Service
+@RequiredArgsConstructor
+@Flogger
+public class MqttPublicationServiceImpl implements MqttPublicationService {
 
-  void publish(@NonNull final String message);
+  @Qualifier("mqttConfiguration.MqttGateway")
+  private final MqttConfiguration.MqttGateway mqttGateway;
 
-  void publishNotification(@NonNull final String message);
+  @Qualifier("mqttConfiguration.MqttNotificationGateway")
+  private final MqttConfiguration.MqttGateway mqttNotificationGateway;
+
+  @Override
+  public void publish(@NonNull final String message) {
+    log.atInfo().log("Publish to mqtt:\n%s", message);
+    mqttGateway.sendToMqtt(message);
+  }
+
+  @Override
+  public void publishNotification(@NonNull final String message) {
+    log.atInfo().log("Publish notification to mqtt:\n%s", message);
+    mqttNotificationGateway.sendToMqtt(message);
+  }
 }
