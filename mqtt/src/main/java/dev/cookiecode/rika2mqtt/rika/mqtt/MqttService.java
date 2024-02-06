@@ -22,12 +22,14 @@
  */
 package dev.cookiecode.rika2mqtt.rika.mqtt;
 
+import lombok.NonNull;
+
 /**
  * @author Sebastien Vermeille
  */
 public interface MqttService {
 
-  void publish(String message);
+  void publish(@NonNull final String message);
 
-  void publishNotification(String message);
+  void publishNotification(@NonNull final String message);
 }
