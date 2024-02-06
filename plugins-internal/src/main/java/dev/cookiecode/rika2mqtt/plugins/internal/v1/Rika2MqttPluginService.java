@@ -27,14 +27,13 @@ import dev.cookiecode.rika2mqtt.plugins.api.v1.StoveErrorExtension;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.StoveStatusExtension;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.event.PolledStoveStatusEvent;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.event.StoveErrorEvent;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.flogger.Flogger;
 import org.pf4j.PluginManager;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 /**
  * Service responsible to orchestrate the whole plugins lifecycle: loading, start etc.
@@ -68,7 +67,7 @@ public class Rika2MqttPluginService {
   @VisibleForTesting
   String getPluginsDir() {
     return Optional.ofNullable(environment.getProperty(PLUGINS_DIR_ENV_VAR_NAME))
-            .orElse(DEFAULT_PLUGINS_DIR);
+        .orElse(DEFAULT_PLUGINS_DIR);
   }
 
   @EventListener
