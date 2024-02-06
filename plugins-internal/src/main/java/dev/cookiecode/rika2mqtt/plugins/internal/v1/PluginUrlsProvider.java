@@ -42,12 +42,13 @@ public class PluginUrlsProvider {
 
   static final String PLUGINS_ENV_VAR_NAME = "PLUGINS";
   static final String PLUGINS_SEPARATOR = ";";
+  static final String EMPTY_STRING = "";
 
   private final Environment environment;
 
   public List<URL> getDeclaredPlugins() {
     final var concatenatedString =
-        Optional.ofNullable(environment.getProperty(PLUGINS_ENV_VAR_NAME)).orElse("");
+        Optional.ofNullable(environment.getProperty(PLUGINS_ENV_VAR_NAME)).orElse(EMPTY_STRING);
     return Arrays.stream(concatenatedString.split(PLUGINS_SEPARATOR))
         .map(String::trim)
         .filter(urlStr -> !urlStr.isEmpty())

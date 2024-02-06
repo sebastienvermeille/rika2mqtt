@@ -22,41 +22,18 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.internal.v1;
 
-import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.exceptions.UnableToDownloadPluginException;
 import java.net.URL;
-import java.util.List;
 import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.flogger.Flogger;
-import org.springframework.stereotype.Service;
 
-/**
- * Service class responsible to download rika2mqtt plugins and synchronize them at startup.
- *
- * @author Sebastien Vermeille
- */
-@Beta
-@Service
-@Flogger
-@RequiredArgsConstructor
-public class PluginSyncManager {
-
-  private final HttpPluginDownloader pluginDownloader;
+/** Interface for plugin downloader implementations */
+public interface PluginDownloader {
 
   /**
-   * sync plugins dir with PLUGINS environment variable. each plugin url has to be provided in
-   * PLUGINS=http://some.jar;http://another.jar
+   * Download a plugin based on it's jarURL into pluginsDir
+   *
+   * @throws UnableToDownloadPluginException when can't download
    */
-  public void synchronize(@NonNull String pluginsDir, @NonNull List<URL> pluginsUrls) {
-    for (var pluginUrl : pluginsUrls) {
-      try {
-        log.atInfo().log("Fetch plugin %s", pluginUrl);
-        pluginDownloader.downloadPlugin(pluginUrl, pluginsDir);
-      } catch (UnableToDownloadPluginException e) {
-        log.atSevere().withCause(e).log(e.getMessage());
-      }
-    }
-    log.atInfo().log("Plugins synchronization: done.");
-  }
+  void downloadPlugin(@NonNull URL jarUrl, @NonNull String pluginsDir)
+      throws UnableToDownloadPluginException;
 }
