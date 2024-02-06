@@ -37,11 +37,12 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Flogger
-public class HttpPluginDownloader {
+public class HttpPluginDownloader implements PluginDownloader {
 
   // TODO: if md5 file is present (i.e maven central provide it then we should check integrity
   // TODO: override files / delete before (should not delete files already present in plugins dir
   // if they are not listed (useful for dev purpose)
+  @Override
   public void downloadPlugin(@NonNull URL jarUrl, @NonNull String pluginsDir)
       throws UnableToDownloadPluginException {
     try {
