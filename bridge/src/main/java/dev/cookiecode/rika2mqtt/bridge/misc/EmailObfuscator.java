@@ -35,14 +35,16 @@ import org.springframework.stereotype.Component;
 @Component
 public class EmailObfuscator {
 
+  private static final String AT_SYMBOL = "@";
+  private static final String MASK = "*****";
+
   public String maskEmailAddress(@NonNull final String email) {
-    final var mask = "*****";
-    final int at = email.indexOf("@");
+    final int at = email.indexOf(AT_SYMBOL);
     if (at > 2) {
       final int maskLen = Math.min(Math.max(at / 2, 2), 4);
       final int start = (at - maskLen) / 2;
       return email.substring(0, start)
-          + mask.substring(0, maskLen)
+          + MASK.substring(0, maskLen)
           + email.substring(start + maskLen);
     }
     return email;
