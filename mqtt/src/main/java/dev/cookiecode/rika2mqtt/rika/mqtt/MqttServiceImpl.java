@@ -23,6 +23,7 @@
 package dev.cookiecode.rika2mqtt.rika.mqtt;
 
 import dev.cookiecode.rika2mqtt.rika.mqtt.configuration.MqttConfiguration;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.flogger.Flogger;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -43,14 +44,14 @@ public class MqttServiceImpl implements MqttService {
   private final MqttConfiguration.MqttGateway mqttNotificationGateway;
 
   @Override
-  public void publish(final String message) {
+  public void publish(@NonNull final String message) {
     log.atInfo().log("Publish to mqtt:\n%s", message);
     mqttGateway.sendToMqtt(message);
   }
 
   @Override
-  public void publishNotification(String message) {
-    log.atInfo().log("Publish error to mqtt:\n%s", message);
+  public void publishNotification(@NonNull final String message) {
+    log.atInfo().log("Publish notification to mqtt:\n%s", message);
     mqttNotificationGateway.sendToMqtt(message);
   }
 }
