@@ -24,13 +24,12 @@ package dev.cookiecode.rika2mqtt.plugins.internal.v1;
 
 import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.exceptions.UnableToDownloadPluginException;
+import java.net.URL;
+import java.util.List;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.flogger.Flogger;
 import org.springframework.stereotype.Service;
-
-import java.net.URL;
-import java.util.List;
 
 /**
  * Service class responsible to download rika2mqtt plugins and synchronize them at startup.

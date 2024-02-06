@@ -24,6 +24,7 @@ package dev.cookiecode.rika2mqtt.plugins.internal.v1;
 
 import static java.net.URI.create;
 import static org.assertj.core.api.Assertions.assertThat;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
