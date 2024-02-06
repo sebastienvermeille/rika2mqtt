@@ -197,7 +197,6 @@ public class Bridge {
     } catch (OutdatedRevisionException ex) {
       log.atWarning().withCause(ex).log(
           COULD_NOT_PROCESS_THE_RECEIVED_MQTT_COMMAND_S, ex.getMessage());
-      // TODO: implement a retry policy (once at least)
     }
   }
 }
