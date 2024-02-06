@@ -22,8 +22,10 @@
  */
 package dev.cookiecode.rika2mqtt.bridge.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.ToString;
 
 /**
  * Notification send to MQTT as json
@@ -32,6 +34,8 @@ import lombok.RequiredArgsConstructor;
  */
 @Getter
 @RequiredArgsConstructor
+@EqualsAndHashCode
+@ToString
 public class Notification {
   private final Long stoveId;
   private final NotificationType type;
