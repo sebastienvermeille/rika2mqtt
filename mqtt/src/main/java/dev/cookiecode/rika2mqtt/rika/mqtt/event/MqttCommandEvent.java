@@ -23,19 +23,82 @@
 package dev.cookiecode.rika2mqtt.rika.mqtt.event;
 
 import java.util.Map;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 /**
  * @author Sebastien Vermeille
  */
 @Getter
+@EqualsAndHashCode
 @ToString
-@RequiredArgsConstructor
 public class MqttCommandEvent {
 
   private final Long stoveId;
 
-  @Getter private final Map<String, String> props;
+  private final Map<String, String> props;
+
+  private MqttCommandEvent(Builder builder) {
+    stoveId = builder.stoveId;
+    props = builder.props;
+  }
+
+  public static IStoveId builder() {
+    return new Builder();
+  }
+
+  public interface IBuild {
+    MqttCommandEvent build();
+  }
+
+  public interface IProps {
+    IBuild withProps(Map<String, String> val);
+  }
+
+  public interface IStoveId {
+    IProps withStoveId(Long val);
+  }
+
+  /** {@code MqttCommandEvent} builder static inner class. */
+  public static final class Builder implements IProps, IStoveId, IBuild {
+    private Map<String, String> props;
+    private Long stoveId;
+
+    private Builder() {}
+
+    /**
+     * Sets the {@code props} and returns a reference to {@code IBuild}
+     *
+     * @param val the {@code props} to set
+     * @return a reference to this Builder
+     */
+    @Override
+    public IBuild withProps(Map<String, String> val) {
+      props = val;
+      return this;
+    }
+
+    /**
+     * Sets the {@code stoveId} and returns a reference to {@code IProps}
+     *
+     * @param val the {@code stoveId} to set
+     * @return a reference to this Builder
+     */
+    @Override
+    public IProps withStoveId(Long val) {
+      stoveId = val;
+      return this;
+    }
+
+    /**
+     * Returns a {@code MqttCommandEvent} built from the parameters previously set.
+     *
+     * @return a {@code MqttCommandEvent} built with parameters of this {@code
+     *     MqttCommandEvent.Builder}
+     */
+    public MqttCommandEvent build() {
+      return new MqttCommandEvent(this);
+    }
+  }
 }

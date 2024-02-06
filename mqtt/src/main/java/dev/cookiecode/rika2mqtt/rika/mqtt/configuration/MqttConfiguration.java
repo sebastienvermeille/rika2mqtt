@@ -164,7 +164,8 @@ public class MqttConfiguration {
         // remove stoveId props as it has its own property in the wrapping object
         props.remove("stoveId");
 
-        applicationEventPublisher.publishEvent(new MqttCommandEvent(stoveId, props));
+        applicationEventPublisher.publishEvent(
+            MqttCommandEvent.builder().withStoveId(stoveId).withProps(props));
       } catch (JsonSyntaxException ex) {
         log.atWarning().log(
             "Received an invalid json payload via MQTT. Please ensure it follows the format defined in the doc.");
