@@ -142,7 +142,7 @@ public class Bridge {
 
             applicationEventPublisher.publishEvent(
                 PolledStoveStatusEvent.builder()
-                    .stoveStatus(stoveStatusMapper.toApiStoveStatus(status))
+                    .withStoveStatus(stoveStatusMapper.toApiStoveStatus(status))
                     .build());
 
             handleStoveErrors(status);
@@ -180,7 +180,7 @@ public class Bridge {
               mqttService.publishNotification(jsonNotification);
 
               applicationEventPublisher.publishEvent(
-                  StoveErrorEvent.builder().stoveError(enrichedStoveError).build());
+                  StoveErrorEvent.builder().withStoveError(enrichedStoveError).build());
             });
   }
 
