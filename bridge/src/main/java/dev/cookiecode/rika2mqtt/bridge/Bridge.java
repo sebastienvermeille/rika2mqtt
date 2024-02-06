@@ -55,6 +55,9 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
+ * Bridge class responsible for initializing, polling stove status, handling MQTT commands, and
+ * publishing to MQTT.
+ *
  * @author Sebastien Vermeille
  */
 @Component
@@ -62,16 +65,17 @@ import org.springframework.stereotype.Component;
 @Flogger
 public class Bridge {
 
-  static final String INITIALIZING_BRIDGE = "Initializing Rika2Mqtt bridge :";
   static final String RECEIVED_MQTT_COMMAND_FOR_STOVE_S = "Received mqtt command for stove: %s";
-  static final String COULD_NOT_PROCESS_THE_RECEIVED_MQTT_COMMAND_S =
-      "Could not process the received mqtt command: %s";
   static final String
       COULD_NOT_RETRIEVE_ANY_STOVE_LINKED_WITH_ACCOUNT_S_PLEASE_DOUBLE_CHECK_YOUR_CONFIGURATION =
           "Could not retrieve any stove linked with account %s. Please double-check your configuration.";
   static final String
       WILL_NOW_RETRIEVE_STATUS_FOR_EACH_DECLARED_STOVES_AT_INTERVAL_OF_S_AND_PUBLISH_IT_BACK_TO_MQTT =
           "Will now retrieve status for each declared stove(s) at interval of %s and publish it back to mqtt.";
+  private static final String INITIALIZING_BRIDGE = "Initializing Rika2Mqtt bridge :";
+  private static final String COULD_NOT_PROCESS_THE_RECEIVED_MQTT_COMMAND_S =
+      "Could not process the received mqtt command: %s";
+
   private final RikaFirenetService rikaFirenetService;
   private final MqttPublicationService mqttPublicationService;
 
