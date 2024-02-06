@@ -39,7 +39,7 @@ import dev.cookiecode.rika2mqtt.rika.firenet.exception.UnableToControlRikaFirene
 import dev.cookiecode.rika2mqtt.rika.firenet.exception.UnableToRetrieveRikaFirenetDataException;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveStatus;
-import dev.cookiecode.rika2mqtt.rika.mqtt.MqttService;
+import dev.cookiecode.rika2mqtt.rika.mqtt.MqttPublicationService;
 import dev.cookiecode.rika2mqtt.rika.mqtt.event.MqttCommandEvent;
 import jakarta.annotation.PostConstruct;
 import java.time.Duration;
@@ -73,7 +73,7 @@ public class Bridge {
       WILL_NOW_RETRIEVE_STATUS_FOR_EACH_DECLARED_STOVES_AT_INTERVAL_OF_S_AND_PUBLISH_IT_BACK_TO_MQTT =
           "Will now retrieve status for each declared stove(s) at interval of %s and publish it back to mqtt.";
   private final RikaFirenetService rikaFirenetService;
-  private final MqttService mqttService;
+  private final MqttPublicationService mqttPublicationService;
 
   @Value("${rika.email}")
   private String rikaEmailAccount;
@@ -138,7 +138,7 @@ public class Bridge {
           try {
             status = rikaFirenetService.getStatus(stoveId);
             final var jsonStatus = gson.toJson(status);
-            mqttService.publish(jsonStatus);
+            mqttPublicationService.publish(jsonStatus);
 
             applicationEventPublisher.publishEvent(
                 PolledStoveStatusEvent.builder()
@@ -177,7 +177,7 @@ public class Bridge {
                   new ErrorNotification(stoveId, enrichedStoveError.getErrorCode());
 
               final var jsonNotification = gson.toJson(notification);
-              mqttService.publishNotification(jsonNotification);
+              mqttPublicationService.publishNotification(jsonNotification);
 
               applicationEventPublisher.publishEvent(
                   StoveErrorEvent.builder().withStoveError(enrichedStoveError).build());

@@ -22,37 +22,26 @@
  */
 package dev.cookiecode.rika2mqtt.rika.mqtt;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-
-import dev.cookiecode.rika2mqtt.rika.mqtt.configuration.MqttConfiguration;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import lombok.NonNull;
 
 /**
- * Test class
+ * Service to publish messages into MQTT broker
  *
  * @author Sebastien Vermeille
  */
-@ExtendWith(MockitoExtension.class)
-class MqttServiceImplTest {
+public interface MqttPublicationService {
 
-  @Mock MqttConfiguration.MqttGateway mqttGateway;
+  /**
+   * Publish a standard stove status message
+   *
+   * @param message the message to publish
+   */
+  void publish(@NonNull final String message);
 
-  @InjectMocks MqttServiceImpl mqttService;
-
-  @Test
-  void publishShouldForwardMessageToMqttGateway() {
-    // GIVEN
-    final var message = "some data";
-
-    // WHEN
-    mqttService.publish(message);
-
-    // THEN
-    verify(mqttGateway, times(1)).sendToMqtt(message);
-  }
+  /**
+   * Publish a notification message (other mqtt channel)
+   *
+   * @param message the message to publish
+   */
+  void publishNotification(@NonNull final String message);
 }
