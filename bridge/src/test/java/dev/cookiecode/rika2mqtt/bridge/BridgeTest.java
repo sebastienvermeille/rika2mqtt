@@ -215,6 +215,7 @@ class BridgeTest {
         .thenReturn(Optional.of(StoveError.builder().statusError(1).statusSubError(12).build()));
 
     final var enrichedError = mock(dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveError.class);
+    when(enrichedError.getErrorCode()).thenReturn("42");
     when(stoveErrorMapper.toApiStoveError(anyLong(), any())).thenReturn(enrichedError);
 
     when(rikaFirenetService.getStatus(any())).thenReturn(stoveStatus);
