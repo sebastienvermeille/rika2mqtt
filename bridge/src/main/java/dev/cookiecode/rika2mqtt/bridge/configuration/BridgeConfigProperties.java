@@ -29,6 +29,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.validation.annotation.Validated;
 
+import static java.time.Duration.ofSeconds;
+
 /**
  * @author Sebastien Vermeille
  */
@@ -38,5 +40,5 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class BridgeConfigProperties {
 
-  @NonNull private Duration reportInterval = Duration.ofSeconds(30);
+  @NonNull private Duration reportInterval = ofSeconds(30);
 }
