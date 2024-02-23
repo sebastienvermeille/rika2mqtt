@@ -60,7 +60,7 @@
     <pf4j.version>3.10.0</pf4j.version>
 
     <!-- test dependencies version -->
-    <testcontainers.version>1.19.5</testcontainers.version>
+    <testcontainers.version>1.19.6</testcontainers.version>
 
     <!--plugins version -->
     <jacoco.maven.plugin.version>0.8.11</jacoco.maven.plugin.version>
