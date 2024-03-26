@@ -40,7 +40,7 @@
         <maven.compiler.source>${java.sdk.version}</maven.compiler.source>
         <maven.compiler.target>${java.sdk.version}</maven.compiler.target>
         <project.build.sourceEncoding>${source.encoding}</project.build.sourceEncoding>
-        <kamon.version>2.7.0</kamon.version>
+        <kamon.version>2.7.1</kamon.version>
         <!-- sonar analysis -->
         <sonar.projectKey>${project.sonar.root.projectKey}-${project.groupId}-${project.artifactId}</sonar.projectKey>
     </properties>
