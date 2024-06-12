@@ -59,6 +59,8 @@ import org.springframework.messaging.MessageHandler;
 @Flogger
 public class MqttConfiguration {
 
+  private static final String DELIMITER = ":";
+  private static final String STOVE_ID = "stoveId";
   private final MqttConfigProperties mqttConfigProperties;
   private final ApplicationEventPublisher applicationEventPublisher;
   private final Gson gson;
@@ -71,7 +73,7 @@ public class MqttConfiguration {
         new String[] {
           mqttConfigProperties.getUriScheme()
               + mqttConfigProperties.getHost()
-              + ":"
+              + DELIMITER
               + mqttConfigProperties.getPort()
         });
     options.setUserName(mqttConfigProperties.getUsername());
@@ -159,12 +161,13 @@ public class MqttConfiguration {
       try {
         final var type = new TypeToken<Map<String, String>>() {}.getType();
         final Map<String, String> props = gson.fromJson(payload, type);
-        final var stoveId = Long.parseUnsignedLong(props.get("stoveId"));
+        final var stoveId = Long.parseUnsignedLong(props.get(STOVE_ID));
 
         // remove stoveId props as it has its own property in the wrapping object
-        props.remove("stoveId");
+        props.remove(STOVE_ID);
 
-        applicationEventPublisher.publishEvent(new MqttCommandEvent(stoveId, props));
+        applicationEventPublisher.publishEvent(
+            MqttCommandEvent.builder().withStoveId(stoveId).withProps(props));
       } catch (JsonSyntaxException ex) {
         log.atWarning().log(
             "Received an invalid json payload via MQTT. Please ensure it follows the format defined in the doc.");

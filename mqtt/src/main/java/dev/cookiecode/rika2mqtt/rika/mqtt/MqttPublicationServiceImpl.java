@@ -20,23 +20,38 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.bridge.model;
+package dev.cookiecode.rika2mqtt.rika.mqtt;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import dev.cookiecode.rika2mqtt.rika.mqtt.configuration.MqttConfiguration;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.extern.flogger.Flogger;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
 
 /**
- * Notification send to MQTT as json
- *
  * @author Sebastien Vermeille
  */
-@Getter
+@Service
 @RequiredArgsConstructor
-@EqualsAndHashCode
-@ToString
-public class Notification {
-  private final Long stoveId;
-  private final NotificationType type;
+@Flogger
+public class MqttPublicationServiceImpl implements MqttPublicationService {
+
+  @Qualifier("mqttConfiguration.MqttGateway")
+  private final MqttConfiguration.MqttGateway mqttGateway;
+
+  @Qualifier("mqttConfiguration.MqttNotificationGateway")
+  private final MqttConfiguration.MqttGateway mqttNotificationGateway;
+
+  @Override
+  public void publish(@NonNull final String message) {
+    log.atInfo().log("Publish to mqtt:\n%s", message);
+    mqttGateway.sendToMqtt(message);
+  }
+
+  @Override
+  public void publishNotification(@NonNull final String message) {
+    log.atInfo().log("Publish notification to mqtt:\n%s", message);
+    mqttNotificationGateway.sendToMqtt(message);
+  }
 }

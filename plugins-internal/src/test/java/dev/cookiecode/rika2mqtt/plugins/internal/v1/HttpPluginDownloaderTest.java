@@ -20,16 +20,19 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.rika.mqtt;
+package dev.cookiecode.rika2mqtt.plugins.internal.v1;
 
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static java.net.URI.create;
+import static org.assertj.core.api.Assertions.assertThat;
 
-import dev.cookiecode.rika2mqtt.rika.mqtt.configuration.MqttConfiguration;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
@@ -38,21 +41,23 @@ import org.mockito.junit.jupiter.MockitoExtension;
  * @author Sebastien Vermeille
  */
 @ExtendWith(MockitoExtension.class)
-class MqttServiceImplTest {
+class HttpPluginDownloaderTest {
 
-  @Mock MqttConfiguration.MqttGateway mqttGateway;
+  @TempDir public Path pluginDir;
 
-  @InjectMocks MqttServiceImpl mqttService;
+  @InjectMocks @Spy private HttpPluginDownloader httpPluginDownloader;
 
   @Test
-  void publishShouldForwardMessageToMqttGateway() {
+  void downloadPluginShouldDownloadTheFileGivenItExists() throws Exception {
     // GIVEN
-    final var message = "some data";
+    final var pluginUrl = "https://repo.maven.apache.org/maven2/dev/cookiecode/maven-metadata.xml";
 
     // WHEN
-    mqttService.publish(message);
+    httpPluginDownloader.downloadPlugin(
+        create(pluginUrl).toURL(), pluginDir.toAbsolutePath().toString());
 
     // THEN
-    verify(mqttGateway, times(1)).sendToMqtt(message);
+    final var expectedFile = Paths.get(pluginDir.toAbsolutePath().toString(), "maven-metadata.xml");
+    assertThat(Files.exists(expectedFile)).as("File has been downloaded").isTrue();
   }
 }

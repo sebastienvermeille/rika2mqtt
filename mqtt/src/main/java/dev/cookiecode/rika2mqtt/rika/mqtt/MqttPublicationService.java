@@ -22,12 +22,26 @@
  */
 package dev.cookiecode.rika2mqtt.rika.mqtt;
 
+import lombok.NonNull;
+
 /**
+ * Service to publish messages into MQTT broker
+ *
  * @author Sebastien Vermeille
  */
-public interface MqttService {
+public interface MqttPublicationService {
 
-  void publish(String message);
+  /**
+   * Publish a standard stove status message
+   *
+   * @param message the message to publish
+   */
+  void publish(@NonNull final String message);
 
-  void publishNotification(String message);
+  /**
+   * Publish a notification message (other mqtt channel)
+   *
+   * @param message the message to publish
+   */
+  void publishNotification(@NonNull final String message);
 }
