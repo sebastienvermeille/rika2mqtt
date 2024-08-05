@@ -21,7 +21,7 @@
 # THE SOFTWARE.
 #
 
-FROM eclipse-temurin:22.0.1_8-jre-jammy
+FROM eclipse-temurin:22.0.2_9-jre-jammy
 
 RUN mkdir -p /opt/rika2mqtt/plugins
 

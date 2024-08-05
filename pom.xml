@@ -53,20 +53,19 @@
     <source.encoding>UTF-8</source.encoding>
     <rika2mqtt.root>${basedir}</rika2mqtt.root>
     <!-- dependencies version-->
-    <lombok.version>1.18.32</lombok.version>
+    <lombok.version>1.18.34</lombok.version>
     <mapstruct.version>1.5.5.Final</mapstruct.version>
     <flogger.version>0.8</flogger.version>
     <hibernate.validator.version>8.0.1.Final</hibernate.validator.version>
-    <pf4j.version>3.11.1</pf4j.version>
+    <pf4j.version>3.12.0</pf4j.version>
 
     <!-- test dependencies version -->
-    <testcontainers.version>1.19.8</testcontainers.version>
+    <testcontainers.version>1.20.1</testcontainers.version>
 
     <!--plugins version -->
     <jacoco.maven.plugin.version>0.8.12</jacoco.maven.plugin.version>
-    <sonar.maven.plugin.version>3.11.0.3922</sonar.maven.plugin.version>
+    <sonar.maven.plugin.version>4.0.0.4121</sonar.maven.plugin.version>
     <maven.gpg.plugin.version>3.2.4</maven.gpg.plugin.version>
-
     <!-- sonar analysis -->
     <sonar.organization>sebastienvermeille</sonar.organization>
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
@@ -82,7 +81,7 @@
   <parent>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-parent</artifactId>
-    <version>3.2.5</version>
+    <version>3.3.2</version>
     <relativePath/> <!-- lookup parent from repository -->
   </parent>
 
@@ -226,7 +225,7 @@
         <plugin>
           <groupId>org.sonatype.plugins</groupId>
           <artifactId>nexus-staging-maven-plugin</artifactId>
-          <version>1.6.13</version>
+          <version>1.7.0</version>
           <extensions>true</extensions>
           <configuration>
             <serverId>ossrh</serverId>
@@ -237,7 +236,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
-          <version>3.6.3</version>
+          <version>3.8.0</version>
           <configuration>
             <additionalOptions>-Xdoclint:none</additionalOptions>
             <failOnError>false</failOnError>
