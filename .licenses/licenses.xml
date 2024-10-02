@@ -232,6 +232,15 @@
         <url>http://www.gnu.org/licenses/lgpl.html</url>
       </urls>
     </license>
+    <license>
+      <id>SPDX</id>
+      <names>
+        <name>SPDX-License-Identifier: MIT</name>
+      </names>
+      <urls>
+        <url>https://opensource.org/licenses/MIT</url>
+      </urls>
+    </license>
   </invalid>
 
   <warning>
