@@ -24,7 +24,10 @@ package dev.cookiecode.rika2mqtt.bridge.model;
 
 import static dev.cookiecode.rika2mqtt.bridge.model.NotificationType.ERROR;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.NonNull;
+import lombok.ToString;
 
 /**
  * Notification send to MQTT as json
@@ -32,11 +35,13 @@ import lombok.Getter;
  * @author Sebastien Vermeille
  */
 @Getter
+@EqualsAndHashCode(callSuper = true)
+@ToString(callSuper = true)
 public class ErrorNotification extends Notification {
 
-  private String errorCode;
+  private final String errorCode;
 
-  public ErrorNotification(Long stoveId, String errorCode) {
+  public ErrorNotification(@NonNull Long stoveId, @NonNull String errorCode) {
     super(stoveId, ERROR);
     this.errorCode = errorCode;
   }

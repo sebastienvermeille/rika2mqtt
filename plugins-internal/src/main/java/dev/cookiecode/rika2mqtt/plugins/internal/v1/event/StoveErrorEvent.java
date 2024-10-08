@@ -31,12 +31,55 @@ import lombok.*;
  *
  * @author Sebastien Vermeille
  */
-@RequiredArgsConstructor
 @Getter
 @ToString
 @EqualsAndHashCode
-@Builder
 @Beta
 public class StoveErrorEvent implements Rika2MqttPluginEvent {
   private final StoveError stoveError;
+
+  private StoveErrorEvent(Builder builder) {
+    stoveError = builder.stoveError;
+  }
+
+  public static IStoveError builder() {
+    return new Builder();
+  }
+
+  public interface IBuild {
+    StoveErrorEvent build();
+  }
+
+  public interface IStoveError {
+    IBuild withStoveError(StoveError val);
+  }
+
+  /** {@code StoveErrorEvent} builder static inner class. */
+  public static final class Builder implements IStoveError, IBuild {
+    private StoveError stoveError;
+
+    private Builder() {}
+
+    /**
+     * Sets the {@code stoveError} and returns a reference to {@code IBuild}
+     *
+     * @param val the {@code stoveError} to set
+     * @return a reference to this Builder
+     */
+    @Override
+    public IBuild withStoveError(StoveError val) {
+      stoveError = val;
+      return this;
+    }
+
+    /**
+     * Returns a {@code StoveErrorEvent} built from the parameters previously set.
+     *
+     * @return a {@code StoveErrorEvent} built with parameters of this {@code
+     *     StoveErrorEvent.Builder}
+     */
+    public StoveErrorEvent build() {
+      return new StoveErrorEvent(this);
+    }
+  }
 }

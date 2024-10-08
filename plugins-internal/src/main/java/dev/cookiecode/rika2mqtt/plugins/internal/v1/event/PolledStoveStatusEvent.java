@@ -29,12 +29,55 @@ import lombok.*;
 /**
  * @author Sebastien Vermeille
  */
-@RequiredArgsConstructor
 @Getter
 @ToString
 @EqualsAndHashCode
-@Builder
 @Beta
 public class PolledStoveStatusEvent implements Rika2MqttPluginEvent {
   private final StoveStatus stoveStatus;
+
+  private PolledStoveStatusEvent(Builder builder) {
+    stoveStatus = builder.stoveStatus;
+  }
+
+  public static IStoveStatus builder() {
+    return new Builder();
+  }
+
+  public interface IBuild {
+    PolledStoveStatusEvent build();
+  }
+
+  public interface IStoveStatus {
+    IBuild withStoveStatus(StoveStatus val);
+  }
+
+  /** {@code PolledStoveStatusEvent} builder static inner class. */
+  public static final class Builder implements IStoveStatus, IBuild {
+    private StoveStatus stoveStatus;
+
+    private Builder() {}
+
+    /**
+     * Sets the {@code stoveStatus} and returns a reference to {@code IBuild}
+     *
+     * @param val the {@code stoveStatus} to set
+     * @return a reference to this Builder
+     */
+    @Override
+    public IBuild withStoveStatus(StoveStatus val) {
+      stoveStatus = val;
+      return this;
+    }
+
+    /**
+     * Returns a {@code PolledStoveStatusEvent} built from the parameters previously set.
+     *
+     * @return a {@code PolledStoveStatusEvent} built with parameters of this {@code
+     *     PolledStoveStatusEvent.Builder}
+     */
+    public PolledStoveStatusEvent build() {
+      return new PolledStoveStatusEvent(this);
+    }
+  }
 }

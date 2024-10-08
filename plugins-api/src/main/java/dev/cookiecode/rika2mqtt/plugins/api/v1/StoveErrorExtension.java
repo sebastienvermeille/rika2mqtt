@@ -24,6 +24,7 @@ package dev.cookiecode.rika2mqtt.plugins.api.v1;
 
 import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveError;
+import lombok.NonNull;
 import org.pf4j.ExtensionPoint;
 
 /**
@@ -37,5 +38,5 @@ public interface StoveErrorExtension extends ExtensionPoint {
    *
    * @param stoveError the error triggered
    */
-  void onStoveError(StoveError stoveError);
+  void onStoveError(@NonNull StoveError stoveError);
 }
