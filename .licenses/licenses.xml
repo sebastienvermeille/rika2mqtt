@@ -199,6 +199,15 @@
         <url>https://javaee.github.io/javamail/LICENSE</url>
       </urls>
     </license>
+    <license>
+      <id>SPDX</id>
+      <names>
+        <name>SPDX-License-Identifier: MIT</name>
+      </names>
+      <urls>
+        <url>https://opensource.org/licenses/MIT</url>
+      </urls>
+    </license>
   </valid>
 
   <invalid>
