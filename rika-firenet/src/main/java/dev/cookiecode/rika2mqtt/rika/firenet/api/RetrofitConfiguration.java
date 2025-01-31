@@ -24,6 +24,7 @@ package dev.cookiecode.rika2mqtt.rika.firenet.api;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
 
+import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import java.net.CookieManager;
 import okhttp3.JavaNetCookieJar;
@@ -46,10 +47,8 @@ public class RetrofitConfiguration {
   private String rikaFirenetApiBaseUrl;
 
   @Bean
-  public RikaFirenetApi createRikaFirenetApi() {
+  public RikaFirenetApi createRikaFirenetApi(Gson gson) {
     final var cookieHandler = new CookieManager();
-
-    final var gson = new GsonBuilder().setLenient().create();
 
     final var httpClient =
         new OkHttpClient.Builder()
@@ -67,5 +66,10 @@ public class RetrofitConfiguration {
             .build();
 
     return retrofit.create(RikaFirenetApi.class);
+  }
+
+  @Bean
+  public Gson gson() {
+    return new GsonBuilder().setLenient().create();
   }
 }
