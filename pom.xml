@@ -127,7 +127,7 @@
     <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
-      <version>23.0</version><!--    used for @VisibleForTesting (see if we really need it)-->
+      <version>33.3.1-jre</version><!--    used for @VisibleForTesting (see if we really need it)-->
     </dependency>
     <!-- test dependencies shared with all modules -->
     <dependency>
