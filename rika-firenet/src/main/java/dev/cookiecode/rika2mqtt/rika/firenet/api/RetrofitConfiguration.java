@@ -26,7 +26,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.gson.GsonBuilder;
 import java.net.CookieManager;
-import okhttp3.JavaNetCookieJar;
 import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -56,7 +55,7 @@ public class RetrofitConfiguration {
             .connectTimeout(60, SECONDS)
             .readTimeout(60, SECONDS)
             .writeTimeout(60, SECONDS)
-            .cookieJar(new JavaNetCookieJar(cookieHandler))
+            .cookieJar(new LocalCookieJar())
             .build();
 
     final var retrofit =
