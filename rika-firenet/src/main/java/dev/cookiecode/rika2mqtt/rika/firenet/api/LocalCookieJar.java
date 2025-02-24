@@ -30,7 +30,6 @@ import okhttp3.HttpUrl;
 
 /**
  * @author Sebastien Vermeille
- *
  * @see https://stackoverflow.com/a/34884863
  */
 public class LocalCookieJar implements CookieJar {
