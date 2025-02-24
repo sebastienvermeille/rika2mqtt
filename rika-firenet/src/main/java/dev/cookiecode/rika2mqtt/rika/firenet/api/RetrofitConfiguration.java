@@ -26,7 +26,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import com.google.gson.GsonBuilder;
 import java.net.CookieManager;
-
 import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
