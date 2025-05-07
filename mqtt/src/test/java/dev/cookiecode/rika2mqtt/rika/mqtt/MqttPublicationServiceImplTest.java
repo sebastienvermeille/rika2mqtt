@@ -22,35 +22,37 @@
  */
 package dev.cookiecode.rika2mqtt.rika.mqtt;
 
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import dev.cookiecode.rika2mqtt.rika.mqtt.configuration.MqttConfiguration;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.flogger.Flogger;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.stereotype.Service;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
+ * Test class
+ *
  * @author Sebastien Vermeille
  */
-@Service
-@RequiredArgsConstructor
-@Flogger
-public class MqttServiceImpl implements MqttService {
+@ExtendWith(MockitoExtension.class)
+class MqttPublicationServiceImplTest {
 
-  @Qualifier("mqttConfiguration.MqttGateway")
-  private final MqttConfiguration.MqttGateway mqttGateway;
+  @Mock MqttConfiguration.MqttGateway mqttGateway;
 
-  @Qualifier("mqttConfiguration.MqttNotificationGateway")
-  private final MqttConfiguration.MqttGateway mqttNotificationGateway;
+  @InjectMocks MqttPublicationServiceImpl mqttService;
 
-  @Override
-  public void publish(final String message) {
-    log.atInfo().log("Publish to mqtt:\n%s", message);
-    mqttGateway.sendToMqtt(message);
-  }
+  @Test
+  void publishShouldForwardMessageToMqttGateway() {
+    // GIVEN
+    final var message = "some data";
 
-  @Override
-  public void publishNotification(String message) {
-    log.atInfo().log("Publish error to mqtt:\n%s", message);
-    mqttNotificationGateway.sendToMqtt(message);
+    // WHEN
+    mqttService.publish(message);
+
+    // THEN
+    verify(mqttGateway, times(1)).sendToMqtt(message);
   }
 }

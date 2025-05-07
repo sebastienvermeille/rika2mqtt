@@ -22,6 +22,8 @@
  */
 package dev.cookiecode.rika2mqtt.bridge.configuration;
 
+import static java.time.Duration.ofSeconds;
+
 import java.time.Duration;
 import lombok.Data;
 import lombok.NonNull;
@@ -38,5 +40,5 @@ import org.springframework.validation.annotation.Validated;
 @Validated
 public class BridgeConfigProperties {
 
-  @NonNull private Duration reportInterval = Duration.ofSeconds(30);
+  @NonNull private Duration reportInterval = ofSeconds(30);
 }

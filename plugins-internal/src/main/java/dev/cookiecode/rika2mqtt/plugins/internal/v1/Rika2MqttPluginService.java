@@ -22,14 +22,17 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.internal.v1;
 
+import com.google.common.annotations.VisibleForTesting;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.StoveErrorExtension;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.StoveStatusExtension;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.event.PolledStoveStatusEvent;
 import dev.cookiecode.rika2mqtt.plugins.internal.v1.event.StoveErrorEvent;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.flogger.Flogger;
 import org.pf4j.PluginManager;
 import org.springframework.context.event.EventListener;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 /**
@@ -42,16 +45,29 @@ import org.springframework.stereotype.Service;
 @Flogger
 public class Rika2MqttPluginService {
 
+  static final String PLUGINS_DIR_ENV_VAR_NAME = "PLUGINS_DIR";
+  static final String DEFAULT_PLUGINS_DIR = "plugins";
+
   private final PluginManager pluginManager;
-  private final PluginDownloader pluginDownloader;
+  private final PluginSyncManager pluginSyncManager;
+  private final Environment environment;
+  private final PluginUrlsProvider pluginUrlsProvider;
 
   public void start() {
     log.atInfo().log("Fetch plugins ...");
-    pluginDownloader.synchronize();
+    final var pluginsDir = getPluginsDir();
+    final var pluginsUrls = pluginUrlsProvider.getDeclaredPlugins();
+    pluginSyncManager.synchronize(pluginsDir, pluginsUrls);
 
     log.atInfo().log("Plugin manager starting ...");
     pluginManager.loadPlugins();
     pluginManager.startPlugins();
+  }
+
+  @VisibleForTesting
+  String getPluginsDir() {
+    return Optional.ofNullable(environment.getProperty(PLUGINS_DIR_ENV_VAR_NAME))
+        .orElse(DEFAULT_PLUGINS_DIR);
   }
 
   @EventListener

@@ -20,23 +20,43 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package dev.cookiecode.rika2mqtt.bridge.model;
+package dev.cookiecode.rika2mqtt.plugins.internal.v1;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import dev.cookiecode.rika2mqtt.plugins.api.Beta;
+import dev.cookiecode.rika2mqtt.plugins.internal.v1.exceptions.UnableToDownloadPluginException;
+import java.net.URL;
+import java.util.List;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import lombok.ToString;
+import lombok.extern.flogger.Flogger;
+import org.springframework.stereotype.Service;
 
 /**
- * Notification send to MQTT as json
+ * Service class responsible to download rika2mqtt plugins and synchronize them at startup.
  *
  * @author Sebastien Vermeille
  */
-@Getter
+@Beta
+@Service
+@Flogger
 @RequiredArgsConstructor
-@EqualsAndHashCode
-@ToString
-public class Notification {
-  private final Long stoveId;
-  private final NotificationType type;
+public class PluginSyncManager {
+
+  private final HttpPluginDownloader pluginDownloader;
+
+  /**
+   * sync plugins dir with PLUGINS environment variable. each plugin url has to be provided in
+   * PLUGINS=http://some.jar;http://another.jar
+   */
+  public void synchronize(@NonNull String pluginsDir, @NonNull List<URL> pluginsUrls) {
+    for (var pluginUrl : pluginsUrls) {
+      try {
+        log.atInfo().log("Fetch plugin %s", pluginUrl);
+        pluginDownloader.downloadPlugin(pluginUrl, pluginsDir);
+      } catch (UnableToDownloadPluginException e) {
+        log.atSevere().withCause(e).log(e.getMessage());
+      }
+    }
+    log.atInfo().log("Plugins synchronization: done.");
+  }
 }
