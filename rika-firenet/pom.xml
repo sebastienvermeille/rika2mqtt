@@ -50,7 +50,7 @@
     <httpclient5.version>5.4.2</httpclient5.version>
     <jsoup.version>1.18.1</jsoup.version>
     <spring-retry.version>2.0.9</spring-retry.version>
-    <spring-aspects.version>6.1.13</spring-aspects.version>
+    <spring-aspects.version>6.2.6</spring-aspects.version>
 
     <!-- test dependencies version -->
     <mockserver.client.version>5.15.0</mockserver.client.version>
