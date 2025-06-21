@@ -23,8 +23,8 @@
 package dev.cookiecode.rika2mqtt.bridge;
 
 import com.google.gson.Gson;
-import dev.cookiecode.rika2mqtt.rika.mqtt.MqttService;
-import dev.cookiecode.rika2mqtt.rika.mqtt.MqttServiceImpl;
+import dev.cookiecode.rika2mqtt.rika.mqtt.MqttPublicationService;
+import dev.cookiecode.rika2mqtt.rika.mqtt.MqttPublicationServiceImpl;
 import dev.cookiecode.rika2mqtt.rika.mqtt.configuration.MqttConfigProperties;
 import dev.cookiecode.rika2mqtt.rika.mqtt.configuration.MqttConfiguration;
 import java.util.UUID;
@@ -42,11 +42,11 @@ import org.springframework.test.context.ActiveProfiles;
  *
  * @author Sebastien Vermeille
  */
-@SpringBootTest(classes = {MqttServiceImpl.class, MqttConfiguration.class, Gson.class})
+@SpringBootTest(classes = {MqttPublicationServiceImpl.class, MqttConfiguration.class, Gson.class})
 @ActiveProfiles("test")
 class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
 
-  @Autowired private MqttService mqttService;
+  @Autowired private MqttPublicationService mqttPublicationService;
 
   @Autowired private MqttConfigProperties mqttConfigProperties;
 
@@ -64,7 +64,7 @@ class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
         .assertThatMessageWasPublishedToMqttTopic(
             message,
             mqttConfigProperties.getTelemetryReportTopicName(),
-            () -> mqttService.publish(message));
+            () -> mqttPublicationService.publish(message));
   }
 
   @Test
@@ -78,7 +78,7 @@ class BridgeIntegrationTest extends AbstractBaseIntegrationTest {
         .assertThatMessageWasPublishedToMqttTopic(
             message,
             mqttConfigProperties.getNotificationTopicName(),
-            () -> mqttService.publishNotification(message));
+            () -> mqttPublicationService.publishNotification(message));
   }
 
   private MqttTestClient getMqttTestClient() {

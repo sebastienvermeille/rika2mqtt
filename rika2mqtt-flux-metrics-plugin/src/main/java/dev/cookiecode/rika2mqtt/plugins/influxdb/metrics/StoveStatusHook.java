@@ -55,7 +55,7 @@ public class StoveStatusHook implements StoveStatusExtension {
   private static final String COULD_NOT_GET_PROPERTY_S = "Could not get property %s";
 
   @Override
-  public void onPollStoveStatusSucceed(StoveStatus stoveStatus) {
+  public void onPollStoveStatusSucceed(@NonNull StoveStatus stoveStatus) {
     log.atInfo().atMostEvery(1, HOURS).log(
         "Stove status is being continuously forwarded to Influx");
 

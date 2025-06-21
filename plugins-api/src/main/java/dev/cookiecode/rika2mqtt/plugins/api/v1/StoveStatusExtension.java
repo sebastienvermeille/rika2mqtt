@@ -24,6 +24,7 @@ package dev.cookiecode.rika2mqtt.plugins.api.v1;
 
 import dev.cookiecode.rika2mqtt.plugins.api.Beta;
 import dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveStatus;
+import lombok.NonNull;
 import org.pf4j.ExtensionPoint;
 
 /**
@@ -38,5 +39,5 @@ public interface StoveStatusExtension extends ExtensionPoint {
    *
    * @param stoveStatus the status retrieved from rika-firenet
    */
-  void onPollStoveStatusSucceed(StoveStatus stoveStatus);
+  void onPollStoveStatusSucceed(@NonNull StoveStatus stoveStatus);
 }

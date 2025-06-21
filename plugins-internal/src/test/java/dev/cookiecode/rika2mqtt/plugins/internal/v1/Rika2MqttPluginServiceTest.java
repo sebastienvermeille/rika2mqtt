@@ -22,6 +22,9 @@
  */
 package dev.cookiecode.rika2mqtt.plugins.internal.v1;
 
+import static dev.cookiecode.rika2mqtt.plugins.internal.v1.Rika2MqttPluginService.DEFAULT_PLUGINS_DIR;
+import static dev.cookiecode.rika2mqtt.plugins.internal.v1.Rika2MqttPluginService.PLUGINS_DIR_ENV_VAR_NAME;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 
 import dev.cookiecode.rika2mqtt.plugins.api.v1.StoveErrorExtension;
@@ -37,6 +40,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.pf4j.PluginManager;
+import org.springframework.core.env.Environment;
 
 /**
  * Test class
@@ -48,8 +52,10 @@ class Rika2MqttPluginServiceTest {
 
   @InjectMocks private Rika2MqttPluginService rika2MqttPluginService;
 
+  @Mock private Environment environment;
   @Mock private PluginManager pluginManager;
-  @Mock private PluginDownloader pluginDownloader;
+  @Mock private PluginSyncManager pluginSyncManager;
+  @Mock private PluginUrlsProvider pluginUrlsProvider;
 
   @Test
   void startShouldInvokeSynchronizePlugins() {
@@ -61,7 +67,7 @@ class Rika2MqttPluginServiceTest {
     rika2MqttPluginService.start();
 
     // THEN
-    verify(pluginDownloader, times(1)).synchronize();
+    verify(pluginSyncManager, times(1)).synchronize(anyString(), anyList());
   }
 
   @Test
@@ -133,5 +139,30 @@ class Rika2MqttPluginServiceTest {
     // THEN
     verify(extensionAlpha, times(1)).onStoveError(stoveError);
     verify(extensionBeta, times(1)).onStoveError(stoveError);
+  }
+
+  @Test
+  void getPluginsDirShouldReturnDefaultPluginsDirGivenEnvIsNotSet() {
+    // GIVEN
+    doReturn(null).when(environment).getProperty(PLUGINS_DIR_ENV_VAR_NAME);
+
+    // WHEN
+    final var pluginsDir = rika2MqttPluginService.getPluginsDir();
+
+    // THEN
+    assertThat(pluginsDir).isEqualTo(DEFAULT_PLUGINS_DIR);
+  }
+
+  @Test
+  void getPluginsDirShouldReturnPluginsDirProvidedValueDirGivenEnvIsSet() {
+    // GIVEN
+    final var somedir = "somedir";
+    doReturn(somedir).when(environment).getProperty(PLUGINS_DIR_ENV_VAR_NAME);
+
+    // WHEN
+    final var pluginsDir = rika2MqttPluginService.getPluginsDir();
+
+    // THEN
+    assertThat(pluginsDir).isEqualTo(somedir);
   }
 }

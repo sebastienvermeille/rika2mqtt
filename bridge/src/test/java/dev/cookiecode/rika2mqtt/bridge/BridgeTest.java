@@ -40,7 +40,7 @@ import dev.cookiecode.rika2mqtt.rika.firenet.RikaFirenetService;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveError;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveId;
 import dev.cookiecode.rika2mqtt.rika.firenet.model.StoveStatus;
-import dev.cookiecode.rika2mqtt.rika.mqtt.MqttService;
+import dev.cookiecode.rika2mqtt.rika.mqtt.MqttPublicationService;
 import dev.cookiecode.rika2mqtt.rika.mqtt.event.MqttCommandEvent;
 import java.time.Duration;
 import java.util.HashMap;
@@ -67,7 +67,7 @@ import org.springframework.context.ApplicationEventPublisher;
 class BridgeTest {
 
   @Mock RikaFirenetService rikaFirenetService;
-  @Mock MqttService mqttService;
+  @Mock MqttPublicationService mqttPublicationService;
   @Mock EmailObfuscator emailObfuscator;
   @Mock Gson gson;
   @Mock StoveStatusMapper stoveStatusMapper;
@@ -182,7 +182,7 @@ class BridgeTest {
     bridge.publishToMqtt();
 
     // THEN
-    verify(mqttService, times(stoves.size())).publish(any());
+    verify(mqttPublicationService, times(stoves.size())).publish(any());
   }
 
   @Test
@@ -215,6 +215,7 @@ class BridgeTest {
         .thenReturn(Optional.of(StoveError.builder().statusError(1).statusSubError(12).build()));
 
     final var enrichedError = mock(dev.cookiecode.rika2mqtt.plugins.api.v1.model.StoveError.class);
+    when(enrichedError.getErrorCode()).thenReturn("42");
     when(stoveErrorMapper.toApiStoveError(anyLong(), any())).thenReturn(enrichedError);
 
     when(rikaFirenetService.getStatus(any())).thenReturn(stoveStatus);
@@ -223,7 +224,7 @@ class BridgeTest {
     bridge.publishToMqtt();
 
     // THEN
-    verify(mqttService, times(stoves.size())).publishNotification(any());
+    verify(mqttPublicationService, times(stoves.size())).publishNotification(any());
   }
 
   @Test
@@ -241,7 +242,7 @@ class BridgeTest {
     bridge.publishToMqtt();
 
     // THEN
-    verify(mqttService, never()).publishNotification(any());
+    verify(mqttPublicationService, never()).publishNotification(any());
   }
 
   @Test
